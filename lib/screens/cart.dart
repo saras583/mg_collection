@@ -4,7 +4,6 @@ class Cart extends StatelessWidget {
   const Cart({super.key});
 
   @override
-  
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(title: Text('cart'),backgroundColor: Color(0xFFE6E6FAe),),
     floatingActionButton:FloatingActionButton(onPressed: (){
