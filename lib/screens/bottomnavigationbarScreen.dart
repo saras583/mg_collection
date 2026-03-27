@@ -24,10 +24,10 @@ class _BottomnavigationbarscreenState extends State<Bottomnavigationbarscreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.deepPurple,
+    return Scaffold(backgroundColor: const Color.fromARGB(255, 189, 185, 195),
       body: Screens[currentIndex],
 
-      bottomNavigationBar: BottomNavigationBar(backgroundColor: Colors.deepPurple,
+      bottomNavigationBar: BottomNavigationBar(backgroundColor: const Color.fromARGB(255, 206, 205, 208),
         currentIndex: currentIndex,
         onTap: (index) {
           setState(() {
