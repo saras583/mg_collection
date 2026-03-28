@@ -1,89 +1,85 @@
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+
+  bool faceId = false;
+  bool pushNotification = true;
+  bool locationSrevice = true;
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
-
-      body: Center(
-        child: Container(
-          width: 300,
-          height: 300,
-          padding: const EdgeInsets.all(20),
-
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-
-              /// Avatar
-              CircleAvatar(
-                radius: 35,
-                backgroundColor: Colors.deepPurple.shade100,
-                child: const Icon(
-                  Icons.person,
-                  color: Colors.deepPurple,
-                  size: 30,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              /// Welcome Text
-              const Text(
-                "Welcome!",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              /// Subtitle
-              const Text(
-                "Sign in to access your account",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
-              ),
-
-              const SizedBox(height: 25),
-
-              /// Sign In Button
-              Container(
-                width: double.infinity,
-                height: 45,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9C27B0),
-                      Color(0xff673AB7),
-                    ],
-                  ),
-                ),
-
-                child: const Center(
-                  child: Text(
-                    "Sign In",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+      backgroundColor: Color(0xFFF5EFEF),
+      body: SafeArea(child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Account&Setting',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)
+                      ,CircleAvatar(radius: 25,backgroundImage: AssetImage('assets/images/money.jpg'),),
+                      
+                      
+                    ],),
+            ),
+            //account part
+            Padding(padding: EdgeInsets.all(12)
+            ,child:Column(crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+               Text('Account ',style:TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+               SizedBox(height: 10,),
+               ListTile(
+                leading: Icon(Icons.notifications),
+                title: Text('Notification setting'),
+                trailing: Icon(Icons.arrow_forward,size: 16,),
+               ),
+               ListTile(
+                leading: Icon(Icons.shopping_cart),
+                title: Text('shoping address'),
+                trailing: Icon(Icons.arrow_forward,size: 16,),
+               ),ListTile(
+                leading: Icon(Icons.payment),
+                title: Text('Payment info'),
+                trailing: Icon(Icons.arrow_forward,size: 16,),
+               ),ListTile(
+                leading: Icon(Icons.delete),
+                title: Text('Delete Account'),
+                trailing: Icon(Icons.arrow_forward,size: 16,),
+               ) 
+              ],
+            ) ,)
+            ,SizedBox(height: 10,),
+            // app setting
+            Padding(padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('App Settings',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                SizedBox(height: 10,),
+               SwitchListTile(value: false, onChanged:(val){},title: Text('Enable face Id for log in'),),
+               SwitchListTile(value: true, onChanged:(val){},title: Text('Enable Push Notification'),) ,
+               SwitchListTile(value: true, onChanged:(val){},title: Text('Enable Location Service'),) ,
+               SwitchListTile(value: false, onChanged:(val){},title: Text('Dark mode'),) 
+                
+              ],
+            ),)
+      
+          ],
         ),
       ),
+      
+      )
+    
+      
     );
   }
 }
