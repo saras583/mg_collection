@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/screens/explore_screen.dart';
+import 'package:mgcollection_app/screens/bestsellers_screen.dart';
 import 'package:mgcollection_app/screens/home_screen.dart';
 import 'package:mgcollection_app/screens/cart.dart';
 import 'package:mgcollection_app/screens/profile_screen.dart';
@@ -35,7 +35,7 @@ class _BottomnavigationbarscreenState extends State<Bottomnavigationbarscreen> {
           });
         },
         items: [BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor:Color(0xFFE6E6FA) ,label: 'home'),
-        BottomNavigationBarItem(icon: Icon(Icons.explore),label: 'explore'),
+        BottomNavigationBarItem(icon: Icon(Icons.explore),label: 'bestsellers'),
         BottomNavigationBarItem(icon: Icon(Icons.shopping_cart),label: 'cart'),
         BottomNavigationBarItem(icon: Icon(Icons.person),label: 'home') ],
         

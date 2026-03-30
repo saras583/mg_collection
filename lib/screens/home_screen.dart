@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/screens/login_screen.dart';
+import 'package:mgcollection_app/models/categories_items.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,11 +9,44 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<String> categories = ["All", "Women", "Men", "Kids", "watches"];
+  List<Category> categories = [
+    Category(name: "Shirt", image: "assets/images/shirt.jpg"),
+    Category(name: "Watch", image: "assets/images/letstartmg.jpg"),
+    Category(name: "Skincare", image: "assets/images/skincare.jpg"),
+    Category(name: "Pants", image: "assets/images/next.jpg"),
+    Category(name: "Shoes", image: "assets/images/air1.jpg"),
+  ];
+  List<Map<String, dynamic>> products = [
+    {
+      "name": "wathes",
+      "category": "Men’s Shoes",
+      "price": 367.76,
+      "image": "assets/images/watch.jpg",
+    },
+    {
+      "name": "pant",
+      "category": "Men’s Shoes",
+      "price": 299.99,
+      "image": "assets/images/grey trouser.jpg",
+    },
+    {
+      "name": "Nike Jordan",
+      "category": "Men’s Shoes",
+      "price": 399.99,
+      "image": "assets/images/air1.jpg",
+    },
+    {
+      "name": "shirt",
+      "category": "Running Shoes",
+      "price": 249.99,
+      "image": "assets/images/black_shirt.jpg",
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 249, 229, 229),
       body: SafeArea(
         child: Column(
           children: [
@@ -99,6 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
                   itemBuilder: (BuildContext context, int index) {
+                    final category = categories[index];
+
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Column(
@@ -107,15 +142,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               CircleAvatar(
                                 radius: 30,
-                                backgroundImage: AssetImage(
-                                  "assets/images/getstarted.jpeg",
-                                ),
+                                backgroundImage: AssetImage(category.image),
                               ),
                               SizedBox(height: 5),
 
                               /// CATEGORY
                               Text(
-                                categories[index],
+                                category.name,
                                 style: TextStyle(fontSize: 12),
                               ),
                             ],
@@ -144,107 +177,103 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 10),
             Expanded(
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 12, 
-  mainAxisSpacing: 12, 
-  childAspectRatio: 0.7
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.7,
                 ),
-                itemCount: 2,
+                itemCount: products.length,
 
                 itemBuilder: (BuildContext context, int index) {
+                  final product = products[index];
                   return Container(
-                    decoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.circular(20)),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //product image 
-                      Expanded(child: ClipRRect(
-                        borderRadius: BorderRadiusGeometry.circular(10),
-                        child: Image.asset(
-                        'assets/images/black_shirt.jpg' ,
-                        fit: BoxFit.cover ,
-                        width: double.infinity, 
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //product image
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(10),
+                            child: Image.asset(
+                              product["image"],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(
+                            product["name"],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text("\$899", textAlign: TextAlign.center),
                         ),
 
-
-                        
-                      )),Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                "Linen-Blend Shirt in Standard Fit",textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text("\$899",textAlign: TextAlign.center,),
-            ),
-
-            SizedBox(height: 8),
-            
-                    ],),
+                        SizedBox(height: 8),
+                      ],
+                    ),
                   );
                 },
               ),
             ),
             Container(
-  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-  padding: const EdgeInsets.all(16),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(20),
-  ),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
 
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  /// LEFT TEXT PART
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "BEST CHOICE",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
 
-      /// LEFT TEXT PART
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+                      SizedBox(height: 5),
 
-          Text(
-            "BEST CHOICE",
-            style: TextStyle(
-              color: Colors.blue,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+                      Text(
+                        "Nike Air Jordan",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      SizedBox(height: 5),
+
+                      Text("\$849.69", style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
+
+                  /// RIGHT IMAGE
+                  Image.asset("assets/images/air1.jpg", height: 70),
+                ],
+              ),
             ),
-          ),
-
-          SizedBox(height: 5),
-
-          Text(
-            "Nike Air Jordan",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          SizedBox(height: 5),
-
-          Text(
-            "\$849.69",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-        ],
-      ),
-
-      /// RIGHT IMAGE
-      Image.asset(
-        "assets/images/air1.jpg", 
-        height: 70,
-      ),
-    ],
-  ),
-)
           ],
         ),
       ),
