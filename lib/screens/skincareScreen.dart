@@ -1,49 +1,12 @@
 import 'package:flutter/material.dart';
 
-class WatchesScreen extends StatefulWidget {
-  const WatchesScreen({super.key});
+class Skincarescreen extends StatelessWidget {
+  const Skincarescreen({super.key});
 
-  @override
-  State<WatchesScreen> createState() => _WatchesScreenState();
-}
-
-class _WatchesScreenState extends State<WatchesScreen> {
-  List<Map<String, dynamic>> watches = [
-  {
-    "name": "Rolex Submariner",
-    "price": 1299,
-    "image": "assets/images/watch1.jpg",
-  },
-  {
-    "name": "Casio G-Shock",
-    "price": 899,
-    "image": "assets/images/watch2.jpg",
-  },
-  {
-    "name": "Fossil Chronograph",
-    "price": 1499,
-    "image": "assets/images/watch3.jpg",
-  },
-  {
-    "name": "Titan Classic",
-    "price": 999,
-    "image": "assets/images/watch4.jpg",
-  },
-  {
-    "name": "Apple Watch Series",
-    "price": 1999,
-    "image": "assets/images/watch5.jpg",
-  },
-  {
-    "name": "Samsung Galaxy Watch",
-    "price": 1799,
-    "image": "assets/images/watch6.jpg",
-  },
-];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: 
-      SafeArea(
+    return Scaffold(
+      body: SafeArea(
         child: Column(
           children: [
             Padding(

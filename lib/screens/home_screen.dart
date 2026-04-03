@@ -294,25 +294,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToCategory(String categoryName) {
-    if (categoryName == "Shirt") {
+    final routes = {
+      "Shirt": ShirtsScreen(),
+      "Watch": WatchesScreen(),
+      "Pants": PantsScreen(),
+      "Shoes": Shoesscreen(),
+    };
+
+    if (routes.containsKey(categoryName)) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ShirtsScreen()),
-      );
-    } else if (categoryName == "Watchs") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => WatchesScreen()),
-      );
-    } else if (categoryName == "Pants") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PantsScreen()),
-      );
-    } else if (categoryName == "Shoes") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Shoesscreen()),
+        MaterialPageRoute(builder: (context) => routes[categoryName]!),
       );
     }
   }
