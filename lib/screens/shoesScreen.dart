@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PantsScreen extends StatelessWidget {
-  const PantsScreen({super.key});
+class Shoesscreen extends StatelessWidget {
+  const Shoesscreen({super.key});
 
   @override
   Widget build(BuildContext context) {

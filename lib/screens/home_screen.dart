@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/models/categories_items.dart';
+import 'package:mgcollection_app/screens/pants.dart';
+import 'package:mgcollection_app/screens/shirts.dart';
+import 'package:mgcollection_app/screens/shoesScreen.dart';
+import 'package:mgcollection_app/screens/watches.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -136,24 +140,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        children: [
-                          Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundImage: AssetImage(category.image),
-                              ),
-                              SizedBox(height: 5),
 
-                              /// CATEGORY
-                              Text(
-                                category.name,
-                                style: TextStyle(fontSize: 12),
+                      child: GestureDetector(
+                        child: GestureDetector(
+                          onTap: () {
+                            _navigateToCategory(category.name);
+                          },
+
+                          child: Column(
+                            children: [
+                              Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: AssetImage(category.image),
+                                  ),
+                                  SizedBox(height: 5),
+
+                                  /// CATEGORY
+                                  Text(
+                                    category.name,
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     );
                   },
@@ -278,5 +291,29 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void _navigateToCategory(String categoryName) {
+    if (categoryName == "Shirt") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ShirtsScreen()),
+      );
+    } else if (categoryName == "Watchs") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => WatchesScreen()),
+      );
+    } else if (categoryName == "Pants") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PantsScreen()),
+      );
+    } else if (categoryName == "Shoes") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Shoesscreen()),
+      );
+    }
   }
 }
