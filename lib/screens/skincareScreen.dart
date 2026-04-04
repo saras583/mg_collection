@@ -1,8 +1,45 @@
 import 'package:flutter/material.dart';
 
-class Skincarescreen extends StatelessWidget {
+class Skincarescreen extends StatefulWidget {
   const Skincarescreen({super.key});
 
+  @override
+  State<Skincarescreen> createState() => _SkincarescreenState();
+}
+
+class _SkincarescreenState extends State<Skincarescreen> {
+  List<Map<String, dynamic>> skincare = [
+  {
+    "name": "Face Cleanser",
+    "price": 499,
+    "image": "assets/images/skincare1.jpg",
+  },
+  {
+    "name": "Moisturizing Cream",
+    "price": 699,
+    "image": "assets/images/skincare2.jpg",
+  },
+  {
+    "name": "Vitamin C Serum",
+    "price": 899,
+    "image": "assets/images/skincare3.jpg",
+  },
+  {
+    "name": "Sunscreen SPF 50",
+    "price": 599,
+    "image": "assets/images/skincare4.jpg",
+  },
+  {
+    "name": "Face Wash Gel",
+    "price": 399,
+    "image": "assets/images/skincare5.jpg",
+  },
+  {
+    "name": "Night Repair Cream",
+    "price": 799,
+    "image": "assets/images/skincare6.jpg",
+  },
+];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +52,7 @@ class Skincarescreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Best Sellers",
+                    "skincare",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Row(
@@ -31,7 +68,7 @@ class Skincarescreen extends StatelessWidget {
             Expanded(
               child: GridView.builder(
                 padding: EdgeInsets.all(12),
-                itemCount: watches.length,
+                itemCount: skincare.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
@@ -39,7 +76,7 @@ class Skincarescreen extends StatelessWidget {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  final watch = watches[index];
+                  final skincares = skincare[index];
 
                   return Container(
                     padding: EdgeInsets.all(10),
@@ -55,7 +92,7 @@ class Skincarescreen extends StatelessWidget {
                         Expanded(
                           child: Center(
                             child: Image.asset(
-                              watch['image'],
+                              skincares['image'],
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -63,18 +100,12 @@ class Skincarescreen extends StatelessWidget {
 
                         /// BEST SELLER
                         Text(
-                          watch['name'],
+                          skincares['name'],
                           style: TextStyle(fontSize: 10, color: Colors.blue),
                         ),
 
                         SizedBox(height: 4),
-
-                        Text('', style: TextStyle(fontWeight: FontWeight.bold)),
-
-                        Text(
-                          '',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
+  
 
                         SizedBox(height: 6),
 
@@ -82,7 +113,7 @@ class Skincarescreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "\$367.76",
+                              skincares['price'],
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ],

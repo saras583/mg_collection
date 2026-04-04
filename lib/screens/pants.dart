@@ -1,9 +1,47 @@
 import 'package:flutter/material.dart';
 
-class PantsScreen extends StatelessWidget {
+class PantsScreen extends StatefulWidget {
   const PantsScreen({super.key});
 
   @override
+  State<PantsScreen> createState() => _PantsScreenState();
+}
+
+class _PantsScreenState extends State<PantsScreen> {
+  List<Map<String, dynamic>> pants = [
+  {
+    "name": "Slim Fit Jeans",
+    "price": 1299,
+    "image": "assets/images/pant1.jpg",
+  },
+  {
+    "name": "Formal Trousers",
+    "price": 999,
+    "image": "assets/images/pant2.jpg",
+  },
+  {
+    "name": "Cargo Pants",
+    "price": 1499,
+    "image": "assets/images/pant3.jpg",
+  },
+  {
+    "name": "Denim Blue Jeans",
+    "price": 1199,
+    "image": "assets/images/pant4.jpg",
+  },
+  {
+    "name": "Chinos Pants",
+    "price": 1099,
+    "image": "assets/images/pant5.jpg",
+  },
+  {
+    "name": "Jogger Pants",
+    "price": 899,
+    "image": "assets/images/pant6.jpg",
+  },
+];
+  @override
+  
   Widget build(BuildContext context) {
     return Scaffold(body: SafeArea(
         child: Column(
@@ -30,7 +68,7 @@ class PantsScreen extends StatelessWidget {
             Expanded(
               child: GridView.builder(
                 padding: EdgeInsets.all(12),
-                itemCount: watches.length,
+                itemCount: pants.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
@@ -38,7 +76,7 @@ class PantsScreen extends StatelessWidget {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  final watch = watches[index];
+                  final watch = pants[index];
 
                   return Container(
                     padding: EdgeInsets.all(10),
@@ -68,7 +106,7 @@ class PantsScreen extends StatelessWidget {
 
                         SizedBox(height: 4),
 
-                        Text('', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(watch['price'], style: TextStyle(fontWeight: FontWeight.bold)),
 
                         Text(
                           '',
@@ -80,10 +118,7 @@ class PantsScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "\$367.76",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            
                           ],
                         ),
                       ],

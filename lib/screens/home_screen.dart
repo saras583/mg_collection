@@ -3,6 +3,7 @@ import 'package:mgcollection_app/models/categories_items.dart';
 import 'package:mgcollection_app/screens/pants.dart';
 import 'package:mgcollection_app/screens/shirts.dart';
 import 'package:mgcollection_app/screens/shoesScreen.dart';
+import 'package:mgcollection_app/screens/skincareScreen.dart';
 import 'package:mgcollection_app/screens/watches.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -299,6 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "Watch": WatchesScreen(),
       "Pants": PantsScreen(),
       "Shoes": Shoesscreen(),
+      "Skincare": Skincarescreen()
     };
 
     if (routes.containsKey(categoryName)) {
@@ -309,3 +311,4 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
+ 
