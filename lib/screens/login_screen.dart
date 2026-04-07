@@ -15,7 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    checckLogin();
+    Loginuser();
   }
 
   @override
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 30),
             GestureDetector(
               onTap: () {
-                loginuser();
+                Loginuser();
               },
 
               child: Container(
@@ -129,28 +129,28 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void checckLogin() {
-    var userBox = Hive.box('user');
-    var passBox = Hive.box('pass');
+  void Loginuser() {
+    var userBox = Hive.box('users');
 
     String email = usernameController.text;
     String password = passwordController.text;
 
-    var user = userBox.get('email');
+    var user = userBox.get(email);
 
-    if (user != null && user["password "] == password) {
+    if (user != null && user["password"] == password) {
       //save login
+      var authBox = Hive.box('auth');
       authBox.put("isLogged", true);
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => Bottomnavigationbarscreen()),
       );
-    }else {
-    //  message the user and pass is not 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Invalid email or password")),
-    );
-  }
+    } else {
+      //  message the user and pass is not
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Invalid email or password")));
+    }
   }
 }

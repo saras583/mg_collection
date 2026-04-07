@@ -7,8 +7,8 @@ import 'package:mgcollection_app/screens/getstartScreen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox('users');
-  await Hive.openBox('authu');
+  
+  await Hive.openBox('authubox');
 
   runApp(const MgCollection());
 }
