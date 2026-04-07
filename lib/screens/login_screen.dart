@@ -12,11 +12,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-    Loginuser();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +80,12 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 30),
             GestureDetector(
               onTap: () {
-                Loginuser();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Bottomnavigationbarscreen(),
+                  ),
+                );
               },
 
               child: Container(
@@ -127,30 +128,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  void Loginuser() {
-    var userBox = Hive.box('users');
-
-    String email = usernameController.text;
-    String password = passwordController.text;
-
-    var user = userBox.get(email);
-
-    if (user != null && user["password"] == password) {
-      //save login
-      var authBox = Hive.box('auth');
-      authBox.put("isLogged", true);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => Bottomnavigationbarscreen()),
-      );
-    } else {
-      //  message the user and pass is not
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Invalid email or password")));
-    }
   }
 }

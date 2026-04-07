@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/models/categories_items.dart';
+import 'package:mgcollection_app/screens/favoriteScreen.dart';
 import 'package:mgcollection_app/screens/pants.dart';
 import 'package:mgcollection_app/screens/shirts.dart';
 import 'package:mgcollection_app/screens/shoesScreen.dart';
@@ -15,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool isFavorite = false;
+
   List<Category> categories = [
     Category(name: "Shirt", image: "assets/images/shirt.jpg"),
     Category(name: "Watch", image: "assets/images/letstartmg.jpg"),
@@ -89,12 +92,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                   /// ICONS
+                  /// favoraite
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: Colors.grey.shade200,
-                        child: Icon(Icons.favorite_border, color: Colors.black),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => FavoriteScreen()),
+                          );
+                        },
+                        child: CircleAvatar(
+                          radius: 22,
+                          backgroundColor: Colors.grey.shade200,
+                          child: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.red : Colors.black,
+                          ),
+                        ),
                       ),
                       SizedBox(width: 10),
 

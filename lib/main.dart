@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:mgcollection_app/screens/getstartScreen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  
-  await Hive.openBox('authubox');
-
-  runApp(const MgCollection());
+void main() {
+  runApp(MgCollection());
 }
 
 class MgCollection extends StatelessWidget {

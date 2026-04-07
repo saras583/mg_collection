@@ -12,32 +12,32 @@ class _WatchesScreenState extends State<WatchesScreen> {
   {
     "name": "Rolex Submariner",
     "price": 1299,
-    "image": "assets/images/watch1.jpg",
+    "image": "assets/images/watch.jpg",
   },
   {
     "name": "Casio G-Shock",
     "price": 899,
-    "image": "assets/images/watch2.jpg",
+    "image": 'assets/images/watch.jpg',
   },
   {
     "name": "Fossil Chronograph",
     "price": 1499,
-    "image": "assets/images/watch3.jpg",
+    "image": "assets/images/watch.jpg",
   },
   {
     "name": "Titan Classic",
     "price": 999,
-    "image": "assets/images/watch4.jpg",
+    "image": "assets/images/watch.jpg",
   },
   {
     "name": "Apple Watch Series",
     "price": 1999,
-    "image": "assets/images/watch5.jpg",
+    "image": "assets/images/watch.jpg",
   },
   {
     "name": "Samsung Galaxy Watch",
     "price": 1799,
-    "image": "assets/images/watch6.jpg",
+    "image": "assets/images/watch.jpg",
   },
 ];
   @override

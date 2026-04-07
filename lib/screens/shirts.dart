@@ -22,12 +22,12 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
     {
       "name": "Blue Denim Shirt",
       "price": 999,
-      "image": "assets/images/blue_shirt.jpg",
+      "image": "assets/images/checkshirt.jpg",
     },
     {
       "name": "Checked Cotton Shirt",
       "price": 849,
-      "image": "assets/images/check_shirt.jpg",
+      "image": "assets/images/black_shirt.jpg",
     },
     {
       "name": "laveder Shirt",
