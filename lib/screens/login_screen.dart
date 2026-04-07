@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 
-
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    checckLogin();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +24,8 @@ class LoginScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
-          children: [SizedBox(height: 100,),
+          children: [
+            SizedBox(height: 100),
             const SizedBox(height: 50),
 
             const Text(
@@ -34,6 +48,7 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 8),
 
             TextField(
+              controller: usernameController,
               decoration: InputDecoration(
                 hintText: "Enter your email",
                 filled: true,
@@ -54,6 +69,7 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 8),
 
             TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 hintText: "Enter password",
@@ -68,12 +84,7 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 30),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => Bottomnavigationbarscreen(),
-                  ),
-                );
+                loginuser();
               },
 
               child: Container(
@@ -116,5 +127,30 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void checckLogin() {
+    var userBox = Hive.box('user');
+    var passBox = Hive.box('pass');
+
+    String email = usernameController.text;
+    String password = passwordController.text;
+
+    var user = userBox.get('email');
+
+    if (user != null && user["password "] == password) {
+      //save login
+      authBox.put("isLogged", true);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => Bottomnavigationbarscreen()),
+      );
+    }else {
+    //  message the user and pass is not 
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Invalid email or password")),
+    );
+  }
   }
 }

@@ -5,6 +5,7 @@ import 'package:mgcollection_app/screens/shirts.dart';
 import 'package:mgcollection_app/screens/shoesScreen.dart';
 import 'package:mgcollection_app/screens/skincareScreen.dart';
 import 'package:mgcollection_app/screens/watches.dart';
+import 'package:mgcollection_app/screens/wathes_rolex.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -129,6 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SizedBox(height: 10),
+
+            /// categories
             Padding(
               padding: const EdgeInsets.all(10),
               child: SizedBox(
@@ -192,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SizedBox(height: 10),
+            //product  lists
             Expanded(
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -204,40 +208,48 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 itemBuilder: (BuildContext context, int index) {
                   final product = products[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //product image
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(10),
-                            child: Image.asset(
-                              product["image"],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => WathesRolex()),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          //product image
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadiusGeometry.circular(10),
+                              child: Image.asset(
+                                product["image"],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Text(
-                            product["name"],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              product["name"],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text("\$899", textAlign: TextAlign.center),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text("\$899", textAlign: TextAlign.center),
+                          ),
 
-                        SizedBox(height: 8),
-                      ],
+                          SizedBox(height: 8),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -300,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "Watch": WatchesScreen(),
       "Pants": PantsScreen(),
       "Shoes": Shoesscreen(),
-      "Skincare": Skincarescreen()
+      "Skincare": Skincarescreen(),
     };
 
     if (routes.containsKey(categoryName)) {
@@ -311,4 +323,3 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
- 
