@@ -29,16 +29,7 @@ class _WatchesScreenState extends State<WatchesScreen> {
     "price": 999,
     "image": "assets/images/watch.jpg",
   },
-  {
-    "name": "Apple Watch Series",
-    "price": 1999,
-    "image": "assets/images/watch.jpg",
-  },
-  {
-    "name": "Samsung Galaxy Watch",
-    "price": 1799,
-    "image": "assets/images/watch.jpg",
-  },
+  
 ];
   @override
   Widget build(BuildContext context) {

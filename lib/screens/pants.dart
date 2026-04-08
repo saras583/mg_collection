@@ -12,33 +12,19 @@ class _PantsScreenState extends State<PantsScreen> {
   {
     "name": "Slim Fit Jeans",
     "price": 1299,
-    "image": "assets/images/pant1.jpg",
+    "image": "assets/images/grey trouser.jpg",
   },
   {
     "name": "Formal Trousers",
     "price": 999,
-    "image": "assets/images/pant2.jpg",
+    "image": "assets/images/next.jpg",
   },
   {
     "name": "Cargo Pants",
     "price": 1499,
-    "image": "assets/images/pant3.jpg",
+    "image": "assets/images/next.jpg",
   },
-  {
-    "name": "Denim Blue Jeans",
-    "price": 1199,
-    "image": "assets/images/pant4.jpg",
-  },
-  {
-    "name": "Chinos Pants",
-    "price": 1099,
-    "image": "assets/images/pant5.jpg",
-  },
-  {
-    "name": "Jogger Pants",
-    "price": 899,
-    "image": "assets/images/pant6.jpg",
-  },
+  
 ];
   @override
   
@@ -76,7 +62,7 @@ class _PantsScreenState extends State<PantsScreen> {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  final watch = pants[index];
+                  final pant = pants[index];
 
                   return Container(
                     padding: EdgeInsets.all(10),
@@ -92,7 +78,7 @@ class _PantsScreenState extends State<PantsScreen> {
                         Expanded(
                           child: Center(
                             child: Image.asset(
-                              watch['image'],
+                              pant['image'],
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -100,13 +86,13 @@ class _PantsScreenState extends State<PantsScreen> {
 
                         /// BEST SELLER
                         Text(
-                          watch['name'],
+                        '${pant['name']}',
                           style: TextStyle(fontSize: 10, color: Colors.blue),
                         ),
 
                         SizedBox(height: 4),
 
-                        Text(watch['price'], style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${pant['price']}', style: TextStyle(fontWeight: FontWeight.bold)),
 
                         Text(
                           '',

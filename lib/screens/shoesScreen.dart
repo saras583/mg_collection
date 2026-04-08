@@ -12,33 +12,19 @@ class _ShoesscreenState extends State<Shoesscreen> {
   {
     "name": "Nike Air Max",
     "price": 2499,
-    "image": "assets/images/shoe1.jpg",
+    "image": "assets/images/air1.jpg",
   },
   {
     "name": "Adidas Ultraboost",
     "price": 2999,
-    "image": "assets/images/shoe2.jpg",
+    "image": "assets/images/air1.jpg",
   },
   {
     "name": "Puma Running Shoes",
     "price": 1999,
-    "image": "assets/images/shoe3.jpg",
+    "image": "assets/images/air1.jpg",
   },
-  {
-    "name": "Nike Jordan",
-    "price": 3499,
-    "image": "assets/images/shoe4.jpg",
-  },
-  {
-    "name": "Reebok Classic",
-    "price": 1799,
-    "image": "assets/images/shoe5.jpg",
-  },
-  {
-    "name": "Skechers Comfort",
-    "price": 1599,
-    "image": "assets/images/shoe6.jpg",
-  },
+  
 ];
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,9 +11,43 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  
+
+  void loginUser() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter email and password")),
+      );
+      return;
+    }
+
+    if (email == "saras@gmail.com" && password == "1234") {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      await prefs.setBool("isLoggedIn", true);
+      await prefs.setString("email", email);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => Bottomnavigationbarscreen()),
+      );
+    } else {
+      // WRONG LOGIN
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Invalid email or password")));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 8),
 
             TextField(
-              controller: usernameController,
+              controller: emailController,
               decoration: InputDecoration(
                 hintText: "Enter your email",
                 filled: true,
@@ -80,12 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 30),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => Bottomnavigationbarscreen(),
-                  ),
-                );
+                loginUser();
               },
 
               child: Container(
@@ -128,5 +158,29 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.clear();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => LoginScreen()),
+    );
+  }
+
+  void checkLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    bool isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
+
+    if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => Bottomnavigationbarscreen()),
+      );
+    }
   }
 }

@@ -8,38 +8,30 @@ class Skincarescreen extends StatefulWidget {
 }
 
 class _SkincarescreenState extends State<Skincarescreen> {
-  List<Map<String, dynamic>> skincare = [
-  {
-    "name": "Face Cleanser",
-    "price": 499,
-    "image": "assets/images/skincare1.jpg",
-  },
-  {
-    "name": "Moisturizing Cream",
-    "price": 699,
-    "image": "assets/images/skincare2.jpg",
-  },
-  {
-    "name": "Vitamin C Serum",
-    "price": 899,
-    "image": "assets/images/skincare3.jpg",
-  },
-  {
-    "name": "Sunscreen SPF 50",
-    "price": 599,
-    "image": "assets/images/skincare4.jpg",
-  },
-  {
-    "name": "Face Wash Gel",
-    "price": 399,
-    "image": "assets/images/skincare5.jpg",
-  },
-  {
-    "name": "Night Repair Cream",
-    "price": 799,
-    "image": "assets/images/skincare6.jpg",
-  },
-];
+  List<Map<String, dynamic>> skincare = [ 
+    {
+      "name": "Face Cleanser",
+      "price": 499,
+      "image": "assets/images/cetapfilne.jpg",
+    },
+    {
+      "name": "Moisturizing Cream",
+      "price": 699,
+      "image": "assets/images/vitaminc serm.jpg",
+    },
+    
+    {
+      "name": "Sunscreen SPF 50",
+      "price": 599,
+      "image": "assets/images/sunscreen.jpg",
+    },
+    {
+      "name": "Face Wash Gel",
+      "price": 399,
+      "image": "assets/images/simplefacewash.jpg",
+    },
+    
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,12 +92,11 @@ class _SkincarescreenState extends State<Skincarescreen> {
 
                         /// BEST SELLER
                         Text(
-                          skincares['name'],
+                          '${skincares['price']}',
                           style: TextStyle(fontSize: 10, color: Colors.blue),
                         ),
 
                         SizedBox(height: 4),
-  
 
                         SizedBox(height: 6),
 
@@ -113,7 +104,7 @@ class _SkincarescreenState extends State<Skincarescreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              skincares['price'],
+                              '${skincares['price']}',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ],
