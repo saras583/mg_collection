@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/screens/products/blackShirtdetails.dart';
 
 class ShirtsScreen extends StatefulWidget {
   const ShirtsScreen({super.key});
@@ -79,50 +80,64 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                 itemBuilder: (context, index) {
                   final shirtsList = shirts[index];
 
-                  return Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => BlackShirtDetails()),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// IMAGE
-                        Expanded(
-                          child: Center(
-                            child: Image.asset(shirtsList['image'], fit: BoxFit.contain),
-                          ),
-                        ),
-
-                        /// BEST SELLER
-                        Text(
-                          shirtsList['name'],
-                          style: TextStyle(fontSize: 10, color: Colors.blue),
-                        ),
-
-                        SizedBox(height: 4),
-
-                        Text('', style: TextStyle(fontWeight: FontWeight.bold)),
-
-                        Text(
-                          '',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-
-                        SizedBox(height: 6),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "\$367.76",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// IMAGE
+                          Expanded(
+                            child: Center(
+                              child: Image.asset(
+                                shirtsList['image'],
+                                fit: BoxFit.contain,
+                              ),
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+
+                          /// BEST SELLER
+                          Text(
+                            shirtsList['name'],
+                            style: TextStyle(fontSize: 10, color: Colors.blue),
+                          ),
+
+                          SizedBox(height: 4),
+
+                          Text(
+                            '',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+
+                          Text(
+                            '',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+
+                          SizedBox(height: 6),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "\$367.76",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

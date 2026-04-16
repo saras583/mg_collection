@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
+
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
+import 'package:mgcollection_app/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,8 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
 
   void loginUser() async {
-    String email = emailController.text;
-    String password = passwordController.text;
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -177,6 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
     bool isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
 
     if (isLoggedIn) {
+      Future.delayed(Duration(seconds: 2));
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => Bottomnavigationbarscreen()),

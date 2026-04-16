@@ -37,7 +37,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Best Sellers",
+                    "shoes",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Row(
@@ -61,7 +61,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  final watch = shoes[index];
+                  final shoe = shoes[index];
 
                   return Container(
                     padding: EdgeInsets.all(10),
@@ -77,7 +77,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
                         Expanded(
                           child: Center(
                             child: Image.asset(
-                              watch['image'],
+                              shoe['image'],
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -85,13 +85,13 @@ class _ShoesscreenState extends State<Shoesscreen> {
 
                         /// BEST SELLER
                         Text(
-                          watch['name'],
+                          '${shoe['name']}',
                           style: TextStyle(fontSize: 10, color: Colors.blue),
                         ),
 
                         SizedBox(height: 4),
 
-                        Text(watch['price'], style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${shoe['price']}', style: TextStyle(fontWeight: FontWeight.bold)),
 
                         Text(
                           '',

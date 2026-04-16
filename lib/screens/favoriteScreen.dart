@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/screens/home_screen.dart';
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
@@ -7,11 +8,18 @@ class FavoriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favorites"),leading: Container(),
+        title: Text("Favorites"),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => HomeScreen()),
+            );
+          },
+          icon: Icon(Icons.backspace_rounded),
+        ),
       ),
-      body: Center(
-        child: Text("Your Favorite Items "),
-      ),
+      body: Column(children: []),
     );
   }
 }
