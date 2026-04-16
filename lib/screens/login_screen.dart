@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
-import 'package:mgcollection_app/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
