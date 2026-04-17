@@ -6,7 +6,7 @@ import 'package:mgcollection_app/screens/shirts.dart';
 import 'package:mgcollection_app/screens/shoesScreen.dart';
 import 'package:mgcollection_app/screens/skincareScreen.dart';
 import 'package:mgcollection_app/screens/watches.dart';
-import 'package:mgcollection_app/screens/wathes_rolex.dart';
+import 'package:mgcollection_app/screens/products/wathes_rolex.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -12,7 +12,7 @@ class BlackShirtDetails extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            /// 🔙 BACK BUTTON + IMAGE
+            ///  BACK BUTTON // IMAGE
             Stack(
               children: [
                 Container(
@@ -38,7 +38,7 @@ class BlackShirtDetails extends StatelessWidget {
               ],
             ),
 
-            /// 🔹 DETAILS
+            ///  DETAILS
             Expanded(
               child: Container(
                 padding: EdgeInsets.all(20),
@@ -81,7 +81,7 @@ class BlackShirtDetails extends StatelessWidget {
 
                     SizedBox(height: 20),
 
-                    /// 🔹 SIZE
+                    /// SIZE
                     Row(
                       children: [
                         _sizeBox("S"),
@@ -91,9 +91,19 @@ class BlackShirtDetails extends StatelessWidget {
                       ],
                     ),
 
-                    Spacer(),
+                    Spacer(),Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
 
-                    /// 🔹 ADD TO CART
+    /// PRICE
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Price", style: TextStyle(color: Colors.grey)),
+        Text("₹499", style: TextStyle(fontWeight: FontWeight.bold)),
+      ],
+    ),
+///  ADD TO CART
                     GestureDetector(
                       onTap: () {
                         addToCart(context, {
@@ -102,6 +112,7 @@ class BlackShirtDetails extends StatelessWidget {
     "image": "assets/images/black_shirt.jpg",
   });
                       },
+                      
                       child: Container(
                         width: double.infinity,
                         padding: EdgeInsets.symmetric(vertical: 15),
@@ -110,24 +121,32 @@ class BlackShirtDetails extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Center(
-                          child: Text( 
-                            "Add to Cart",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                          
+               
+                          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Text("Add to Cart", style: TextStyle(color: Colors.white)),
+          ),
                         ),
                       ),
                     ),
+                    
                   ],
                 ),
-              ),
+          ]
+          ),
             ),
-          ],
+        )],
         ),
       ),
     );
   }
 
-  /// 🔹 SIZE BOX
+  ///  SIZE BOX
   Widget _sizeBox(String size) {
     return Container(
       margin: EdgeInsets.only(right: 10),
