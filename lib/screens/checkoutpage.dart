@@ -60,22 +60,99 @@ class Checkoutpage extends StatelessWidget {
   Widget_infowRow(icon: Icons.email_outlined,
                     title: "address",
                     subtitle: "Kinfra ",),
-                    
-                    
-                    
-
+                    SizedBox(height: 10,),
+                    Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                      child: Image.asset('assets/images/locationimage.png',fit: BoxFit.cover,),),
+                      Widget_infowRow(
+                    icon: Icons.email_outlined,
+                    title: "paymentMethod",
+                    subtitle: "paypal Card",
+                  )
                 ],
               ),
             ),
             SizedBox(height: 10,),
             Container(
+  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  padding: EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(20),
+  ),
 
-            )
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+
+      /// 🔹 SUBTOTAL
+      _priceRow("Subtotal", "\$1250.00"),
+
+      SizedBox(height: 10),
+
+      /// 🔹 SHIPPING
+      _priceRow("Shipping", "\$40.90"),
+
+      Divider(height: 20, thickness: 1),
+
+      /// 🔹 TOTAL
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Total Cost",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            "\$1690.99",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+
+      SizedBox(height: 20),
+
+      /// 🔹 PAYMENT BUTTON
+      Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 15),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Center(
+          child: Text(
+            "Payment",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    ],
+  ),
+)
           ],
         ),
       ),
     );
   }
+}
+
+Widget _priceRow(String title, String price) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(title, style: TextStyle(color: Colors.grey)),
+      Text(price, style: TextStyle(fontWeight: FontWeight.bold)),
+    ],
+  );
 }
 
  Widget_infowRow({

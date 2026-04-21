@@ -139,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void logout() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.clear();
+    await pref.clear();  
 
     await pref.setBool('isloggedIn', false);
     Navigator.pushReplacement(

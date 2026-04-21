@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/screens/products/blackShirtdetails.dart';
+import 'package:mgcollection_app/screens/shirt_details_screen.dart';
 
 class ShirtsScreen extends StatefulWidget {
   const ShirtsScreen({super.key});
@@ -42,7 +43,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
     },
   ];
   @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 249, 229, 229),
       body: SafeArea(
@@ -84,8 +85,8 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => BlackShirtDetails()),
-                      );
+                        MaterialPageRoute(builder: (_) => ShirtDetailsScreen(product: shirtsList),
+                      ));
                     },
                     child: Container(
                       padding: EdgeInsets.all(10),
