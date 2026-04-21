@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mgcollection_app/screens/checkoutpage.dart';
 
 class BlackShirtDetails extends StatelessWidget {
   const BlackShirtDetails({super.key});
@@ -7,15 +8,16 @@ class BlackShirtDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5EFEF),
+      backgroundColor: const Color(0xFFF5EFEF),
 
       body: SafeArea(
         child: Column(
           children: [
-            ///  BACK BUTTON // IMAGE
+
+            /// IMAGE + BACK BUTTON
             Stack(
               children: [
-                Container(
+                SizedBox(
                   height: 300,
                   width: double.infinity,
                   child: Image.asset(
@@ -29,7 +31,7 @@ class BlackShirtDetails extends StatelessWidget {
                   left: 10,
                   child: GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(Icons.arrow_back),
                     ),
@@ -38,23 +40,29 @@ class BlackShirtDetails extends StatelessWidget {
               ],
             ),
 
-            ///  DETAILS
+            /// DETAILS SECTION
             Expanded(
               child: Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(30),
+                  ),
                 ),
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("BEST SELLER", style: TextStyle(color: Colors.blue)),
 
-                    SizedBox(height: 5),
+                    const Text(
+                      "BEST SELLER",
+                      style: TextStyle(color: Colors.blue),
+                    ),
 
-                    Text(
+                    const SizedBox(height: 5),
+
+                    const Text(
                       "Black Shirt",
                       style: TextStyle(
                         fontSize: 20,
@@ -62,9 +70,9 @@ class BlackShirtDetails extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
 
-                    Text(
+                    const Text(
                       "₹499",
                       style: TextStyle(
                         fontSize: 18,
@@ -72,16 +80,16 @@ class BlackShirtDetails extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                    Text(
+                    const Text(
                       "This black shirt is made from premium cotton fabric. Comfortable, stylish and perfect for daily wear.",
                       style: TextStyle(color: Colors.grey),
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                    /// SIZE
+                    /// SIZE OPTIONS
                     Row(
                       children: [
                         _sizeBox("S"),
@@ -91,66 +99,99 @@ class BlackShirtDetails extends StatelessWidget {
                       ],
                     ),
 
-                    Spacer(),Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
+                    const Spacer(),
 
-    /// PRICE
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Price", style: TextStyle(color: Colors.grey)),
-        Text("₹499", style: TextStyle(fontWeight: FontWeight.bold)),
-      ],
-    ),
-///  ADD TO CART
-                    GestureDetector(
-                      onTap: () {
-                        addToCart(context, {
-    "name": "Black Shirt",
-    "price": 499,
-    "image": "assets/images/black_shirt.jpg",
-  });
-                      },
-                      
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(30),
+                    /// BOTTOM SECTION
+                    Row(
+                      children: [
+
+                        /// PRICE
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text("Price", style: TextStyle(color: Colors.grey)),
+                            Text(
+                              "₹499",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        child: Center(
-                          
-               
-                          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Text("Add to Cart", style: TextStyle(color: Colors.white)),
-          ),
+
+                        const Spacer(),
+
+                        /// ADD TO CART
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              addToCart(context, {
+                                "name": "Black Shirt",
+                                "price": 499,
+                                "image": "assets/images/black_shirt.jpg",
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "Add to Cart",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+
+                        /// BUY NOW
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Proceeding to Buy"),
+                                ),
+                              );
+
+                              //  Navigate to checkout page later
+                               Navigator.push(context, MaterialPageRoute(builder: (_) => Checkoutpage()));
+                            },
+                            
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "Buy Now",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    
                   ],
                 ),
-          ]
-          ),
+              ),
             ),
-        )],
+          ],
         ),
       ),
     );
   }
 
-  ///  SIZE BOX
+  /// SIZE BOX
   Widget _sizeBox(String size) {
     return Container(
-      margin: EdgeInsets.only(right: 10),
-      padding: EdgeInsets.all(12),
+      margin: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
@@ -159,11 +200,13 @@ class BlackShirtDetails extends StatelessWidget {
     );
   }
 
-  void addToCart(BuildContext context, Map<String, dynamic> products) {
+  /// ADD TO CART FUNCTION
+  void addToCart(BuildContext context, Map<String, dynamic> product) {
     var box = Hive.box('cart');
-    box.add(products);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('added to cart')));
+    box.add(product);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Added to cart')),
+    );
   }
 }
