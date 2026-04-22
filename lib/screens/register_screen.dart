@@ -1,49 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
-import 'package:mgcollection_app/screens/register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   bool obscurePassword = true;
 
-  void loginUser() {
+  void registerUser() {
+    String name = nameController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
     var userBox = Hive.box('userBox');
-    var authBox = Hive.box('authBox');
 
     List users = userBox.get('users', defaultValue: []);
 
-    final user = users.firstWhere(
-      (u) => u['email'] == email && u['password'] == password,
-      orElse: () => null,
-    );
-
-    if (user != null) {
-      authBox.put('isLoggedIn', true);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => Bottomnavigationbarscreen(),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Invalid email or password")),
-      );
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      showMsg("Please fill all fields");
+      return;
     }
+
+    /// CHECK IF USER EXISTS
+    bool exists = users.any((u) => u['email'] == email);
+
+    if (exists) {
+      showMsg("User already exists");
+      return;
+    }
+
+    /// SAVE USER
+    users.add({
+      "name": name,
+      "email": email,
+      "password": password,
+    });
+
+    userBox.put('users', users);
+
+    showMsg("Account created successfully");
+
+    Navigator.pop(context); // back to login
+  }
+
+  void showMsg(String msg) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -57,31 +67,45 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: [
 
-              /// BACK BUTTON
-              Align(
-                alignment: Alignment.centerLeft,
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.arrow_back),
-                ),
-              ),
-
-              SizedBox(height: 30),
+              SizedBox(height: 40),
 
               /// TITLE
               Text(
-                "Hello Again!",
+                "Create Account",
                 style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
               ),
 
               SizedBox(height: 8),
 
               Text(
-                "Welcome Back You've Been Missed!",
+                "Let’s Create Account Together",
                 style: TextStyle(color: Colors.grey),
               ),
 
               SizedBox(height: 30),
+
+              /// NAME
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Your Name"),
+              ),
+
+              SizedBox(height: 8),
+
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  hintText: "Enter your name",
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
 
               /// EMAIL
               Align(
@@ -140,22 +164,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              SizedBox(height: 10),
+              SizedBox(height: 30),
 
-              /// FORGOT PASSWORD
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Recovery Password",
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-
-              SizedBox(height: 25),
-
-              /// SIGN IN BUTTON
+              /// SIGN UP BUTTON
               GestureDetector(
-                onTap: loginUser,
+                onTap: registerUser,
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -165,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      "Sign In",
+                      "Sign Up",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -192,18 +205,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
               Spacer(),
 
-              /// REGISTER
+              /// LOGIN LINK
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => RegisterScreen(),
-                    ),
-                  );
+                  Navigator.pop(context);
                 },
                 child: Text(
-                  "Don’t Have An Account? Sign Up For Free",
+                  "Already Have An Account? Sign In",
                   style: TextStyle(color: Colors.grey),
                 ),
               ),
