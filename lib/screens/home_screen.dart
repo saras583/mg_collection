@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgcollection_app/models/categories_items.dart';
 import 'package:mgcollection_app/screens/favoriteScreen.dart';
 import 'package:mgcollection_app/screens/pants.dart';
+import 'package:mgcollection_app/screens/shirt_details_screen.dart';
 import 'package:mgcollection_app/screens/shirts.dart';
 import 'package:mgcollection_app/screens/shoesScreen.dart';
 import 'package:mgcollection_app/screens/skincareScreen.dart';
@@ -225,10 +226,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   final product = products[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => WathesRolex()),
-                      );
+                        MaterialPageRoute(builder: (_) => ShirtDetailsScreen(product: product),
+                      ));
                     },
                     child: Container(
                       decoration: BoxDecoration(

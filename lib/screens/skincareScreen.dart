@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/models/skincare_details.dart';
+import 'package:mgcollection_app/screens/skincare_details.dart';
 
 class Skincarescreen extends StatefulWidget {
   const Skincarescreen({super.key});

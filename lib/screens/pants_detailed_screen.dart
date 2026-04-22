@@ -15,6 +15,7 @@ class PantsDetailsScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
+
             /// IMAGE + BACK BUTTON
             Stack(
               children: [
@@ -39,18 +40,22 @@ class PantsDetailsScreen extends StatelessWidget {
               ],
             ),
 
-            /// DETAILS
+            /// DETAILS SECTION
             Expanded(
               child: Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(30),
+                  ),
                 ),
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
+                    /// PRODUCT NAME
                     Text(
                       product['name'],
                       style: TextStyle(
@@ -61,6 +66,7 @@ class PantsDetailsScreen extends StatelessWidget {
 
                     SizedBox(height: 10),
 
+                    /// PRICE
                     Text(
                       "₹${product['price']}",
                       style: TextStyle(
@@ -71,6 +77,7 @@ class PantsDetailsScreen extends StatelessWidget {
 
                     SizedBox(height: 10),
 
+                    /// DESCRIPTION
                     Text(
                       "Premium quality pants, comfortable and stylish for everyday wear.",
                       style: TextStyle(color: Colors.grey),
@@ -78,7 +85,7 @@ class PantsDetailsScreen extends StatelessWidget {
 
                     SizedBox(height: 20),
 
-                    /// SIZE OPTIONS (optional)
+                    /// SIZE OPTIONS
                     Row(
                       children: [
                         _sizeBox("S"),
@@ -90,25 +97,64 @@ class PantsDetailsScreen extends StatelessWidget {
 
                     Spacer(),
 
-                    /// ADD TO CART
-                    GestureDetector(
-                      onTap: () {
-                        addToCart(context);
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Add to Cart",
-                            style: TextStyle(color: Colors.white),
+                    Divider(),
+                    SizedBox(height: 10),
+
+                    
+                    Row(
+                      children: [
+
+                        /// ADD TO CART
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              addToCart(context);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Add to Cart",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+
+                        SizedBox(width: 10),
+
+                        /// BUY NOW
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              buyNow(context);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Buy Now",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -133,7 +179,7 @@ class PantsDetailsScreen extends StatelessWidget {
     );
   }
 
-  /// HIVE FUNCTION
+  /// ADD TO CART FUNCTION
   void addToCart(BuildContext context) {
     var box = Hive.box('cart');
 
@@ -144,15 +190,18 @@ class PantsDetailsScreen extends StatelessWidget {
       "quantity": 1,
     });
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Added to cart")));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Added to cart")),
+    );
   }
 
+  /// BUY NOW FUNCTION
   void buyNow(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => Checkoutpage(product: product)
-      
-    ));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Checkoutpage(product: product),
+      ),
+    );
   }
- 
 }
