@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:mgcollection_app/screens/checkoutpage.dart';
 
 class PantsDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> product;
@@ -14,7 +15,6 @@ class PantsDetailsScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-
             /// IMAGE + BACK BUTTON
             Stack(
               children: [
@@ -45,18 +45,18 @@ class PantsDetailsScreen extends StatelessWidget {
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                 ),
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Text(
                       product['name'],
                       style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
 
                     SizedBox(height: 10),
@@ -64,7 +64,9 @@ class PantsDetailsScreen extends StatelessWidget {
                     Text(
                       "₹${product['price']}",
                       style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
 
                     SizedBox(height: 10),
@@ -142,8 +144,15 @@ class PantsDetailsScreen extends StatelessWidget {
       "quantity": 1,
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Added to cart")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Added to cart")));
   }
+
+  void buyNow(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => Checkoutpage(product: product)
+      
+    ));
+  }
+ 
 }

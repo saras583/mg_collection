@@ -157,7 +157,7 @@ class BlackShirtDetails extends StatelessWidget {
                               );
 
                               //  Navigate to checkout page later
-                               Navigator.push(context, MaterialPageRoute(builder: (_) => Checkoutpage()));
+                               //Navigator.push(context, MaterialPageRoute(builder: (_) => C));
                             },
                             
                             child: Container(

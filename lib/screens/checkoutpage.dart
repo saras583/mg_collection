@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Checkoutpage extends StatelessWidget {
-  const Checkoutpage({super.key});
+  final Map<String, dynamic> product;
+
+
+  const Checkoutpage({super.key,required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +88,7 @@ class Checkoutpage extends StatelessWidget {
     children: [
 
       /// 🔹 SUBTOTAL
-      _priceRow("Subtotal", "\$1250.00"),
+      _priceRow("Subtotal", "₹${product['price']}"),
 
       SizedBox(height: 10),
 
@@ -105,8 +108,26 @@ class Checkoutpage extends StatelessWidget {
               fontSize: 16,
             ),
           ),
+          Row(
+  children: [
+    Image.asset(
+      product['image'],
+      height: 50,
+      width: 50,
+    ),
+    SizedBox(width: 10),
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(product['name']),
+        Text("₹${product['price']}"),
+      ],
+    )
+  ],
+),
+SizedBox(height: 10),
           Text(
-            "\$1690.99",
+            "₹${product['price'] + 40}", 
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
@@ -117,7 +138,7 @@ class Checkoutpage extends StatelessWidget {
 
       SizedBox(height: 20),
 
-      /// 🔹 PAYMENT BUTTON
+      ///  PAYMENT BUTTON
       Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 15),
