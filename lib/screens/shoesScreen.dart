@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/screens/shoes_detailed_screen.dart';
 
 class Shoesscreen extends StatefulWidget {
   const Shoesscreen({super.key});
@@ -9,26 +10,22 @@ class Shoesscreen extends StatefulWidget {
 
 class _ShoesscreenState extends State<Shoesscreen> {
   List<Map<String, dynamic>> shoes = [
-  {
-    "name": "Nike Air Max",
-    "price": 2499,
-    "image": "assets/images/air1.jpg",
-  },
-  {
-    "name": "Adidas Ultraboost",
-    "price": 2999,
-    "image": "assets/images/air1.jpg",
-  },
-  {
-    "name": "Puma Running Shoes",
-    "price": 1999,
-    "image": "assets/images/air1.jpg",
-  },
-  
-];
+    {"name": "Nike Air Max", "price": 2499, "image": "assets/images/air1.jpg"},
+    {
+      "name": "Adidas Ultraboost",
+      "price": 2999,
+      "image": "assets/images/air1.jpg",
+    },
+    {
+      "name": "Puma Running Shoes",
+      "price": 1999,
+      "image": "assets/images/air1.jpg",
+    },
+  ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SafeArea(
+    return Scaffold(
+      body: SafeArea(
         child: Column(
           children: [
             Padding(
@@ -63,50 +60,61 @@ class _ShoesscreenState extends State<Shoesscreen> {
                 itemBuilder: (context, index) {
                   final shoe = shoes[index];
 
-                  return Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ShoesDetailsScreen(product: shoe),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// IMAGE
-                        Expanded(
-                          child: Center(
-                            child: Image.asset(
-                              shoe['image'],
-                              fit: BoxFit.contain,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// IMAGE
+                          Expanded(
+                            child: Center(
+                              child: Image.asset(
+                                shoe['image'],
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
-                        ),
 
-                        /// BEST SELLER
-                        Text(
-                          '${shoe['name']}',
-                          style: TextStyle(fontSize: 10, color: Colors.blue),
-                        ),
+                          /// BEST SELLER
+                          Text(
+                            '${shoe['name']}',
+                            style: TextStyle(fontSize: 10, color: Colors.blue),
+                          ),
 
-                        SizedBox(height: 4),
+                          SizedBox(height: 4),
 
-                        Text('${shoe['price']}', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(
+                            '${shoe['price']}',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
 
-                        Text(
-                          '',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
+                          Text(
+                            '',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
 
-                        SizedBox(height: 6),
+                          SizedBox(height: 6),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            
-                          ],
-                        ),
-                      ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -114,6 +122,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
             ),
           ],
         ),
-      ),);
+      ),
+    );
   }
 }

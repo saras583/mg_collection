@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/models/skincare_details.dart';
 
 class Skincarescreen extends StatefulWidget {
   const Skincarescreen({super.key});
@@ -8,7 +9,7 @@ class Skincarescreen extends StatefulWidget {
 }
 
 class _SkincarescreenState extends State<Skincarescreen> {
-  List<Map<String, dynamic>> skincare = [ 
+  List<Map<String, dynamic>> skincare = [
     {
       "name": "Face Cleanser",
       "price": 499,
@@ -19,7 +20,7 @@ class _SkincarescreenState extends State<Skincarescreen> {
       "price": 699,
       "image": "assets/images/vitaminc serm.jpg",
     },
-    
+
     {
       "name": "Sunscreen SPF 50",
       "price": 599,
@@ -30,7 +31,6 @@ class _SkincarescreenState extends State<Skincarescreen> {
       "price": 399,
       "image": "assets/images/simplefacewash.jpg",
     },
-    
   ];
   @override
   Widget build(BuildContext context) {
@@ -70,46 +70,57 @@ class _SkincarescreenState extends State<Skincarescreen> {
                 itemBuilder: (context, index) {
                   final skincares = skincare[index];
 
-                  return Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              SkincareDetailsScreen(product: skincares),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// IMAGE
-                        Expanded(
-                          child: Center(
-                            child: Image.asset(
-                              skincares['image'],
-                              fit: BoxFit.contain,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// IMAGE
+                          Expanded(
+                            child: Center(
+                              child: Image.asset(
+                                skincares['image'],
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
-                        ),
 
-                        /// BEST SELLER
-                        Text(
-                          '${skincares['price']}',
-                          style: TextStyle(fontSize: 10, color: Colors.blue),
-                        ),
+                          /// BEST SELLER
+                          Text(
+                            '${skincares['price']}',
+                            style: TextStyle(fontSize: 10, color: Colors.blue),
+                          ),
 
-                        SizedBox(height: 4),
+                          SizedBox(height: 4),
 
-                        SizedBox(height: 6),
+                          SizedBox(height: 6),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '${skincares['price']}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${skincares['price']}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
