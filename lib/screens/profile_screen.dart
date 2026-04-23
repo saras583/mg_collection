@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:mgcollection_app/screens/login_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mgcollection_app/screens/theme_controller.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final ThemeController controller;
+  const ProfileScreen({super.key, required this.controller});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -38,7 +40,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (_) => LoginScreen()),
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                LoginScreen(controller: ThemeController()),
+                          ),
                         );
                       },
                       child: CircleAvatar(
@@ -117,13 +122,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: Text('Enable Location Service'),
                     ),
                     SwitchListTile(
-                      value: false,
-                      onChanged: (val) {},
+                      value: widget.controller.themeMode == ThemeMode.dark,
+                      onChanged: (val) {
+                        widget.controller.toggleTheme(val);
+                      },
                       title: Text('Dark mode'),
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        logout();
+                        logout(context);
                       },
                       child: Text("Logout"),
                     ),
@@ -137,14 +144,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void logout() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.clear();  
+  void logout(BuildContext context) {
+    var authBox = Hive.box('authBox');
 
-    await pref.setBool('isloggedIn', false);
-    Navigator.pushReplacement(
+    authBox.put('isLoggedIn', false);
+
+    Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => LoginScreen()),
+      MaterialPageRoute(
+        builder: (_) => LoginScreen(controller: ThemeController()),
+      ),
+      (route) => false,
     );
   }
 }

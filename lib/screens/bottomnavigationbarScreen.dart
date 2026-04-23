@@ -3,9 +3,12 @@ import 'package:mgcollection_app/screens/bestsellers_screen.dart';
 import 'package:mgcollection_app/screens/home_screen.dart';
 import 'package:mgcollection_app/screens/cart.dart';
 import 'package:mgcollection_app/screens/profile_screen.dart';
+import 'package:mgcollection_app/screens/theme_controller.dart';
 
 class Bottomnavigationbarscreen extends StatefulWidget {
-  const Bottomnavigationbarscreen({super.key});
+  final ThemeController controller;
+
+  const Bottomnavigationbarscreen({super.key,required this.controller,});
 
   @override
   State<Bottomnavigationbarscreen> createState() =>
@@ -19,8 +22,9 @@ class _BottomnavigationbarscreenState extends State<Bottomnavigationbarscreen> {
     HomeScreen(),
     ExploreScreen(),
     Cart(),
-    ProfileScreen(),
+    ProfileScreen(controller: ThemeController()),
   ];
+  
 
   @override
   Widget build(BuildContext context) {

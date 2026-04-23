@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
+import 'package:mgcollection_app/screens/theme_controller.dart';
 
 
 class WathesRolex extends StatelessWidget {
@@ -21,9 +22,9 @@ class WathesRolex extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.pop(
                       context,
-                      MaterialPageRoute(builder: (_) => Bottomnavigationbarscreen()),
+                      MaterialPageRoute(builder: (_) => Bottomnavigationbarscreen(controller: ThemeController())),
                     );
                   },
                   child: CircleAvatar(

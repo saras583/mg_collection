@@ -1,35 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
-import 'package:mgcollection_app/screens/getstartScreen.dart';
 import 'package:mgcollection_app/screens/login_screen.dart';
+import 'package:mgcollection_app/screens/theme_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
   await Hive.openBox('cart');
-  await Hive.openBox('userBox');//userdata   
-  await Hive.openBox('authBox');//store login state
+  await Hive.openBox('userBox');
+  await Hive.openBox('authBox');
 
   runApp(MgCollection());
 }
 
 class MgCollection extends StatelessWidget {
-  const MgCollection({super.key});
+  MgCollection({super.key});
+
+  ///  CONTROLLER HERE
+  final ThemeController controller = ThemeController();
 
   @override
   Widget build(BuildContext context) {
     var authBox = Hive.box('authBox');
     bool isLoggedIn = authBox.get('isLoggedIn', defaultValue: false);
 
-    return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blue),
-      debugShowCheckedModeBanner: false,
-      home: isLoggedIn
-          ? Bottomnavigationbarscreen()   // already logged in
-          : LoginScreen(),                // go to login
-    
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+
+          themeMode: controller.themeMode,
+
+          
+          home: isLoggedIn
+              ? Bottomnavigationbarscreen(controller : controller)
+              : LoginScreen(controller: controller),
+        );
+      },
     );
   }
 }

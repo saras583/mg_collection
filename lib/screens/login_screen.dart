@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:mgcollection_app/screens/register_screen.dart';
+import 'package:mgcollection_app/screens/theme_controller.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final ThemeController controller;
+
+  const LoginScreen({super.key,required this.controller});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -36,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => Bottomnavigationbarscreen(),
+          builder: (_) => Bottomnavigationbarscreen(controller: widget.controller),
         ),
       );
     } else {

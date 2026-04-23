@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/screens/login_screen.dart';
+import 'package:mgcollection_app/screens/theme_controller.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+
+  final ThemeController controller;
+
+  const SplashScreen({super.key, required this.controller});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -40,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
     () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => LoginScreen()),
+        MaterialPageRoute(builder: (_) => LoginScreen(controller: ThemeController())),
       );
   });}
     }

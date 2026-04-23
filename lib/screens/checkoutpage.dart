@@ -87,17 +87,17 @@ class Checkoutpage extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
 
-      /// 🔹 SUBTOTAL
+      ///  SUBTOTAL
       _priceRow("Subtotal", "₹${product['price']}"),
 
       SizedBox(height: 10),
 
-      /// 🔹 SHIPPING
+      ///  SHIPPING
       _priceRow("Shipping", "\$40.90"),
 
       Divider(height: 20, thickness: 1),
 
-      /// 🔹 TOTAL
+      ///  TOTAL
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -139,19 +139,23 @@ SizedBox(height: 10),
       SizedBox(height: 20),
 
       ///  PAYMENT BUTTON
-      Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 15),
-        decoration: BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Center(
-          child: Text(
-            "Payment",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+      GestureDetector(onTap: (){
+       placeOrder(context);
+      },
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(vertical: 15),
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Center(
+            child: Text(
+              "Payment",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -164,6 +168,14 @@ SizedBox(height: 10),
       ),
     );
   }
+}
+
+void placeOrder(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Payment Successful")),
+  );
+
+  Navigator.pop(context);
 }
 
 Widget _priceRow(String title, String price) {
@@ -183,10 +195,12 @@ Widget _priceRow(String title, String price) {
 }) {
   return Row(
     children: [
-      CircleAvatar(
-        radius: 20,
-        backgroundColor: Colors.grey.shade200,
-        child: Icon(icon, color: Colors.black),
+      GestureDetector(onTap: ()=>Navigator.pop(context),
+        child: CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.grey.shade200,
+          child: Icon(icon, color: Colors.black),
+        ),
       ),
       SizedBox(width: 10),
       Column(
@@ -197,4 +211,5 @@ Widget _priceRow(String title, String price) {
         ],
   )],
   );
+  
 }
