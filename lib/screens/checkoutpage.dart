@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class Checkoutpage extends StatelessWidget {
   final Map<String, dynamic> product;
@@ -20,10 +21,12 @@ class Checkoutpage extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: CircleAvatar(
-                      radius: 22,
-                      backgroundColor: Colors.grey.shade200,
-                      child: Icon(Icons.arrow_back, color: Colors.black),
+                    child: GestureDetector(onTap: () => Navigator.pop(context),
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.grey.shade200,
+                        child: Icon(Icons.arrow_back, color: Colors.black),
+                      ),
                     ),
                   ),
                   Text(
@@ -67,7 +70,7 @@ class Checkoutpage extends StatelessWidget {
                     Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
                       child: Image.asset('assets/images/locationimage.png',fit: BoxFit.cover,),),
                       Widget_infowRow(
-                    icon: Icons.email_outlined,
+                    icon: Icons.payment,
                     title: "paymentMethod",
                     subtitle: "paypal Card",
                   )
@@ -140,7 +143,7 @@ SizedBox(height: 10),
 
       ///  PAYMENT BUTTON
       GestureDetector(onTap: (){
-       placeOrder(context);
+       showPaymentOptions(context);
       },
         child: Container(
           width: double.infinity,
@@ -167,17 +170,83 @@ SizedBox(height: 10),
         ),
       ),
     );
+
+  }
+  
+  
+  void showPaymentOptions(BuildContext context) {
+    showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            Text(
+              "Select Payment Method",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            SizedBox(height: 20),
+
+            ListTile(
+              leading: Icon(Icons.money),
+              title: Text("Cash on Delivery"),
+              onTap: () {
+                Navigator.pop(context);
+                placeOrder(context, "COD");
+              },
+            ),
+
+            ListTile(
+              leading: Icon(Icons.account_balance_wallet),
+              title: Text("UPI / Google Pay"),
+              onTap: () {
+                Navigator.pop(context);
+                placeOrder(context, "UPI");
+              },
+            ),
+
+            ListTile(
+              leading: Icon(Icons.credit_card),
+              title: Text("Card Payment"),
+              onTap: () {
+                Navigator.pop(context);
+                placeOrder(context, "CARD");
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+  
+
+
+void placeOrder(BuildContext context, String method) {
+    var orderBox = Hive.box('orders');
+
+    orderBox.add({
+      "name": product['name'],
+      "price": product['price'],
+      "image": product['image'],
+      "payment": method,
+      "time": DateTime.now().toString(),
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Order placed using $method ")),
+    );
+
+    Navigator.pop(context);
   }
 }
-
-void placeOrder(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Payment Successful")),
-  );
-
-  Navigator.pop(context);
-}
-
 Widget _priceRow(String title, String price) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,7 +264,7 @@ Widget _priceRow(String title, String price) {
 }) {
   return Row(
     children: [
-      GestureDetector(onTap: ()=>Navigator.pop(context),
+      GestureDetector(
         child: CircleAvatar(
           radius: 20,
           backgroundColor: Colors.grey.shade200,

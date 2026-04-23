@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/models/categories_items.dart';
 import 'package:mgcollection_app/screens/favoriteScreen.dart';
+import 'package:mgcollection_app/screens/orderbagscreen.dart';
 import 'package:mgcollection_app/screens/pants.dart';
 import 'package:mgcollection_app/screens/shirt_details_screen.dart';
 import 'package:mgcollection_app/screens/shirts.dart';
@@ -117,12 +118,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       /// CART
                       Stack(
                         children: [
-                          CircleAvatar(
-                            radius: 22,
-                            backgroundColor: Colors.grey.shade200,
-                            child: Icon(
-                              Icons.shopping_bag_outlined,
-                              color: Colors.black,
+                          GestureDetector(onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> Orderbagscreen() ));
+                          },
+                            child: CircleAvatar(
+                              radius: 22,
+                              backgroundColor: Colors.grey.shade200,
+                              child: Icon(
+                                Icons.shopping_bag_outlined,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
 
