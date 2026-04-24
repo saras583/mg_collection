@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/models/categories_items.dart';
+import 'package:mgcollection_app/screens/cart.dart';
 import 'package:mgcollection_app/screens/favoriteScreen.dart';
-import 'package:mgcollection_app/screens/orderbagscreen.dart';
+import 'package:mgcollection_app/screens/jalorescreen.dart';
 import 'package:mgcollection_app/screens/pants.dart';
 import 'package:mgcollection_app/screens/shirt_details_screen.dart';
 import 'package:mgcollection_app/screens/shirts.dart';
@@ -26,6 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Category(name: "Skincare", image: "assets/images/skincare.jpg"),
     Category(name: "Pants", image: "assets/images/next.jpg"),
     Category(name: "Shoes", image: "assets/images/air1.jpg"),
+    Category(name: "jalore", image: "assets/images/jalore.jpg"),
+    
   ];
   List<Map<String, dynamic>> products = [
     {
@@ -119,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Stack(
                         children: [
                           GestureDetector(onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=> Orderbagscreen() ));
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> Cart() ));
                           },
                             child: CircleAvatar(
                               radius: 22,
@@ -334,6 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "Pants": PantsScreen(),
       "Shoes": Shoesscreen(),
       "Skincare": Skincarescreen(),
+      "jalore" : Jalorescreen()
     };
 
     if (routes.containsKey(categoryName)) {

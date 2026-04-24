@@ -1,48 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/screens/shirt_details_screen.dart';
+import 'package:mgcollection_app/screens/joloredetailedscreens.dart';
 
-class ShirtsScreen extends StatefulWidget {
-  const ShirtsScreen({super.key});
+class Jalorescreen extends StatefulWidget {
+  const Jalorescreen({super.key});
 
   @override
-  State<ShirtsScreen> createState() => _ShirtsScreenState();
+  State<Jalorescreen> createState() => _JalorescreenState();
 }
 
-class _ShirtsScreenState extends State<ShirtsScreen> {
-  List<Map<String, dynamic>> shirts = [
+class _JalorescreenState extends State<Jalorescreen> {
+  List<Map<String, dynamic>> jewellery = [
     {
-      "name": "Black Linen Shirt",
-      "price": 899,
-      "image": "assets/images/black_shirt.jpg",
+      "name": " spiderring",
+      "price": 2999,
+      "image": "assets/images/spiderring.jpg",
     },
     {
-      "name": " Casual Shirt",
-      "price": 799,
-      "image": 'assets/images/laventer.jpg',
+      "name": "mountainring",
+      "price": 4999,
+      "image": "assets/images/mountainrings.jpg",
     },
     {
-      "name": "Blue Denim Shirt",
-      "price": 999,
-      "image": "assets/images/checkshirt.jpg",
-    },
-    {
-      "name": "Checked Cotton Shirt",
-      "price": 849,
-      "image": "assets/images/black_shirt.jpg",
-    },
-    {
-      "name": "laveder Shirt",
-      "price": 950,
-      "image": "assets/images/laventer.jpg",
-    },
-    {
-      "name": "Striped Office Shirt",
-      "price": 899,
-      "image": "assets/images/checkshirt.jpg",
+      "name": "ring gravur",
+      "price": 1999,
+      "image": "assets/images/Ring  Gravur.jpg",
     },
   ];
+
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 249, 229, 229),
       body: SafeArea(
@@ -54,7 +40,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Shirts",
+                    "Jolors",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Row(
@@ -70,7 +56,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
             Expanded(
               child: GridView.builder(
                 padding: EdgeInsets.all(12),
-                itemCount: shirts.length,
+                itemCount: jewellery.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
@@ -78,13 +64,13 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  final shirtsList = shirts[index];
+                  final juloreList = jewellery[index];
 
                   return GestureDetector(
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => ShirtDetailsScreen(product: shirtsList),
+                        MaterialPageRoute(builder: (_) => JewelleryDetailsScreen(product: juloreList),
                       ));
                     },
                     child: Container(
@@ -101,7 +87,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                           Expanded(
                             child: Center(
                               child: Image.asset(
-                                shirtsList['image'],
+                                juloreList['image'],
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -109,7 +95,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
 
                           /// BEST SELLER
                           Text(
-                            shirtsList['name'],
+                            juloreList['name'],
                             style: TextStyle(fontSize: 10, color: Colors.blue),
                           ),
 

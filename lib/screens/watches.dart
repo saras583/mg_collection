@@ -28,7 +28,7 @@ class _WatchesScreenState extends State<WatchesScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Best Sellers",
+                    "watches",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Row(

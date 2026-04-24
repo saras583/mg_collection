@@ -34,7 +34,7 @@ class _PantsScreenState extends State<PantsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Best Sellers",
+                    "Pants",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Row(

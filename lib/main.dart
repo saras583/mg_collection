@@ -32,9 +32,17 @@ class MgCollection extends StatelessWidget {
       builder: (context, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-
-          theme: ThemeData.light(),
-          darkTheme: ThemeData.dark(),
+          //lightmode
+          theme: ThemeData(
+            brightness: Brightness.light,
+            scaffoldBackgroundColor: Color(0xFFF5EFEF),
+            cardColor: Colors.white
+          ),
+          //darkmode
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: Color(0xFF1E1E1E)
+          ),
 
           themeMode: controller.themeMode,
 
