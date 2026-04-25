@@ -24,7 +24,7 @@ class _PantsScreenState extends State<PantsScreen> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [

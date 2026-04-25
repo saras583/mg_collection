@@ -10,7 +10,7 @@ class Orderbagscreen extends StatelessWidget {
     var orderBox = Hive.box('orders');
 
     return Scaffold(
-      backgroundColor: Color(0xFFF5EFEF),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
         title: Text("My Orders"),

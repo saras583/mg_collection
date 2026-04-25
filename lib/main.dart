@@ -12,6 +12,7 @@ void main() async {
   await Hive.openBox('userBox');
   await Hive.openBox('authBox');
   await Hive.openBox('orders');
+  await Hive.openBox('settings');
 
   runApp(MgCollection());
 }

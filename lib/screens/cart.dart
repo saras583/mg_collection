@@ -15,7 +15,7 @@ class _CartState extends State<Cart> {
     var box = Hive.box('cart');
 
     return Scaffold( appBar: AppBar( title: Text('MyCart',),),
-      backgroundColor: Color(0xFFF5EFEF),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: ValueListenableBuilder(
           valueListenable: box.listenable(),

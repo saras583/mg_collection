@@ -18,7 +18,7 @@ class _WatchesScreenState extends State<WatchesScreen> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [

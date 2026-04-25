@@ -11,7 +11,8 @@ class Getstartscreen extends StatefulWidget {
 class _GetstartscreenState extends State<Getstartscreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Stack(children: [
+    return Scaffold(backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Stack(children: [
       //backgroundimage
       SizedBox(
         width: double.infinity,

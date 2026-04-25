@@ -44,7 +44,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
   @override
  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 249, 229, 229),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [

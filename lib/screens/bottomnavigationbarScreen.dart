@@ -29,7 +29,7 @@ class _BottomnavigationbarscreenState extends State<Bottomnavigationbarscreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: const Color.fromARGB(255, 189, 185, 195),
+    return Scaffold(backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Screens[currentIndex],
 
       bottomNavigationBar: BottomNavigationBar(backgroundColor: const Color.fromARGB(255, 206, 205, 208),
