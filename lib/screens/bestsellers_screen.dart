@@ -89,7 +89,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     child: Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
 
@@ -138,7 +138,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         ],
                       ),
                     ),
-                    
+
                   );
                 },
               ),
