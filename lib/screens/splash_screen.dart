@@ -19,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     checklogin();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

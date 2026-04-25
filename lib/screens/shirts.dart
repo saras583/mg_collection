@@ -12,6 +12,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
   List<Map<String, dynamic>> shirts = [
     {
       "name": "Black Linen Shirt",
+      
       "price": 899,
       "image": "assets/images/black_shirt.jpg",
     },
@@ -146,7 +147,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
           ],
         ),
       ),
-      
+
     );
   }
 }

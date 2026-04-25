@@ -166,4 +166,5 @@ class WatchesDetailsScreen extends StatelessWidget {
       ),
     );
   }
+  
 }

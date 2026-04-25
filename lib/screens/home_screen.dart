@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               backgroundColor: Colors.grey.shade200,
                               child: Icon(
                                 Icons.shopping_bag_outlined,
-                                color: Colors.black,
+                                color: Theme.of(context).iconTheme.color,
                               ),
                             ),
                           ),

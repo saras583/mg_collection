@@ -9,13 +9,14 @@ class FavoriteScreen extends StatelessWidget {
     return Scaffold(backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text("Favorites"),
+        
         leading: IconButton(
           onPressed: () {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => HomeScreen()),
             );
-            
+
           },
           icon: Icon(Icons.backspace_rounded),
         ),

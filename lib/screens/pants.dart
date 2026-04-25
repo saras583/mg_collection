@@ -12,6 +12,7 @@ class _PantsScreenState extends State<PantsScreen> {
   List<Map<String, dynamic>> pants = [
     {
       "name": "Slim Fit Jeans",
+      
       "price": 1299,
       "image": "assets/images/grey trouser.jpg",
     },

@@ -171,4 +171,5 @@ class SkincareDetailsScreen extends StatelessWidget {
       ),
     );
   }
+  
 }

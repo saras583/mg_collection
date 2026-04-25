@@ -15,6 +15,7 @@ class PantsDetailsScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
+            
 
             /// IMAGE + BACK BUTTON
             Stack(

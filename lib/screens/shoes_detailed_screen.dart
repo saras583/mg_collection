@@ -194,5 +194,7 @@ class ShoesDetailsScreen extends StatelessWidget {
         builder: (_) => Checkoutpage(product: product),
       ),
     );
+
+    
   }
 }

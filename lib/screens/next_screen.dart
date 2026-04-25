@@ -36,6 +36,7 @@ class _GetstartscreenState extends State<NextScreen> {
                    Row(
                   children: [
                     Container(
+                      
                       width: 20,
                       height: 4,
                       decoration: BoxDecoration(

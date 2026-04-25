@@ -17,7 +17,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void registerUser() {
     String name = nameController.text.trim();
-    String email = emailController.text.trim();
+    String email = emailController
+    .text.trim();
     String password = passwordController.text.trim();
 
     var userBox = Hive.box('userBox');

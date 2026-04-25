@@ -279,8 +279,9 @@ Widget _priceRow(String title, String price) {
           Text(subtitle, style: TextStyle(color: Colors.grey)),
         ],
 
-        
+
   )],
   );
+  
   
 }

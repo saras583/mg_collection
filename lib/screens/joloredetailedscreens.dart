@@ -11,6 +11,7 @@ class JewelleryDetailsScreen extends StatefulWidget {
   State<JewelleryDetailsScreen> createState() => _JewelleryDetailsScreenState();
 }
 
+
 class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
 
   int quantity = 1;

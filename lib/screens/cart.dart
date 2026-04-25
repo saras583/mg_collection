@@ -28,6 +28,7 @@ class _CartState extends State<Cart> {
               itemBuilder: (BuildContext context, int index) {
                 final items = box.getAt(index);
                 if (items == null) return SizedBox();
+        
                 return ListTile(
                   leading: Image(image: AssetImage(items['image']??'assets/images/placeholder.png')),
                   title: Text(items['name']),
