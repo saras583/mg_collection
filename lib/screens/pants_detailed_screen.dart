@@ -195,6 +195,7 @@ class PantsDetailsScreen extends StatelessWidget {
     );
   }
 
+
   /// BUY NOW FUNCTION
   void buyNow(BuildContext context) {
     Navigator.push(

@@ -88,7 +88,7 @@ class _GetstartscreenState extends State<NextScreen> {
                     child:  Text(
                       "Get Started",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

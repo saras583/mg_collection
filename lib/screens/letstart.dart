@@ -25,7 +25,7 @@ class Letstart extends StatelessWidget {
          Text('Let  Start',style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),)
                   ,SizedBox(height: 100,),
                    Row(
@@ -83,7 +83,7 @@ class Letstart extends StatelessWidget {
                     child:  Text(
                       "Get Started",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

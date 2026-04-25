@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         "Store location",
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                        style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
                       ),
                       Row(
                         children: [

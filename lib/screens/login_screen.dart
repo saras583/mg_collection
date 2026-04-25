@@ -170,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       "Sign In",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

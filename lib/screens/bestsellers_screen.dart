@@ -109,7 +109,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           /// BEST SELLER
                           Text(
                             product["name"],
-                            style: TextStyle(fontSize: 10, color: Colors.blue),
+                            style: TextStyle(fontSize: 10, color: Theme.of(context).textTheme.bodyMedium?.color),
                           ),
 
                           SizedBox(height: 4),
@@ -121,7 +121,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
                           Text(
                             "\$${product["price"]}",
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                            style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
                           ),
 
                           SizedBox(height: 6),

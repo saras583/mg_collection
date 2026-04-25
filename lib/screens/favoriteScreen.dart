@@ -15,6 +15,7 @@ class FavoriteScreen extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (_) => HomeScreen()),
             );
+            
           },
           icon: Icon(Icons.backspace_rounded),
         ),

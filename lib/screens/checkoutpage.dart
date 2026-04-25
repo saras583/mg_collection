@@ -278,6 +278,8 @@ Widget _priceRow(String title, String price) {
           Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
           Text(subtitle, style: TextStyle(color: Colors.grey)),
         ],
+
+        
   )],
   );
   

@@ -128,7 +128,7 @@ class SkincareDetailsScreen extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   "Buy Now",
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                 ),
                               ),
                             ),
