@@ -46,7 +46,7 @@ class ShirtDetailsScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color:  Theme.of(context).cardColor,
                   borderRadius:
                       BorderRadius.vertical(top: Radius.circular(30)),
                 ),
@@ -100,7 +100,7 @@ class ShirtDetailsScreen extends StatelessWidget {
                     Divider(),
                     SizedBox(height: 10),
 
-                    /// 🔥 BUTTONS
+                    ///  BUTTONS
                     Row(
                       children: [
 

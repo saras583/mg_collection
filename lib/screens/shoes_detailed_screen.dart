@@ -45,7 +45,7 @@ class ShoesDetailsScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color:  Theme.of(context).cardColor,
                   borderRadius:
                       BorderRadius.vertical(top: Radius.circular(30)),
                 ),
@@ -99,7 +99,7 @@ class ShoesDetailsScreen extends StatelessWidget {
                     Divider(),
                     SizedBox(height: 10),
 
-                    /// 🔥 BUTTONS (ADD + BUY)
+                    ///  BUTTONS (ADD + BUY)
                     Row(
                       children: [
 

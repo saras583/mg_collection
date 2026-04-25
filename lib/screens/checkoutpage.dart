@@ -41,7 +41,7 @@ class Checkoutpage extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color:  Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -82,7 +82,7 @@ class Checkoutpage extends StatelessWidget {
   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
   padding: EdgeInsets.all(16),
   decoration: BoxDecoration(
-    color: Colors.white,
+    color:  Theme.of(context).cardColor,
     borderRadius: BorderRadius.circular(20),
   ),
 
@@ -156,7 +156,7 @@ SizedBox(height: 10),
             child: Text(
               "Payment",
               style: TextStyle(
-                color: Colors.white,
+                color:  Theme.of(context).cardColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -40,7 +40,7 @@ class Orderbagscreen extends StatelessWidget {
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color:  Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(15),
                 ),
 

@@ -24,7 +24,7 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
         child: Column(
           children: [
 
-            /// 🔝 IMAGE + BACK
+            ///  IMAGE + BACK
             Stack(
               children: [
                 Image.asset(
@@ -119,7 +119,7 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey.shade200,
+                            color:  Theme.of(context).cardColor,
                           ),
                           child: Row(
                             children: [

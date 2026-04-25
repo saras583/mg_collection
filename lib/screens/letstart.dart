@@ -43,7 +43,7 @@ class Letstart extends StatelessWidget {
                       width: 8,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color:  Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -52,7 +52,7 @@ class Letstart extends StatelessWidget {
                       width: 8,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color:  Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),

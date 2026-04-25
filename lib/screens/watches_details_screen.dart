@@ -45,7 +45,7 @@ class WatchesDetailsScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color:  Theme.of(context).cardColor,
                   borderRadius:
                       BorderRadius.vertical(top: Radius.circular(30)),
                 ),
