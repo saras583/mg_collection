@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/screens/bestsellers_screen.dart';
 import 'package:mgcollection_app/screens/home_screen.dart';
-import 'package:mgcollection_app/screens/cart.dart';
 import 'package:mgcollection_app/screens/orderbagscreen.dart';
 import 'package:mgcollection_app/screens/profile_screen.dart';
 import 'package:mgcollection_app/screens/theme_controller.dart';
