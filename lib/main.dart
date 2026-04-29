@@ -8,6 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
+  await Hive.openBox('favorites');
   await Hive.openBox('cart');
   await Hive.openBox('userBox');
   await Hive.openBox('authBox');

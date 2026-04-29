@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (_) => FavoriteScreen()),
+                            MaterialPageRoute(builder: (_) => FavoritesScreen()),
                           );
                         },
                         child: CircleAvatar(

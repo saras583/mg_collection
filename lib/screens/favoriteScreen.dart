@@ -1,27 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/screens/home_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-class FavoriteScreen extends StatelessWidget {
-  const FavoriteScreen({super.key});
+class FavoritesScreen extends StatelessWidget {
+  const FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text("Favorites"),
-        
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => HomeScreen()),
-            );
+    var favBox = Hive.box('favorites');
 
-          },
-          icon: Icon(Icons.backspace_rounded),
-        ),
+    return Scaffold(
+      appBar: AppBar(title: Text("Favorites")),
+      body: ValueListenableBuilder(
+        valueListenable: favBox.listenable(),
+        builder: (context, Box box, _) {
+          if (box.isEmpty) {
+            return Center(
+              child: Text("No favorites yet"),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: box.length,
+            itemBuilder: (context, index) {
+              final item = box.getAt(index);
+
+              return ListTile(
+                leading: Image.asset(item['image']),
+                title: Text(item['name']),
+                subtitle: Text("₹${item['price']}"),
+                trailing: IconButton(
+                  onPressed: () {
+                    box.deleteAt(index);
+                  },
+                  icon: Icon(Icons.favorite, color: Colors.red),
+                ),
+              );
+            },
+          );
+        },
       ),
-      body: Column(children: []),
     );
   }
 }

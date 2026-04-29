@@ -16,7 +16,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
-    if (email == "callmesaras@gmail.com" && password == "saras123") {
+    if (email == "saras" && password == "123") {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

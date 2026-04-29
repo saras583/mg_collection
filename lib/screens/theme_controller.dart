@@ -8,16 +8,16 @@ class ThemeController extends ChangeNotifier {
   }
 
   void toggleTheme(bool isDark) {
-    themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
-     Hive.box('settings').put('isDark', isDark);
+   // themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+     //Hive.box('settings').put('isDark', isDark);
       notifyListeners();
   }
 
   void loadtheme() {
-    final box = Hive.box('settings');
-    bool isDark = box.get('isDark', defaultValue: false);
+   // final box = Hive.box('settings');
+   // bool isDark = box.get('isDark', defaultValue: false);
 
-    themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+    //themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
   }
   
 }

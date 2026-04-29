@@ -26,7 +26,9 @@ class _CartState extends State<Cart> {
             return ListView.builder(
               itemCount: box.length,
               itemBuilder: (BuildContext context, int index) {
-                final items = box.getAt(index);
+                final reversedIndex = box.length - 1 - index;
+
+                final items = box.getAt(reversedIndex);
                 if (items == null) return SizedBox();
         
                 return ListTile(
@@ -35,7 +37,7 @@ class _CartState extends State<Cart> {
                   subtitle: Text("₹${items['price']}"),
                   trailing: IconButton(
                     onPressed: () {
-                      box.deleteAt(index);
+                      box.deleteAt(reversedIndex);
                     },
                     icon: Icon(Icons.delete),
                   ),

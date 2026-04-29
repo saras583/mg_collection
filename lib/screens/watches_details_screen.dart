@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mgcollection_app/screens/checkoutpage.dart';
 
-class WatchesDetailsScreen extends StatelessWidget {
+class WatchesDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> product;
 
   const WatchesDetailsScreen({super.key, required this.product});
+
+  @override
+  State<WatchesDetailsScreen> createState() => _WatchesDetailsScreenState();
+}
+
+class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +25,9 @@ class WatchesDetailsScreen extends StatelessWidget {
             /// IMAGE + BACK BUTTON
             Stack(
               children: [
+                
                 Image.asset(
-                  product['image'],
+                  widget.product['image'],
                   height: 300,
                   width: double.infinity,
                   fit: BoxFit.contain,
@@ -37,6 +44,27 @@ class WatchesDetailsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                Positioned(
+  top: 20,
+  right: 10,
+  child: GestureDetector(
+    onTap: () {
+      var favBox = Hive.box('favorites');
+      favBox.add(widget.product);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Added to Favorites")),
+      );
+    },
+    child: CircleAvatar(
+      backgroundColor: Colors.white,
+      child: Icon(
+        Icons.favorite_border,
+        color: Colors.red,
+      ),
+    ),
+  ),
+),
               ],
             ),
 
@@ -56,7 +84,7 @@ class WatchesDetailsScreen extends StatelessWidget {
 
                     /// NAME
                     Text(
-                      product['name'],
+                      widget.product['name'],
                       style: TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -65,7 +93,7 @@ class WatchesDetailsScreen extends StatelessWidget {
 
                     /// PRICE
                     Text(
-                      "₹${product['price']}",
+                      "₹${widget.product['price']}",
                       style: TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -146,9 +174,9 @@ class WatchesDetailsScreen extends StatelessWidget {
     var box = Hive.box('cart');
 
     box.add({
-      "name": product['name'],
-      "price": product['price'],
-      "image": product['image'],
+      "name": widget.product['name'],
+      "price": widget.product['price'],
+      "image": widget.product['image'],
       "quantity": 1,
     });
 
@@ -162,9 +190,8 @@ class WatchesDetailsScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => Checkoutpage(product: product),
+        builder: (_) => Checkoutpage(product: widget.product),
       ),
     );
   }
-  
 }

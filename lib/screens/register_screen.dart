@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:mgcollection_app/screens/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -9,8 +10,12 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+
   final nameController = TextEditingController();
+  
   final emailController = TextEditingController();
+
+
   final passwordController = TextEditingController();
 
   bool obscurePassword = true;
@@ -48,8 +53,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     userBox.put('users', users);
 
     showMsg("Account created successfully");
+    userBox.put('isLoggedIn', true);
+userBox.put('currentUser', email);
 
-    Navigator.pop(context); // back to login
+Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (_) => HomeScreen(),
+  ),
+);
+
+
+    
   }
 
   void showMsg(String msg) {
