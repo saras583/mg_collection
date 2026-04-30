@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mgcollection_app/screens/checkoutpage.dart';
 
-class ShirtDetailsScreen extends StatelessWidget {
+class ShirtDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> product;
 
   const ShirtDetailsScreen({super.key, required this.product});
 
+  @override
+  State<ShirtDetailsScreen> createState() => _ShirtDetailsScreenState();
+}
+
+class _ShirtDetailsScreenState extends State<ShirtDetailsScreen> {
+  int quantity = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,12 +22,11 @@ class ShirtDetailsScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
               /// IMAGE + BACK BUTTON
               Stack(
                 children: [
                   Image.asset(
-                    product['image'],
+                    widget.product['image'],
                     height: 300,
                     width: double.infinity,
                     fit: BoxFit.contain,
@@ -46,18 +51,16 @@ class ShirtDetailsScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color:  Theme.of(context).cardColor,
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30)),
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                 ),
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     /// NAME
                     Text(
-                      product['name'],
+                      widget.product['name'],
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -68,7 +71,7 @@ class ShirtDetailsScreen extends StatelessWidget {
 
                     /// PRICE
                     Text(
-                      "₹${product['price']}",
+                      "₹${widget.product['price']}",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -76,6 +79,71 @@ class ShirtDetailsScreen extends StatelessWidget {
                     ),
 
                     SizedBox(height: 10),
+                    Row(
+  children: [
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star_half, color: Colors.amber),
+    SizedBox(width: 8),
+    Text("4.5"),
+  ],
+),SizedBox(height: 20),
+
+Text(
+  "Quantity",
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+  ),
+),
+
+Row(
+  children: [
+    IconButton(
+      onPressed: () {
+        if (quantity > 1) {
+          setState(() => quantity--);
+        }
+      },
+      icon: Icon(Icons.remove_circle_outline),
+    ),Text(
+  "Reviews",
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+  ),
+),
+
+SizedBox(height: 10),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Akhil"),
+  subtitle: Text("Very good product!"),
+),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Sarah"),
+  subtitle: Text("Skin feels fresh after use."),
+),
+
+    Text(
+      quantity.toString(),
+      style: TextStyle(fontSize: 18),
+    ),
+
+    IconButton(
+      onPressed: () {
+        setState(() => quantity++);
+      },
+      icon: Icon(Icons.add_circle_outline),
+    ),
+  ],
+),
 
                     /// DESCRIPTION
                     Text(
@@ -103,7 +171,6 @@ class ShirtDetailsScreen extends StatelessWidget {
                     ///  BUTTONS
                     Row(
                       children: [
-
                         /// ADD TO CART
                         Expanded(
                           child: GestureDetector(
@@ -119,9 +186,7 @@ class ShirtDetailsScreen extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   "Add to Cart",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ),
@@ -186,25 +251,22 @@ class ShirtDetailsScreen extends StatelessWidget {
     var box = Hive.box('cart');
 
     box.add({
-      "name": product['name'],
-      "price": product['price'],
-      "image": product['image'],
-      "quantity": 1,
+      "name": widget.product['name'],
+      "price": widget.product['price'],
+      "image": widget.product['image'],
+      "quantity": quantity,
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Added to cart")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Added to cart")));
   }
 
   /// BUY NOW
   void buyNow(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => Checkoutpage(product: product),
-      ),
+      MaterialPageRoute(builder: (_) => Checkoutpage(product: widget.product)),
     );
   }
-
 }

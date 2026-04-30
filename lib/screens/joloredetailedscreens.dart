@@ -7,13 +7,12 @@ class JewelleryDetailsScreen extends StatefulWidget {
 
   const JewelleryDetailsScreen({super.key, required this.product});
 
+
   @override
   State<JewelleryDetailsScreen> createState() => _JewelleryDetailsScreenState();
 }
 
-
 class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
-
   int quantity = 1;
 
   @override
@@ -24,7 +23,6 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-
             ///  IMAGE + BACK
             Stack(
               children: [
@@ -55,14 +53,12 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                 ),
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     /// NAME
                     Text(
                       widget.product['name'],
@@ -112,19 +108,20 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
                     ///  QUANTITY SELECTOR
                     Row(
                       children: [
-                        Text("Quantity:",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          "Quantity:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
 
                         SizedBox(width: 15),
 
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color:  Theme.of(context).cardColor,
+                            color: Theme.of(context).cardColor,
                           ),
                           child: Row(
                             children: [
-
                               /// MINUS
                               IconButton(
                                 icon: Icon(Icons.remove),
@@ -159,7 +156,6 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
                     ///  BUTTONS
                     Row(
                       children: [
-
                         /// ADD TO CART
                         Expanded(
                           child: GestureDetector(
@@ -172,9 +168,7 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
                                 color: Colors.grey.shade300,
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: Center(
-                                child: Text("Add to Cart"),
-                              ),
+                              child: Center(child: Text("Add to Cart")),
                             ),
                           ),
                         ),
@@ -188,9 +182,8 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => Checkoutpage(
-                                    product: widget.product,
-                                  ),
+                                  builder: (_) =>
+                                      Checkoutpage(product: widget.product),
                                 ),
                               );
                             },
@@ -203,7 +196,11 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
                               child: Center(
                                 child: Text(
                                   "Buy Now",
-                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.color,
+                                  ),
                                 ),
                               ),
                             ),
@@ -232,8 +229,8 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
       "quantity": quantity,
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Added $quantity item(s) to cart")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Added $quantity item(s) to cart")));
   }
 }

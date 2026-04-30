@@ -10,7 +10,6 @@ class Checkoutpage extends StatelessWidget {
 
   const Checkoutpage({super.key,required this.product});
   
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +63,7 @@ class Checkoutpage extends StatelessWidget {
                   ),
                   SizedBox(height: 10,),
                   Widget_infowRow(icon: Icons.phone_outlined,
-  title: "+88-692-764-269",
+                  title: "+88-692-764-269",
   subtitle: "Phone",),
   SizedBox(height: 10,),
   Widget_infowRow(icon: Icons.email_outlined,

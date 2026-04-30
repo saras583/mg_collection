@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mgcollection_app/screens/checkoutpage.dart';
 
-class SkincareDetailsScreen extends StatelessWidget {
+class SkincareDetailsScreen extends StatefulWidget {
   
   final Map<String, dynamic> product;
 
   const SkincareDetailsScreen({super.key, required this.product});
+
+  @override
+  State<SkincareDetailsScreen> createState() => _SkincareDetailsScreenState();
+}
+
+class _SkincareDetailsScreenState extends State<SkincareDetailsScreen> {
+ int quantity = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +28,7 @@ class SkincareDetailsScreen extends StatelessWidget {
             Stack(
               children: [
                 Image.asset(
-                  product['image'],
+                  widget.product['image'],
                   height: 300,
                   width: double.infinity,
                   fit: BoxFit.contain,
@@ -57,7 +64,7 @@ class SkincareDetailsScreen extends StatelessWidget {
 
                     /// NAME
                     Text(
-                      product['name'],
+                      widget.product['name'],
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -68,7 +75,7 @@ class SkincareDetailsScreen extends StatelessWidget {
 
                     /// PRICE
                     Text(
-                      "₹${product['price']}",
+                      "₹${widget.product['price']}",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -76,6 +83,71 @@ class SkincareDetailsScreen extends StatelessWidget {
                     ),
 
                     SizedBox(height: 10),
+                    Row(
+  children: [
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star_half, color: Colors.amber),
+    SizedBox(width: 8),
+    Text("4.5"),
+  ],
+),SizedBox(height: 20),
+
+Text(
+  "Quantity",
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+  ),
+),
+
+Row(
+  children: [
+    IconButton(
+      onPressed: () {
+        if (quantity > 1) {
+          setState(() => quantity--);
+        }
+      },
+      icon: Icon(Icons.remove_circle_outline),
+    ),
+
+    Text(
+      quantity.toString(),
+      style: TextStyle(fontSize: 18),
+    ),
+
+    IconButton(
+      onPressed: () {
+        setState(() => quantity++);
+      },
+      icon: Icon(Icons.add_circle_outline),
+    ),
+  ],
+),Text(
+  "Reviews",
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+  ),
+),
+
+SizedBox(height: 10),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Akhil"),
+  subtitle: Text("Very good product!"),
+),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Sarah"),
+  subtitle: Text("Skin feels fresh after use."),
+),
 
                     /// DESCRIPTION
                     Text(
@@ -151,10 +223,10 @@ class SkincareDetailsScreen extends StatelessWidget {
     var box = Hive.box('cart');
 
     box.add({
-      "name": product['name'],
-      "price": product['price'],
-      "image": product['image'],
-      "quantity": 1,
+      "name": widget.product['name'],
+      "price": widget.product['price'],
+      "image": widget.product['image'],
+      "quantity": quantity,
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -167,9 +239,8 @@ class SkincareDetailsScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => Checkoutpage(product: product),
+        builder: (_) => Checkoutpage(product: widget.product),
       ),
     );
   }
-  
 }

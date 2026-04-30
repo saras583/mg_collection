@@ -7,6 +7,7 @@ class ShoesDetailsScreen extends StatelessWidget {
 
   const ShoesDetailsScreen({super.key, required this.product});
 
+  final quantity = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +16,6 @@ class ShoesDetailsScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-
             /// IMAGE + BACK BUTTON
             Stack(
               children: [
@@ -45,15 +45,13 @@ class ShoesDetailsScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color:  Theme.of(context).cardColor,
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30)),
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                 ),
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     /// NAME
                     Text(
                       product['name'],
@@ -98,11 +96,43 @@ class ShoesDetailsScreen extends StatelessWidget {
 
                     Divider(),
                     SizedBox(height: 10),
+                    Row(
+  children: [
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star_half, color: Colors.amber),
+    SizedBox(width: 8),
+    Text("4.5"),
+  ],
+),Text(
+  "Reviews",
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+  ),
+),
+
+SizedBox(height: 10),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Akhil"),
+  subtitle: Text("Very good product!"),
+),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Sarah"),
+  subtitle: Text("Skin feels fresh after use."),
+),
 
                     ///  BUTTONS (ADD + BUY)
                     Row(
                       children: [
-
                         /// ADD TO CART
                         Expanded(
                           child: GestureDetector(
@@ -115,9 +145,7 @@ class ShoesDetailsScreen extends StatelessWidget {
                                 color: Colors.grey.shade300,
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: Center(
-                                child: Text("Add to Cart"),
-                              ),
+                              child: Center(child: Text("Add to Cart")),
                             ),
                           ),
                         ),
@@ -181,20 +209,16 @@ class ShoesDetailsScreen extends StatelessWidget {
       "quantity": 1,
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Added to cart")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Added to cart")));
   }
 
   /// BUY NOW
   void buyNow(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => Checkoutpage(product: product),
-      ),
+      MaterialPageRoute(builder: (_) => Checkoutpage(product: product)),
     );
-
-    
   }
 }

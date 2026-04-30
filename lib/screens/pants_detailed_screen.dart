@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mgcollection_app/screens/checkoutpage.dart';
 
-class PantsDetailsScreen extends StatelessWidget {
+class PantsDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> product;
 
   const PantsDetailsScreen({super.key, required this.product});
+
+  @override
+  State<PantsDetailsScreen> createState() => _PantsDetailsScreenState();
+}
+
+class _PantsDetailsScreenState extends State<PantsDetailsScreen> {
+  final quantity = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +28,7 @@ class PantsDetailsScreen extends StatelessWidget {
             Stack(
               children: [
                 Image.asset(
-                  product['image'],
+                  widget.product['image'],
                   height: 300,
                   width: double.infinity,
                   fit: BoxFit.contain,
@@ -58,7 +65,7 @@ class PantsDetailsScreen extends StatelessWidget {
 
                     /// PRODUCT NAME
                     Text(
-                      product['name'],
+                      widget.product['name'],
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -69,7 +76,7 @@ class PantsDetailsScreen extends StatelessWidget {
 
                     /// PRICE
                     Text(
-                      "₹${product['price']}",
+                      "₹${widget.product['price']}",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -94,7 +101,48 @@ class PantsDetailsScreen extends StatelessWidget {
                         _sizeBox("L"),
                         _sizeBox("XL"),
                       ],
-                    ),
+                    ),Row(
+  children: [
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star_half, color: Colors.amber),
+    SizedBox(width: 8),
+    Text("4.5"),
+  ],
+),SizedBox(height: 20),
+
+Text(
+  "Quantity",
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+  ),
+),
+
+Text(
+  "Reviews",
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+  ),
+),
+
+SizedBox(height: 10),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Akhil"),
+  subtitle: Text("Very good product!"),
+),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Sarah"),
+  subtitle: Text("Skin feels fresh after use."),
+),
 
                     Spacer(),
 
@@ -185,10 +233,10 @@ class PantsDetailsScreen extends StatelessWidget {
     var box = Hive.box('cart');
 
     box.add({
-      "name": product['name'],
-      "price": product['price'],
-      "image": product['image'],
-      "quantity": 1,
+      "name": widget.product['name'],
+      "price": widget.product['price'],
+      "image": widget.product['image'],
+      "quantity": quantity,
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -196,13 +244,12 @@ class PantsDetailsScreen extends StatelessWidget {
     );
   }
 
-
   /// BUY NOW FUNCTION
   void buyNow(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => Checkoutpage(product: product),
+        builder: (_) => Checkoutpage(product: widget.product),
       ),
     );
   }
