@@ -9,6 +9,8 @@ class ShirtsScreen extends StatefulWidget {
 }
 
 class _ShirtsScreenState extends State<ShirtsScreen> {
+  String selectedFilter = 'Default';
+
   List<Map<String, dynamic>> shirts = [
     {
       "name": "Black Linen Shirt",
@@ -60,7 +62,36 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.tune),
+                      PopupMenuButton<String>(
+  icon: Icon(Icons.tune),
+  onSelected: (value) {
+    setState(() {
+      selectedFilter = value;
+
+      if (value == 'Low to High') {
+        shirts.sort((a, b) => a['price'].compareTo(b['price']));
+      } else if (value == 'High to Low') {
+        shirts.sort((a, b) => b['price'].compareTo(a['price']));
+      } else if (value == 'A-Z') {
+        shirts.sort((a, b) => a['name'].compareTo(b['name']));
+      }
+    });
+  },
+  itemBuilder: (context) => [
+    PopupMenuItem(
+      value: 'Low to High',
+      child: Text('Price: Low to High'),
+    ),
+    PopupMenuItem(
+      value: 'High to Low',
+      child: Text('Price: High to Low'),
+    ),
+    PopupMenuItem(
+      value: 'A-Z',
+      child: Text('Name: A-Z'),
+    ),
+  ],
+),
                       SizedBox(width: 10),
                       Icon(Icons.search),
                     ],
@@ -83,7 +114,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
 
                   return GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => ShirtDetailsScreen(product: shirtsList),
                       ));
@@ -132,9 +163,9 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "\$367.76",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
+  "₹${shirtsList['price']}",
+  style: TextStyle(fontWeight: FontWeight.bold),
+)
                             ],
                           ),
                         ],

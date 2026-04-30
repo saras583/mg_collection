@@ -9,6 +9,8 @@ class WatchesScreen extends StatefulWidget {
 }
 
 class _WatchesScreenState extends State<WatchesScreen> {
+  String selectedFilter = 'Default';
+
   List<Map<String, dynamic>> watches = [
     {
       "name": "Rolex Submariner",
@@ -33,7 +35,36 @@ class _WatchesScreenState extends State<WatchesScreen> {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.tune),
+                      PopupMenuButton<String>(
+  icon: Icon(Icons.tune),
+  onSelected: (value) {
+    setState(() {
+      selectedFilter = value;
+
+      if (value == 'Low to High') {
+        watches.sort((a, b) => a['price'].compareTo(b['price']));
+      } else if (value == 'High to Low') {
+        watches.sort((a, b) => b['price'].compareTo(a['price']));
+      } else if (value == 'A-Z') {
+        watches.sort((a, b) => a['name'].compareTo(b['name']));
+      }
+    });
+  },
+  itemBuilder: (context) => [
+    PopupMenuItem(
+      value: 'Low to High',
+      child: Text('Price: Low to High'),
+    ),
+    PopupMenuItem(
+      value: 'High to Low',
+      child: Text('Price: High to Low'),
+    ),
+    PopupMenuItem(
+      value: 'A-Z',
+      child: Text('Name: A-Z'),
+    ),
+  ],
+),
                       SizedBox(width: 10),
                       Icon(Icons.search),
                     ],

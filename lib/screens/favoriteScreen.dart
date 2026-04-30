@@ -9,14 +9,20 @@ class FavoritesScreen extends StatelessWidget {
     var favBox = Hive.box('favorites');
 
     return Scaffold(
-      appBar: AppBar(title: Text("Favorites")),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text("Favorites"),
+      ),
       body: ValueListenableBuilder(
         valueListenable: favBox.listenable(),
         builder: (context, Box box, _) {
           if (box.isEmpty) {
-            return Center(
-              child: Text("No favorites yet"),
-            );
+            return Center(child: Text("No favorites yet"));
           }
 
           return ListView.builder(
@@ -25,7 +31,7 @@ class FavoritesScreen extends StatelessWidget {
               final item = box.getAt(index);
 
               return ListTile(
-                leading: Image.asset(item['image']),
+                leading: Image.asset(item['image'], width: 50, height: 50),
                 title: Text(item['name']),
                 subtitle: Text("₹${item['price']}"),
                 trailing: IconButton(

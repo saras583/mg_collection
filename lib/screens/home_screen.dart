@@ -10,7 +10,6 @@ import 'package:mgcollection_app/screens/shoesScreen.dart';
 import 'package:mgcollection_app/screens/skincareScreen.dart';
 import 'package:mgcollection_app/screens/watches.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -28,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
     Category(name: "Pants", image: "assets/images/next.jpg"),
     Category(name: "Shoes", image: "assets/images/air1.jpg"),
     Category(name: "jalore", image: "assets/images/jalore.jpg"),
-    
   ];
   List<Map<String, dynamic>> products = [
     {
@@ -81,7 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         "Store location",
-                        style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                        ),
                       ),
                       Row(
                         children: [
@@ -102,9 +103,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushReplacement(
+                          Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => FavoritesScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => FavoritesScreen(),
+                            ),
                           );
                         },
                         child: CircleAvatar(
@@ -121,9 +124,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       /// CART
                       Stack(
                         children: [
-                          GestureDetector(onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=> Cart() ));
-                          },
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => Cart()),
+                              );
+                            },
                             child: CircleAvatar(
                               radius: 22,
                               backgroundColor: Colors.grey.shade200,
@@ -236,8 +243,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => ShirtDetailsScreen(product: product),
-                      ));
+                        MaterialPageRoute(
+                          builder: (_) => ShirtDetailsScreen(product: product),
+                        ),
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -283,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color:  Theme.of(context).cardColor,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20),
               ),
 
@@ -337,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "Pants": PantsScreen(),
       "Shoes": Shoesscreen(),
       "Skincare": Skincarescreen(),
-      "jalore" : Jalorescreen()
+      "jalore": Jalorescreen(),
     };
 
     if (routes.containsKey(categoryName)) {

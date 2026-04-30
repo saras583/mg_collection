@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Checkoutpage extends StatelessWidget {
+
+  
   final Map<String, dynamic> product;
+  
 
 
   const Checkoutpage({super.key,required this.product});
+  
 
   @override
   Widget build(BuildContext context) {
