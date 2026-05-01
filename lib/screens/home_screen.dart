@@ -7,8 +7,10 @@ import 'package:mgcollection_app/screens/pants.dart';
 import 'package:mgcollection_app/screens/shirt_details_screen.dart';
 import 'package:mgcollection_app/screens/shirts.dart';
 import 'package:mgcollection_app/screens/shoesScreen.dart';
+import 'package:mgcollection_app/screens/shoes_detailed_screen.dart';
 import 'package:mgcollection_app/screens/skincareScreen.dart';
 import 'package:mgcollection_app/screens/watches.dart';
+import 'package:mgcollection_app/screens/watches_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Category(name: "Shoes", image: "assets/images/air1.jpg"),
     Category(name: "jalore", image: "assets/images/jalore.jpg"),
   ];
-  List<Map<String, dynamic>> products = [
+  List<Map<String,dynamic>> products = [
     {
       "name": "wathes",
       "category": "Men’s Shoes",
@@ -241,12 +243,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   final product = products[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ShirtDetailsScreen(product: product),
-                        ),
-                      );
+                      if (product['name'] == 'wathes') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                WatchesDetailsScreen(product: product),
+                          ),
+                        );
+                      } else if (product['name'] == 'Nike Jordan') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ShoesDetailsScreen(product: product),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ShirtDetailsScreen(product: product),
+                          ),
+                        );
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -288,49 +309,62 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  /// LEFT TEXT PART
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "BEST CHOICE",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-
-                      SizedBox(height: 5),
-
-                      Text(
-                        "Nike Air Jordan",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      SizedBox(height: 5),
-
-                      Text("\$849.69", style: TextStyle(fontSize: 16)),
-                    ],
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ShoesDetailsScreen(product: products[2]),
                   ),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
 
-                  /// RIGHT IMAGE
-                  Image.asset("assets/images/air1.jpg", height: 70),
-                ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    /// LEFT TEXT PART
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          "BEST CHOICE",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+
+                        SizedBox(height: 5),
+
+                        Text(
+                          "Nike Air Jordan",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        SizedBox(height: 5),
+
+                        Text("\$849.69", style: TextStyle(fontSize: 16)),
+                      ],
+                    ),
+
+                    /// RIGHT IMAGE
+                    Image.asset("assets/images/air1.jpg", height: 70),
+                  ],
+                ),
               ),
             ),
           ],

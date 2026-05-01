@@ -12,7 +12,7 @@ class WatchesDetailsScreen extends StatefulWidget {
 }
 
 class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
-
+  final quantity = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,11 +21,9 @@ class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-
             /// IMAGE + BACK BUTTON
             Stack(
               children: [
-                
                 Image.asset(
                   widget.product['image'],
                   height: 300,
@@ -45,26 +43,23 @@ class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
                   ),
                 ),
                 Positioned(
-  top: 20,
-  right: 10,
-  child: GestureDetector(
-    onTap: () {
-      var favBox = Hive.box('favorites');
-      favBox.add(widget.product);
+                  top: 20,
+                  right: 10,
+                  child: GestureDetector(
+                    onTap: () {
+                      var favBox = Hive.box('favorites');
+                      favBox.add(widget.product);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Added to Favorites")),
-      );
-    },
-    child: CircleAvatar(
-      backgroundColor: Colors.white,
-      child: Icon(
-        Icons.favorite_border,
-        color: Colors.red,
-      ),
-    ),
-  ),
-),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Added to Favorites")),
+                      );
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.favorite_border, color: Colors.red),
+                    ),
+                  ),
+                ),
               ],
             ),
 
@@ -73,20 +68,20 @@ class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
               child: Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color:  Theme.of(context).cardColor,
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30)),
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                 ),
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     /// NAME
                     Text(
                       widget.product['name'],
                       style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
 
                     SizedBox(height: 10),
@@ -95,8 +90,42 @@ class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
                     Text(
                       "₹${widget.product['price']}",
                       style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),Row(
+  children: [
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star, color: Colors.amber),
+    Icon(Icons.star_half, color: Colors.amber),
+    SizedBox(width: 8),
+    Text("4.5"),
+  ],
+),Text(
+  "Reviews",
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+  ),
+),
+
+SizedBox(height: 10),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Akhil"),
+  subtitle: Text("Very good product!"),
+),
+
+ListTile(
+  contentPadding: EdgeInsets.zero,
+  leading: CircleAvatar(child: Icon(Icons.person)),
+  title: Text("Sarah"),
+  subtitle: Text("Skin feels fresh after use."),
+),
 
                     SizedBox(height: 10),
 
@@ -114,7 +143,6 @@ class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
                     ///  BUTTONS
                     Row(
                       children: [
-
                         /// ADD TO CART
                         Expanded(
                           child: GestureDetector(
@@ -127,9 +155,7 @@ class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
                                 color: Colors.grey.shade300,
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: Center(
-                                child: Text("Add to Cart"),
-                              ),
+                              child: Center(child: Text("Add to Cart")),
                             ),
                           ),
                         ),
@@ -151,7 +177,11 @@ class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
                               child: Center(
                                 child: Text(
                                   "Buy Now",
-                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.color,
+                                  ),
                                 ),
                               ),
                             ),
@@ -180,18 +210,16 @@ class _WatchesDetailsScreenState extends State<WatchesDetailsScreen> {
       "quantity": 1,
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Added to cart")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Added to cart")));
   }
 
   /// BUY NOW
   void buyNow(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => Checkoutpage(product: widget.product),
-      ),
+      MaterialPageRoute(builder: (_) => Checkoutpage(product: widget.product)),
     );
   }
 }

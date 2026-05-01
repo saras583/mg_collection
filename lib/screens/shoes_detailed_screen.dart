@@ -145,7 +145,7 @@ ListTile(
                                 color: Colors.grey.shade300,
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: Center(child: Text("Add to Cart")),
+                              child: Center(child: Text("Add to Cart",)),
                             ),
                           ),
                         ),
