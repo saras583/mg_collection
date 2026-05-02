@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:mgcollection_app/screens/cart.dart';
 import 'checkoutpage.dart';
 
 class JewelleryDetailsScreen extends StatefulWidget {
@@ -41,6 +42,24 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(Icons.arrow_back),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 20,
+                  right: 10,
+                  child: GestureDetector(
+                    onTap: () {
+                      var favBox = Hive.box('favorites');
+                      favBox.add(widget.product);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Added to Favorites")),
+                      );
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.favorite_border, color: Colors.red),
                     ),
                   ),
                 ),
@@ -229,8 +248,23 @@ class _JewelleryDetailsScreenState extends State<JewelleryDetailsScreen> {
       "quantity": quantity,
     });
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Added $quantity item(s) to cart")));
+    ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    behavior: SnackBarBehavior.floating,
+    margin: EdgeInsets.all(16),
+    content: Text("Added to cart"),
+    action: SnackBarAction(
+      label: "Go to Cart",
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => Cart(),
+          ),
+        );
+      },
+    ),
+  ),
+);
   }
 }

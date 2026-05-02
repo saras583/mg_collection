@@ -9,7 +9,8 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  List<int> quantity = [1, 1, 1];
+
+  List<int> quantity = [1, 1, 1]; 
   @override
   Widget build(BuildContext context) {
     var box = Hive.box('cart');

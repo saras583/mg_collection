@@ -4,6 +4,7 @@ import 'package:mgcollection_app/screens/cart.dart';
 import 'package:mgcollection_app/screens/favoriteScreen.dart';
 import 'package:mgcollection_app/screens/jalorescreen.dart';
 import 'package:mgcollection_app/screens/pants.dart';
+import 'package:mgcollection_app/screens/pants_detailed_screen.dart';
 import 'package:mgcollection_app/screens/shirt_details_screen.dart';
 import 'package:mgcollection_app/screens/shirts.dart';
 import 'package:mgcollection_app/screens/shoesScreen.dart';
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Category(name: "Shoes", image: "assets/images/air1.jpg"),
     Category(name: "jalore", image: "assets/images/jalore.jpg"),
   ];
-  List<Map<String,dynamic>> products = [
+  List<Map<String, dynamic>> products = [
     {
       "name": "wathes",
       "category": "Men’s Shoes",
@@ -259,7 +260,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ShoesDetailsScreen(product: product),
                           ),
                         );
-                      } else {
+                      } else if (product['name'] == 'pant') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                PantsDetailsScreen(product: product),
+                          ),
+                        );
+                      } else if (product['name'] == 'shirt') {
                         Navigator.push(
                           context,
                           MaterialPageRoute(

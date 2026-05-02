@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:mgcollection_app/screens/cart.dart';
 import 'package:mgcollection_app/screens/checkoutpage.dart';
 
 class WatchesDetailsScreen extends StatefulWidget {
@@ -210,9 +211,24 @@ ListTile(
       "quantity": 1,
     });
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Added to cart")));
+    ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    behavior: SnackBarBehavior.floating,
+    margin: EdgeInsets.all(16),
+    content: Text("Added to cart"),
+    action: SnackBarAction(
+      label: "Go to Cart",
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => Cart(),
+          ),
+        );
+      },
+    ),
+  ),
+);
   }
 
   /// BUY NOW

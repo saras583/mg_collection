@@ -1,13 +1,22 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:mgcollection_app/screens/cart.dart';
 import 'package:mgcollection_app/screens/checkoutpage.dart';
 
-class ShoesDetailsScreen extends StatelessWidget {
+class ShoesDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> product;
 
   const ShoesDetailsScreen({super.key, required this.product});
 
+  @override
+  State<ShoesDetailsScreen> createState() => _ShoesDetailsScreenState();
+}
+
+class _ShoesDetailsScreenState extends State<ShoesDetailsScreen> {
   final quantity = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +29,7 @@ class ShoesDetailsScreen extends StatelessWidget {
             Stack(
               children: [
                 Image.asset(
-                  product['image'],
+                  widget.product['image'],
                   height: 300,
                   width: double.infinity,
                   fit: BoxFit.contain,
@@ -34,6 +43,23 @@ class ShoesDetailsScreen extends StatelessWidget {
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(Icons.arrow_back),
+                    ),
+                  ),
+                ),Positioned(
+                  top: 20,
+                  right: 10,
+                  child: GestureDetector(
+                    onTap: () {
+                      var favBox = Hive.box('favorites');
+                      favBox.add(widget.product);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Added to Favorites")),
+                      );
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.favorite_border, color: Colors.red),
                     ),
                   ),
                 ),
@@ -54,7 +80,7 @@ class ShoesDetailsScreen extends StatelessWidget {
                   children: [
                     /// NAME
                     Text(
-                      product['name'],
+                      widget.product['name'],
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -65,7 +91,7 @@ class ShoesDetailsScreen extends StatelessWidget {
 
                     /// PRICE
                     Text(
-                      "₹${product['price']}",
+                      "₹${widget.product['price']}",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -203,22 +229,37 @@ ListTile(
     var box = Hive.box('cart');
 
     box.add({
-      "name": product['name'],
-      "price": product['price'],
-      "image": product['image'],
+      "name": widget.product['name'],
+      "price": widget.product['price'],
+      "image": widget.product['image'],
       "quantity": 1,
     });
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Added to cart")));
+    ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    behavior: SnackBarBehavior.floating,
+    margin: EdgeInsets.all(16),
+    content: Text("Added to cart"),
+    action: SnackBarAction(
+      label: "Go to Cart",
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => Cart(),
+          ),
+        );
+      },
+    ),
+  ),
+);
   }
 
   /// BUY NOW
   void buyNow(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => Checkoutpage(product: product)),
+      MaterialPageRoute(builder: (_) => Checkoutpage(product: widget.product)),
     );
   }
 }
