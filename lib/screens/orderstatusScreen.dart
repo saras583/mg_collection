@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/screens/contactSupportscreen.dart';
 import 'package:mgcollection_app/screens/orderdetailedscreen.dart';
 
 class OrderStatusScreen extends StatelessWidget {
-  const OrderStatusScreen({super.key});
+  final Map<String, dynamic> order;
+
+  const OrderStatusScreen({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,6 @@ class OrderStatusScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               CircleAvatar(
                 backgroundColor: Colors.white,
                 child: IconButton(
@@ -32,22 +34,17 @@ class OrderStatusScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "ESTIMATED ARRIVAL",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
 
                     SizedBox(height: 8),
 
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "Tomorrow, Oct 24",
@@ -64,14 +61,11 @@ class OrderStatusScreen extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: Colors.green,
-                            borderRadius:
-                                BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             "In Transit",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ],
@@ -84,10 +78,7 @@ class OrderStatusScreen extends StatelessWidget {
 
               Text(
                 "Shipment Journey",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
 
               SizedBox(height: 20),
@@ -123,18 +114,17 @@ class OrderStatusScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 55),
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () {Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => OrderDetailsScreen(
-      order: order,
-    ),
-  ),
-);},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => OrderDetailsScreen(order: order),
+                    ),
+                  );
+                },
                 child: Text("View Order Details"),
               ),
 
@@ -144,11 +134,15 @@ class OrderStatusScreen extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   minimumSize: Size(double.infinity, 55),
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ContactSupportScreen()),
+                  );
+                },
                 child: Text("Contact Support"),
               ),
             ],
@@ -167,45 +161,25 @@ class OrderStatusScreen extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Column(
           children: [
             CircleAvatar(
               radius: 10,
-              backgroundColor:
-                  active ? Colors.green : Colors.grey.shade300,
-              child: Icon(
-                Icons.check,
-                size: 12,
-                color: Colors.white,
-              ),
+              backgroundColor: active ? Colors.green : Colors.grey.shade300,
+              child: Icon(Icons.check, size: 12, color: Colors.white),
             ),
 
-            if (!isLast)
-              Container(
-                width: 2,
-                height: 50,
-                color: Colors.green,
-              ),
+            if (!isLast) Container(width: 2, height: 50, color: Colors.green),
           ],
         ),
 
         SizedBox(width: 15),
 
         Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              subtitle,
-              style: TextStyle(color: Colors.grey),
-            ),
+            Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(subtitle, style: TextStyle(color: Colors.grey)),
           ],
         ),
       ],

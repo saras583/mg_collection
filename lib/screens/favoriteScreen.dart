@@ -9,6 +9,7 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     var favBox = Hive.box('favorites');
 
     return Scaffold(

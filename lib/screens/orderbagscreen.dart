@@ -4,6 +4,8 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:mgcollection_app/screens/orderstatusScreen.dart';
 
 class Orderbagscreen extends StatelessWidget {
+
+  
   const Orderbagscreen({super.key});
 
   @override
@@ -27,13 +29,13 @@ class Orderbagscreen extends StatelessWidget {
           return ListView.builder(
             itemCount: box.length,
             itemBuilder: (context, index) {
-              var item = box.getAt(index);
+              final item = Map<String, dynamic>.from(box.getAt(index));
 
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => OrderStatusScreen()),
+                    MaterialPageRoute(builder: (_) => OrderStatusScreen(order: item)),
                   );
                 },
                 child: Container(
