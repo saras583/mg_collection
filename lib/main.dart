@@ -13,7 +13,13 @@ void main() async {
   await Hive.openBox('userBox');
   await Hive.openBox('authBox');
   await Hive.openBox('orders');
-  await Hive.openBox('settings');
+  final box = Hive.box('settings');
+
+  bool isDark = box.get('isDark', defaultValue: false);
+
+  themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+
+   notifyListeners();
   await Hive.openBox('products');
 
   runApp(MgCollection());

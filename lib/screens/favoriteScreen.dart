@@ -4,9 +4,15 @@ import 'package:mgcollection_app/screens/shirt_details_screen.dart';
 import 'package:mgcollection_app/screens/shoes_detailed_screen.dart';
 import 'package:mgcollection_app/screens/watches_details_screen.dart';
 
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
 
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+   List<int> quantity = [1, 1, 1];
   @override
   Widget build(BuildContext context) {
     
@@ -38,6 +44,11 @@ class FavoritesScreen extends StatelessWidget {
                 return SizedBox();
               }
               final item = Map<String, dynamic>.from(rawItem);
+              final reversedIndex = box.length - 1 - index;
+
+                final items = box.getAt(reversedIndex);
+                if (items == null) return SizedBox();
+
 
               return GestureDetector(
                 onTap: () {

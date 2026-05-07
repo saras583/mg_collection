@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mgcollection_app/screens/watches_details_screen.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -9,13 +10,13 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-
-  List<int> quantity = [1, 1, 1]; 
+  List<int> quantity = [1, 1, 1];
   @override
   Widget build(BuildContext context) {
     var box = Hive.box('cart');
 
-    return Scaffold( appBar: AppBar( title: Text('MyCart',),),
+    return Scaffold(
+      appBar: AppBar(title: Text('MyCart')),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: ValueListenableBuilder(
@@ -29,18 +30,45 @@ class _CartState extends State<Cart> {
               itemBuilder: (BuildContext context, int index) {
                 final reversedIndex = box.length - 1 - index;
 
-                final items = box.getAt(reversedIndex);
-                if (items == null) return SizedBox();
-        
-                return ListTile(
-                  leading: Image(image: AssetImage(items['image']??'assets/images/placeholder.png')),
-                  title: Text(items['name']),
-                  subtitle: Text("₹${items['price']}"),
-                  trailing: IconButton(
-                    onPressed: () {
-                      box.deleteAt(reversedIndex);
-                    },
-                    icon: Icon(Icons.delete),
+                final rawItem = box.getAt(reversedIndex);
+
+                if (rawItem == null || rawItem is! Map) {
+                  return const SizedBox();
+                }
+
+                final item = Map<String, dynamic>.from(rawItem);
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => WatchesDetailsScreen(product: item),
+                      ),
+                    );
+                  },
+
+                  child: ListTile(
+                    leading: Image.asset(
+                      item['image'] ?? 'assets/images/placeholder.png',
+                      width: 50,
+                      height: 50,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.image);
+                      },
+                    ),
+
+                    title: Text(item['name'] ?? 'No Name'),
+
+                    subtitle: Text("₹${item['price'] ?? 0}"),
+
+                    trailing: IconButton(
+                      onPressed: () {
+                        box.deleteAt(reversedIndex);
+                      },
+
+                      icon: const Icon(Icons.delete),
+                    ),
                   ),
                 );
               },
