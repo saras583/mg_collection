@@ -136,7 +136,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
                           ),
 
                           Text(
-                            '',
+                            '${shoe['rating']}',
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
 

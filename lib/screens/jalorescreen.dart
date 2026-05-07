@@ -105,12 +105,7 @@ class _JalorescreenState extends State<Jalorescreen> {
                           SizedBox(height: 4),
 
                           Text(
-                            '',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-
-                          Text(
-                            '',
+                            '${juloreList['rating']}',
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
 

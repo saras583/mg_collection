@@ -16,6 +16,7 @@ class _WatchesScreenState extends State<WatchesScreen> {
       "name": "Rolex Submariner",
       "price": 1299,
       "image": "assets/images/watch.jpg",
+      "rating": 4.5,
     },
   ];
   @override

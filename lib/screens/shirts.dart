@@ -35,19 +35,19 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
       "name": "Checked Cotton Shirt",
       "price": 849,
       "image": "assets/images/black_shirt.jpg",
-      "rating": 4.5,
+      "rating": 1.5,
     },
     {
       "name": "laveder Shirt",
       "price": 950,
       "image": "assets/images/laventer.jpg",
-      "rating": 4.5,
+      "rating": 2.5,
     },
     {
       "name": "Striped Office Shirt",
       "price": 899,
       "image": "assets/images/checkshirt.jpg",
-      "rating": 4.5, 
+      "rating": 3.5, 
     },
   ];
   @override
@@ -96,6 +96,10 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
       value: 'A-Z',
       child: Text('Name: A-Z'),
     ),
+    PopupMenuItem(
+    value: 'Rating',
+    child: Text('Top Rated'),
+  ),
   ],
 ),
                       SizedBox(width: 10),
@@ -154,12 +158,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                           SizedBox(height: 4),
 
                           Text(
-                            '',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-
-                          Text(
-                            '',
+                            '${shirtsList['rating']}',
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
 

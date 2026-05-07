@@ -153,6 +153,10 @@ class _SkincarescreenState extends State<Skincarescreen> {
                                 '${skincares['price']}',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
+                              Text(
+                            '${skincares['rating']}',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
                             ],
                           ),
                         ],

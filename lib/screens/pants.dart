@@ -144,7 +144,7 @@ class _PantsScreenState extends State<PantsScreen> {
                           ),
 
                           Text(
-                            '',
+                            '${pant['rating']}',
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
 
