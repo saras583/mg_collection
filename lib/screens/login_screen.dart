@@ -3,12 +3,12 @@ import 'package:hive/hive.dart';
 import 'package:mgcollection_app/admin/adminloginscreen.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:mgcollection_app/screens/register_screen.dart';
-import 'package:mgcollection_app/screens/theme_controller.dart';
+
 
 class LoginScreen extends StatefulWidget {
-  final ThemeController controller;
+  
 
-  const LoginScreen({super.key,required this.controller});
+  const LoginScreen({super.key,});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => Bottomnavigationbarscreen(controller: widget.controller),
+          builder: (_) => Bottomnavigationbarscreen(),
         ),
       );
     } else {

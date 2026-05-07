@@ -34,6 +34,83 @@ class _ExploreScreenState extends State<ExploreScreen> {
       "price": 249.99,
       "image": "assets/images/black_shirt.jpg",
     },
+    {
+      "name": "Black Linen Shirt",
+      
+      "price": 899,
+      "image": "assets/images/black_shirt.jpg",
+    },
+    {
+      "name": " Casual Shirt",
+      "price": 799,
+      "image": 'assets/images/laventer.jpg',
+    },
+    {
+      "name": "Blue Denim Shirt",
+      "price": 999,
+      "image": "assets/images/checkshirt.jpg",
+    },
+    {
+      "name": "Checked Cotton Shirt",
+      "price": 849,
+      "image": "assets/images/black_shirt.jpg",
+    },
+    {
+      "name": "laveder Shirt",
+      "price": 950,
+      "image": "assets/images/laventer.jpg",
+    },
+    {
+      "name": "Striped Office Shirt",
+      "price": 899,
+      "image": "assets/images/checkshirt.jpg",
+    },{
+      "name": "Slim Fit Jeans",
+      
+      "price": 1299,
+      "image": "assets/images/grey trouser.jpg",
+    },
+    {
+      "name": "Formal Trousers",
+      "price": 999,
+      "image": "assets/images/next.jpg",
+    },
+    {"name": "Cargo Pants", "price": 1499, "image": "assets/images/next.jpg"},
+    {
+      "name": " spiderring",
+      "price": 2999,
+      "image": "assets/images/spiderring.jpg",
+    },
+    {
+      "name": "mountainring",
+      "price": 4999,
+      "image": "assets/images/mountainrings.jpg",
+    },
+    {
+      "name": "ring gravur",
+      "price": 1999,
+      "image": "assets/images/Ring  Gravur.jpg",
+    },{
+      "name": "Face Cleanser",
+      "price": 499,
+      "image": "assets/images/cetapfilne.jpg",
+    },
+    {
+      "name": "Moisturizing Cream",
+      "price": 699,
+      "image": "assets/images/vitaminc serm.jpg",
+    },
+
+    {
+      "name": "Sunscreen SPF 50",
+      "price": 599,
+      "image": "assets/images/sunscreen.jpg",
+    },
+    {
+      "name": "Face Wash Gel",
+      "price": 399,
+      "image": "assets/images/simplefacewash.jpg",
+    },
   ];
 
   @override
@@ -115,7 +192,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           SizedBox(height: 4),
 
                           Text(
-                            product["category"],
+                            product["category"]??'no category',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
 

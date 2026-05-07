@@ -17,31 +17,37 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
       
       "price": 899,
       "image": "assets/images/black_shirt.jpg",
+      "rating": 4.5,
     },
     {
       "name": " Casual Shirt",
       "price": 799,
       "image": 'assets/images/laventer.jpg',
+      "rating": 4.5,
     },
     {
       "name": "Blue Denim Shirt",
       "price": 999,
       "image": "assets/images/checkshirt.jpg",
+      "rating": 4.5,
     },
     {
       "name": "Checked Cotton Shirt",
       "price": 849,
       "image": "assets/images/black_shirt.jpg",
+      "rating": 4.5,
     },
     {
       "name": "laveder Shirt",
       "price": 950,
       "image": "assets/images/laventer.jpg",
+      "rating": 4.5,
     },
     {
       "name": "Striped Office Shirt",
       "price": 899,
       "image": "assets/images/checkshirt.jpg",
+      "rating": 4.5, 
     },
   ];
   @override

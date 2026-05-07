@@ -17,11 +17,13 @@ class _ShoesscreenState extends State<Shoesscreen> {
       "name": "Adidas Ultraboost",
       "price": 2999,
       "image": "assets/images/air1.jpg",
+      "rating": 4.5,
     },
     {
       "name": "Puma Running Shoes",
       "price": 1999,
       "image": "assets/images/air1.jpg",
+      "rating": 4.5,
     },
   ];
   @override

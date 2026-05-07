@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/screens/login_screen.dart';
-import 'package:mgcollection_app/screens/theme_controller.dart';
+
 
 class Letstart extends StatelessWidget {
   const Letstart({super.key});
@@ -67,7 +67,7 @@ class Letstart extends StatelessWidget {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) =>  LoginScreen(controller: ThemeController()),
+          builder: (_) =>  LoginScreen(),
         ),
       );
     },

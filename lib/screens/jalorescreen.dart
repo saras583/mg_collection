@@ -14,16 +14,19 @@ class _JalorescreenState extends State<Jalorescreen> {
       "name": " spiderring",
       "price": 2999,
       "image": "assets/images/spiderring.jpg",
+      "rating": 4.5,
     },
     {
       "name": "mountainring",
       "price": 4999,
       "image": "assets/images/mountainrings.jpg",
+      "rating": 4.5,
     },
     {
       "name": "ring gravur",
       "price": 1999,
       "image": "assets/images/Ring  Gravur.jpg",
+      "rating": 4.5,
     },
   ];
 

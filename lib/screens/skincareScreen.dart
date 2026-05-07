@@ -16,22 +16,26 @@ class _SkincarescreenState extends State<Skincarescreen> {
       "name": "Face Cleanser",
       "price": 499,
       "image": "assets/images/cetapfilne.jpg",
+      "rating": 4.5,
     },
     {
       "name": "Moisturizing Cream",
       "price": 699,
       "image": "assets/images/vitaminc serm.jpg",
+      "rating": 4.5,
     },
 
     {
       "name": "Sunscreen SPF 50",
       "price": 599,
       "image": "assets/images/sunscreen.jpg",
+      "rating": 4.5,
     },
     {
       "name": "Face Wash Gel",
       "price": 399,
       "image": "assets/images/simplefacewash.jpg",
+      "rating": 4.5,
     },
   ];
   @override

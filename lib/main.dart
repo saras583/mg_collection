@@ -1,64 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:provider/provider.dart';
+
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:mgcollection_app/screens/login_screen.dart';
-import 'package:mgcollection_app/screens/theme_controller.dart';
+
+import 'package:mgcollection_app/screens/theme.dart';
+import 'package:mgcollection_app/services/themeprovider.dart';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
+
   await Hive.openBox('favorites');
   await Hive.openBox('cart');
   await Hive.openBox('userBox');
   await Hive.openBox('authBox');
   await Hive.openBox('orders');
-  final box = Hive.box('settings');
-
-  bool isDark = box.get('isDark', defaultValue: false);
-
-  themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
-
-   notifyListeners();
+  await Hive.openBox('settings');
   await Hive.openBox('products');
 
-  runApp(MgCollection());
+  runApp(
+
+    ChangeNotifierProvider(
+
+      create: (_) => ThemeProvider(),
+
+      child: const MgCollection(),
+    ),
+  );
 }
 
 class MgCollection extends StatelessWidget {
-  MgCollection({super.key});
 
-  ///  CONTROLLER HERE
-  final ThemeController controller = ThemeController();
+  const MgCollection({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     var authBox = Hive.box('authBox');
-    bool isLoggedIn = authBox.get('isLoggedIn', defaultValue: false);
 
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, _) {
+    bool isLoggedIn =
+        authBox.get(
+          'isLoggedIn',
+          defaultValue: false,
+        );
+
+    return Consumer<ThemeProvider>(
+
+      builder: (context, provider, child) {
+
         return MaterialApp(
+
           debugShowCheckedModeBanner: false,
-          //lightmode
-          theme: ThemeData(
-            brightness: Brightness.light,
-            scaffoldBackgroundColor: Color(0xFFF5EFEF),
-            cardColor: Colors.white
-          ),
-          //darkmode
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            scaffoldBackgroundColor: Color(0xFF1E1E1E)
-          ),
 
-          themeMode: controller.themeMode,
+          theme: lightTheme,
 
-          
+          darkTheme: darkTheme,
+
+          themeMode:
+              provider.themeData == darkTheme
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
+
           home: isLoggedIn
-              ? Bottomnavigationbarscreen(controller : controller)
-              : LoginScreen(controller: controller),
+              ? const Bottomnavigationbarscreen()
+              : const LoginScreen(),
         );
       },
     );

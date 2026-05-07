@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mgcollection_app/screens/login_screen.dart';
-import 'package:mgcollection_app/screens/theme_controller.dart';
+import 'package:mgcollection_app/screens/theme.dart';
+import 'package:mgcollection_app/services/themeprovider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final ThemeController controller;
-  const ProfileScreen({super.key, required this.controller});
+  
+  const ProfileScreen({super.key,});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -43,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (_) =>
-                                LoginScreen(controller: widget.controller),
+                                LoginScreen(),
                           ),
                         );
                       },
@@ -123,17 +125,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: Text('Enable Location Service'),
                     ),
                     SwitchListTile(
-                      value: widget.controller.themeMode == ThemeMode.dark,
-                      onChanged: (val) {
-                        widget.controller.toggleTheme(val);
-                      },
+                     value: Provider.of<ThemeProvider>(context)
+          .themeData ==
+      darkTheme,
+
+  onChanged: (value) {
+
+    Provider.of<ThemeProvider>(
+      context,
+      listen: false,
+    ).changeTheme();
+  },
                       title: Text('Dark mode'),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         logout(context);
                       },
-                      child: Text("Logout"),
+                      child: Text("Logout",
+                      ),
                     ),
                   ],
                 ),
@@ -154,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (_) => LoginScreen(controller: ThemeController()),
+        builder: (_) => LoginScreen(),
       ),
       (route) => false,
     );

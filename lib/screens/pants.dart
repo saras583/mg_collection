@@ -18,11 +18,13 @@ class _PantsScreenState extends State<PantsScreen> {
       
       "price": 1299,
       "image": "assets/images/grey trouser.jpg",
+     ' rating': 4.5
     },
     {
       "name": "Formal Trousers",
       "price": 999,
       "image": "assets/images/next.jpg",
+      "rating": 4.5,
     },
     {"name": "Cargo Pants", "price": 1499, "image": "assets/images/next.jpg"},
   ];
@@ -71,6 +73,12 @@ class _PantsScreenState extends State<PantsScreen> {
       value: 'A-Z',
       child: Text('Name: A-Z'),
     ),
+    PopupMenuItem(
+      value: 'lowrating-highrating',
+      child: Text('Name: -Z'),
+    ),
+    
+    
   ],
 ),
                       SizedBox(width: 10),
