@@ -74,6 +74,21 @@ class _CartState extends State<Cart> {
               },
             );
           },
+          child: Row(
+            children: [ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 55),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                onPressed: () {
+                  
+                    
+                },
+                child: Text("View Order Details"),
+              ),],
+          ),
         ),
       ),
     );

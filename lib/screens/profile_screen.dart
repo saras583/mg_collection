@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   
-  const ProfileScreen({super.key,});
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -125,9 +125,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: Text('Enable Location Service'),
                     ),
                     SwitchListTile(
-                     value: Provider.of<ThemeProvider>(context)
-          .themeData ==
-      darkTheme,
+
+  value:
+      Provider.of<ThemeProvider>(context)
+              .themeData ==
+          darkTheme,
 
   onChanged: (value) {
 
@@ -136,8 +138,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       listen: false,
     ).changeTheme();
   },
-                      title: Text('Dark mode'),
-                    ),
+
+  title: const Text('Dark mode'),
+),
                     ElevatedButton(
                       onPressed: () {
                         logout(context);
