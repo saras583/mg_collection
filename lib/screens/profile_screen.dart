@@ -141,11 +141,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   title: const Text('Dark mode'),
 ),
-                    ElevatedButton(
-                      onPressed: () {
-                        logout(context);
-                      },
-                      child: Text("Logout",
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
+                      ),
+                        onPressed: () {
+                          logout(context);
+                        },
+                        child: Text("Logout",
+                        ),
                       ),
                     ),
                   ],

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
+import 'package:mgcollection_app/screens/forgot_password_screen.dart';
 import 'package:mgcollection_app/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+
   const LoginScreen({super.key});
 
   @override
@@ -57,6 +59,8 @@ class _LoginScreenState
           defaultValue: [],
         );
 
+    print(users);
+
     Map<String, dynamic>? user;
 
     try {
@@ -70,7 +74,8 @@ class _LoginScreenState
                     .toLowerCase() ==
                 email &&
 
-            u['password'] ==
+            u['password']
+                    .toString() ==
                 password,
       );
 
@@ -109,7 +114,6 @@ class _LoginScreenState
 
     } else {
 
-      /// LOGIN FAILED
       showMsg(
         "Invalid Email or Password",
       );
@@ -151,7 +155,7 @@ class _LoginScreenState
               const SizedBox(height: 60),
 
               /// TITLE
-              const Text(
+              Text(
 
                 "Welcome Back",
 
@@ -161,6 +165,12 @@ class _LoginScreenState
 
                   fontWeight:
                       FontWeight.bold,
+
+                  color:
+                      Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.color,
                 ),
               ),
 
@@ -183,8 +193,18 @@ class _LoginScreenState
                 alignment:
                     Alignment.centerLeft,
 
-                child: const Text(
+                child: Text(
+
                   "Email Address",
+
+                  style: TextStyle(
+
+                    color:
+                        Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.color,
+                  ),
                 ),
               ),
 
@@ -198,6 +218,15 @@ class _LoginScreenState
                 keyboardType:
                     TextInputType.emailAddress,
 
+                style: TextStyle(
+
+                  color:
+                      Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.color,
+                ),
+
                 decoration:
                     InputDecoration(
 
@@ -207,7 +236,13 @@ class _LoginScreenState
                   filled: true,
 
                   fillColor:
-                      Colors.white,
+                      Theme.of(context)
+                          .cardColor,
+
+                  hintStyle:
+                      const TextStyle(
+                    color: Colors.grey,
+                  ),
 
                   border:
                       OutlineInputBorder(
@@ -231,8 +266,18 @@ class _LoginScreenState
                 alignment:
                     Alignment.centerLeft,
 
-                child: const Text(
+                child: Text(
+
                   "Password",
+
+                  style: TextStyle(
+
+                    color:
+                        Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.color,
+                  ),
                 ),
               ),
 
@@ -246,6 +291,15 @@ class _LoginScreenState
                 obscureText:
                     obscurePassword,
 
+                style: TextStyle(
+
+                  color:
+                      Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.color,
+                ),
+
                 decoration:
                     InputDecoration(
 
@@ -255,7 +309,13 @@ class _LoginScreenState
                   filled: true,
 
                   fillColor:
-                      Colors.white,
+                      Theme.of(context)
+                          .cardColor,
+
+                  hintStyle:
+                      const TextStyle(
+                    color: Colors.grey,
+                  ),
 
                   suffixIcon:
                       IconButton(
@@ -265,6 +325,11 @@ class _LoginScreenState
                       obscurePassword
                           ? Icons.visibility_off
                           : Icons.visibility,
+
+                      color:
+                          Theme.of(context)
+                              .iconTheme
+                              .color,
                     ),
 
                     onPressed: () {
@@ -291,47 +356,86 @@ class _LoginScreenState
                 ),
               ),
 
+              const SizedBox(height: 15),
+
+              /// FORGOT PASSWORD
+              Align(
+
+                alignment:
+                    Alignment.centerRight,
+
+                child: GestureDetector(
+
+                  onTap: () {
+
+                    Navigator.push(
+
+                      context,
+
+                      MaterialPageRoute(
+
+                        builder: (_) =>
+                            const ForgotPasswordScreen(),
+                      ),
+                    );
+                  },
+
+                  child: const Text(
+
+                    "Forgot Password?",
+
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 30),
 
               /// LOGIN BUTTON
-              GestureDetector(
+              SizedBox(
 
-                onTap: loginUser,
+                width: double.infinity,
 
-                child: Container(
+                child: ElevatedButton(
 
-                  width: double.infinity,
+                  style:
+                      ElevatedButton.styleFrom(
 
-                  padding:
-                      const EdgeInsets.symmetric(
-                    vertical: 16,
-                  ),
+                    backgroundColor:
+                        Colors.blue,
 
-                  decoration: BoxDecoration(
+                    foregroundColor:
+                        Colors.white,
 
-                    color: Colors.blue,
+                    padding:
+                        const EdgeInsets.symmetric(
+                      vertical: 16,
+                    ),
 
-                    borderRadius:
-                        BorderRadius.circular(
-                      30,
+                    shape:
+                        RoundedRectangleBorder(
+
+                      borderRadius:
+                          BorderRadius.circular(
+                        30,
+                      ),
                     ),
                   ),
 
-                  child: const Center(
+                  onPressed: loginUser,
 
-                    child: Text(
+                  child: const Text(
 
-                      "Login",
+                    "Login",
 
-                      style: TextStyle(
+                    style: TextStyle(
 
-                        color: Colors.white,
+                      fontSize: 16,
 
-                        fontWeight:
-                            FontWeight.bold,
-
-                        fontSize: 16,
-                      ),
+                      fontWeight:
+                          FontWeight.bold,
                     ),
                   ),
                 ),
@@ -351,7 +455,9 @@ class _LoginScreenState
 
                 decoration: BoxDecoration(
 
-                  color: Colors.white,
+                  color:
+                      Theme.of(context)
+                          .cardColor,
 
                   borderRadius:
                       BorderRadius.circular(
@@ -359,10 +465,20 @@ class _LoginScreenState
                   ),
                 ),
 
-                child: const Center(
+                child: Center(
 
                   child: Text(
+
                     "Sign in with Google",
+
+                    style: TextStyle(
+
+                      color:
+                          Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.color,
+                    ),
                   ),
                 ),
               ),
