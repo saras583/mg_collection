@@ -1,10 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:mgcollection_app/controller.onbording/onbordingcontroller.dart';
 import 'package:provider/provider.dart';
-
-import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
-import 'package:mgcollection_app/screens/login_screen.dart';
-
 import 'package:mgcollection_app/screens/theme.dart';
 import 'package:mgcollection_app/services/themeprovider.dart';
 
@@ -14,6 +12,7 @@ void main() async {
 
   await Hive.initFlutter();
 
+  /// OPEN HIVE BOXES
   await Hive.openBox('favorites');
   await Hive.openBox('cart');
   await Hive.openBox('userBox');
@@ -40,14 +39,6 @@ class MgCollection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    var authBox = Hive.box('authBox');
-
-    bool isLoggedIn =
-        authBox.get(
-          'isLoggedIn',
-          defaultValue: false,
-        );
-
     return Consumer<ThemeProvider>(
 
       builder: (context, provider, child) {
@@ -56,18 +47,20 @@ class MgCollection extends StatelessWidget {
 
           debugShowCheckedModeBanner: false,
 
+          /// LIGHT THEME
           theme: lightTheme,
 
+          /// DARK THEME
           darkTheme: darkTheme,
 
+          /// THEME MODE
           themeMode:
               provider.themeData == darkTheme
                   ? ThemeMode.dark
                   : ThemeMode.light,
 
-          home: isLoggedIn
-              ? const Bottomnavigationbarscreen()
-              : const LoginScreen(),
+          /// APP FLOW CONTROLLER
+          home: const OnboardingController(),
         );
       },
     );
