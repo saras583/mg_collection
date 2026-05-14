@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../products/edit_product.dart';
+import 'package:mgcollection_app/admin/products/edit_products.dart';
 
 class ProductTile extends StatelessWidget {
   final String name;
@@ -20,7 +20,7 @@ class ProductTile extends StatelessWidget {
       subtitle: Text(price),
       trailing: IconButton(
         icon: const Icon(Icons.edit),
-        onTap: () {
+        onPressed: () {
            Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProductScreen()));
         },
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/screens/login_screen.dart';
+import 'package:mgcollection_app/authu/login_screen.dart';
 
 
 class Letstart extends StatelessWidget {

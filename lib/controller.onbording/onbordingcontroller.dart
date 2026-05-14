@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:mgcollection_app/screens/login_screen.dart';
-import 'package:mgcollection_app/screens/onbordingscreen.dart';
+import 'package:mgcollection_app/authu/login_screen.dart';
+import 'package:mgcollection_app/controller.onbording/onbordingscreen.dart';
 
 class OnboardingController
     extends StatelessWidget {

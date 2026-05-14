@@ -2,7 +2,7 @@ flutter_native_splash:
 
   color: "#F5EFEF"
 
-  image: assets\images\Gemini_Generated_Image_ubvh39ubvh39ubvh.png
+  image: assets/images/Gemini_Generated_Image_ubvh39ubvh39ubvh.png
 
   android: true
 
@@ -14,4 +14,4 @@ flutter_native_splash:
 
     color: "#F5EFEF"
 
-    image: assets\images\Gemini_Generated_Image_ubvh39ubvh39ubvh.png
+    image: assets/images/Gemini_Generated_Image_ubvh39ubvh39ubvh.png

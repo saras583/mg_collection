@@ -5,18 +5,25 @@ import 'package:mgcollection_app/controller.onbording/onbordingcontroller.dart';
 import 'package:provider/provider.dart';
 import 'package:mgcollection_app/screens/theme.dart';
 import 'package:mgcollection_app/services/themeprovider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+  
+
 
   await Hive.initFlutter();
+  await Supabase.initialize(
 
-  /// OPEN HIVE BOXES
+  url: 'https://slpdclrwwipermdrawaj.supabase.co',
+
+  anonKey: 'sb_publishable_d4jN79-vzp42GJdZ1UbwGw_uxtsqlT9',
+);
+
+  /// OPEN HIVE 
   await Hive.openBox('favorites');
   await Hive.openBox('cart');
-  await Hive.openBox('userBox');
-  await Hive.openBox('authBox');
   await Hive.openBox('orders');
   await Hive.openBox('settings');
   await Hive.openBox('products');

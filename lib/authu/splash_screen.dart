@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/screens/login_screen.dart';
-
+import 'package:mgcollection_app/authu/login_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
-
-
-
   const SplashScreen({super.key});
 
   @override
@@ -13,12 +10,28 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final supbase = Supabase.instance.client;
+
+  checklogin() async {
+    await Future.delayed(Duration(seconds: 2));
+    if (supbase.auth.currentSession == null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => botton),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     checklogin();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +52,4 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
-
-  void checklogin() async {
-    Future.delayed(Duration(seconds: 2),
-    () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => LoginScreen()),
-      );
-  });}
-    }
-  
-
+}

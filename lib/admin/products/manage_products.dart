@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/admin/products/add_products.dart';
 import '../widgets/admin_drawer.dart';
 import '../widgets/product_tile.dart';
-import 'add_product.dart';
 
 class ManageProductsScreen extends StatelessWidget {
   const ManageProductsScreen({super.key});
@@ -13,9 +13,9 @@ class ManageProductsScreen extends StatelessWidget {
       drawer: const AdminDrawer(),
       body: ListView(
         children: const [
-          ProductTile(name: 'Classic Tailored Suit', price: '$250.00'),
-          ProductTile(name: 'Oxford Dress Shoes', price: '$120.00'),
-          ProductTile(name: 'Denim Jacket', price: '$85.00'),
+          ProductTile(name: 'Classic Tailored Suit', price: ''),
+          ProductTile(name: 'Oxford Dress Shoes', price: ''),
+          ProductTile(name: 'Denim Jacket', price: ''),
         ],
       ),
       floatingActionButton: FloatingActionButton(

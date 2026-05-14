@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/admin/orders/orderdetailed_screen.dart';
 import '../widgets/admin_drawer.dart';
-import 'order_details.dart';
+
 
 class ManageOrdersScreen extends StatelessWidget {
   const ManageOrdersScreen({super.key});
@@ -14,7 +15,7 @@ class ManageOrdersScreen extends StatelessWidget {
         children: [
           ListTile(
             title: const Text('Order #001'),
-            subtitle: const Text('John Doe - $250.00'),
+            subtitle: const Text('John Doe - '),
             trailing: const Text('Delivered', style: TextStyle(color: Colors.green)),
             onTap: () {
                Navigator.push(context, MaterialPageRoute(builder: (_) => const OrderDetailsScreen()));
@@ -22,7 +23,7 @@ class ManageOrdersScreen extends StatelessWidget {
           ),
           ListTile(
             title: const Text('Order #002'),
-            subtitle: const Text('Mike Smith - $180.00'),
+            subtitle: const Text('Mike Smith - '),
             trailing: const Text('Processing', style: TextStyle(color: Colors.orange)),
             onTap: () {
                Navigator.push(context, MaterialPageRoute(builder: (_) => const OrderDetailsScreen()));

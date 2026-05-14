@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:mgcollection_app/screens/login_screen.dart';
+import 'package:mgcollection_app/authu/login_screen.dart';
 import 'package:mgcollection_app/screens/theme.dart';
 import 'package:mgcollection_app/services/themeprovider.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileScreen extends StatefulWidget {
-  
   const ProfileScreen({super.key});
 
   @override
@@ -17,12 +17,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool faceId = false;
   bool pushNotification = true;
   bool locationSrevice = true;
+  final supabase = Supabase.instance.client;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor
-      ,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -43,10 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                LoginScreen(),
-                          ),
+                          MaterialPageRoute(builder: (_) => LoginScreen()),
                         );
                       },
                       child: CircleAvatar(
@@ -125,36 +122,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: Text('Enable Location Service'),
                     ),
                     SwitchListTile(
+                      value:
+                          Provider.of<ThemeProvider>(context).themeData ==
+                          darkTheme,
 
-  value:
-      Provider.of<ThemeProvider>(context)
-              .themeData ==
-          darkTheme,
+                      onChanged: (value) {
+                        Provider.of<ThemeProvider>(
+                          context,
+                          listen: false,
+                        ).changeTheme();
+                      },
 
-  onChanged: (value) {
-
-    Provider.of<ThemeProvider>(
-      context,
-      listen: false,
-    ).changeTheme();
-  },
-
-  title: const Text('Dark mode'),
-),
+                      title: const Text('Dark mode'),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                            ),
-                      ),
-                        onPressed: () {
-                          logout(context);
-                        },
-                        child: Text("Logout",
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
+                        onPressed: () async {
+                          await supabase.auth.signOut();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                            (value) => false,
+                          );
+                        },
+                        child: Text("Logout"),
                       ),
                     ),
                   ],
@@ -163,22 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
-        
       ),
-    );
-  }
-
-  void logout(BuildContext context) {
-    var authBox = Hive.box('authBox');
-
-    authBox.put('isLoggedIn', false);
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (_) => LoginScreen(),
-      ),
-      (route) => false,
     );
   }
 }

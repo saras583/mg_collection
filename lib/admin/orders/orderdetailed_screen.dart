@@ -17,7 +17,7 @@ class OrderDetailsScreen extends StatelessWidget {
             Text('Customer: John Doe'),
             Text('Item: Classic Tailored Suit'),
             Text('Status: Delivered'),
-            Text('Total: $250.00'),
+            Text('Total: '),
           ],
         ),
       ),

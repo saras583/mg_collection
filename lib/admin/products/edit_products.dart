@@ -13,7 +13,7 @@ class EditProductScreen extends StatelessWidget {
           children: [
             const TextField(decoration: InputDecoration(labelText: 'Product Name', hintText: 'Classic Tailored Suit')),
             const SizedBox(height: 16),
-            const TextField(decoration: InputDecoration(labelText: 'Price', hintText: '$250.00')),
+            const TextField(decoration: InputDecoration(labelText: 'Price', hintText: '')),
             const SizedBox(height: 32),
             ElevatedButton(onPressed: () {}, child: const Text('Update Product'))
           ],
