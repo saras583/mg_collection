@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:mgcollection_app/admin/admin_home.dart';
+import 'package:mgcollection_app/admin/screens/admin_home.dart';
 
 
 class AdminLoginScreen extends StatefulWidget {
@@ -50,6 +50,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text("Admin Login"),
       ),

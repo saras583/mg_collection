@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/admin/adminlogin.dart';
+import 'package:mgcollection_app/admin/screens/adminlogin.dart';
 import 'package:mgcollection_app/authu/register_screen.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
