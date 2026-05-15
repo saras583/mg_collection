@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:mgcollection_app/authu/splash_screen.dart';
 import 'package:mgcollection_app/controller.onbording/onbordingcontroller.dart';
+import 'package:mgcollection_app/controller.onbording/onbordingscreen.dart';
 import 'package:provider/provider.dart';
 import 'package:mgcollection_app/screens/theme.dart';
 import 'package:mgcollection_app/services/themeprovider.dart';
@@ -27,6 +29,7 @@ void main() async {
   await Hive.openBox('orders');
   await Hive.openBox('settings');
   await Hive.openBox('products');
+  await Hive.openBox('adminBox'); 
 
   runApp(
 
@@ -67,7 +70,7 @@ class MgCollection extends StatelessWidget {
                   : ThemeMode.light,
 
           /// APP FLOW CONTROLLER
-          home: const OnboardingController(),
+          home: const OnboardingScreen()
         );
       },
     );

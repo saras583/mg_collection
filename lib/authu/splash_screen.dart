@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/authu/login_screen.dart';
+import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,7 +15,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   checklogin() async {
     await Future.delayed(Duration(seconds: 2));
-    if (supbase.auth.currentSession == null) {
+
+    final Session = supbase.auth.currentSession;
+
+    if (Session ==null) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -22,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => botton),
+        MaterialPageRoute(builder: (context) => Bottomnavigationbarscreen()),
       );
     }
   }

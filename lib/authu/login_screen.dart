@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/admin/adminlogin.dart';
 import 'package:mgcollection_app/authu/register_screen.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,12 +21,12 @@ class _LoginScreenState
   final passwordController =
       TextEditingController();
 
-  bool obscurePassword = true;
+bool obscurePassword = true;
 
-  bool loading = false;
+bool loading = false;
 
-  final supabase =
-      Supabase.instance.client;
+final supabase =
+  Supabase.instance.client;
 
   /// LOGIN
   Future<void> login() async {
@@ -420,13 +421,9 @@ class _LoginScreenState
 
                       children: const [
 
-                        Icon(
-                          Icons.g_mobiledata,
-                          size: 40,
-                          color: Colors.red,
-                        ),
+                        Image(image: AssetImage('assets/images/search.png',)),
 
-                        SizedBox(width: 10),
+                        SizedBox(width: 15),
 
                         Text(
 
@@ -490,7 +487,34 @@ class _LoginScreenState
                           ),
                         ),
                       ),
-                    ],
+                      
+                      GestureDetector(
+                        onTap: () {
+
+                          Navigator.push(
+
+                            context,
+
+                            MaterialPageRoute(
+
+                              builder: (_) =>
+                                  AdminLoginScreen(),
+                            ),
+                          );
+                        },
+
+                        child: const Text(
+
+                          "admin",
+
+                          style: TextStyle(
+
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
+                        ),
+                      
+                  )],
                   ),
 
                   const SizedBox(height: 30),

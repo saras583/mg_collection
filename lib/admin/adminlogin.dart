@@ -1,38 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/admin/admin_dashbord.dart';
+import 'package:hive/hive.dart';
+import 'package:mgcollection_app/admin/admin_home.dart';
 
-class AdminLoginScreen extends StatelessWidget {
+
+class AdminLoginScreen extends StatefulWidget {
   const AdminLoginScreen({super.key});
+
+  @override
+  State<AdminLoginScreen> createState() => _AdminLoginScreenState();
+}
+
+class _AdminLoginScreenState extends State<AdminLoginScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  final adminEmail = "admin@gmail.com";
+  final adminPassword = "123456";
+
+  void login() {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (email == adminEmail && password == adminPassword) {
+      var box = Hive.box('adminBox');
+
+      box.put('isLogged', true);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Login Success"),
+        ),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AdminHome(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid Email or Password"),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          width: 400,
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('ADMIN LOGIN', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 32),
-              const TextField(decoration: InputDecoration(labelText: 'Username', border: OutlineInputBorder())),
-              const SizedBox(height: 16),
-              const TextField(decoration: InputDecoration(labelText: 'Password', border: OutlineInputBorder()), obscureText: true),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdminDashboardScreen()));
-                },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                  child: Text('Login'),
-                ),
-              )
-            ],
-          ),
+      appBar: AppBar(
+        title: const Text("Admin Login"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                hintText: "Email",
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                hintText: "Password",
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            ElevatedButton(
+              onPressed: login,
+              child: const Text("Login"),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+

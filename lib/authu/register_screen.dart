@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/authu/login_screen.dart';
-import 'package:mgcollection_app/authu/register_screen.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterScreen extends StatefulWidget {
+
   const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() =>
-      _LoginScreenState();
+      _RegisterScreenState();
 }
 
-class _LoginScreenState
+class _RegisterScreenState
     extends State<RegisterScreen> {
+
+  final nameController =
+      TextEditingController();
 
   final emailcontroller =
       TextEditingController();
@@ -28,7 +31,7 @@ class _LoginScreenState
   final supabase =
       Supabase.instance.client;
 
-  /// LOGIN
+  /// REGISTER
   Future<void> register() async {
 
     setState(() {
@@ -38,8 +41,7 @@ class _LoginScreenState
     try {
 
       final result =
-          await supabase.auth
-              .signUp(
+          await supabase.auth.signUp(
 
         email:
             emailcontroller.text
@@ -48,9 +50,27 @@ class _LoginScreenState
         password:
             passwordController.text
                 .trim(),
+
+        data: {
+
+          'name':
+              nameController.text
+                  .trim(),
+        },
       );
 
       if (result.user != null) {
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+
+          const SnackBar(
+
+            content: Text(
+              "Registration Successful",
+            ),
+          ),
+        );
 
         Navigator.pushAndRemoveUntil(
 
@@ -127,33 +147,43 @@ class _LoginScreenState
                     alignment:
                         Alignment.topLeft,
 
-                    child: Container(
+                    child: GestureDetector(
 
-                      height: 50,
+                      onTap: () {
 
-                      width: 50,
+                        Navigator.pop(
+                          context,
+                        );
+                      },
 
-                      decoration:
-                          const BoxDecoration(
+                      child: Container(
 
-                        color: Colors.white,
+                        height: 50,
 
-                        shape:
-                            BoxShape.circle,
-                      ),
+                        width: 50,
 
-                      child: const Icon(
-                        Icons.arrow_back_ios_new,
+                        decoration:
+                            const BoxDecoration(
+
+                          color: Colors.white,
+
+                          shape:
+                              BoxShape.circle,
+                        ),
+
+                        child: const Icon(
+                          Icons.arrow_back_ios_new,
+                        ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 70),
+                  const SizedBox(height: 50),
 
                   /// TITLE
                   const Text(
 
-                    "Hello Again!",
+                    "Create Account",
 
                     style: TextStyle(
 
@@ -171,7 +201,7 @@ class _LoginScreenState
 
                   const Text(
 
-                    "Welcome Back You've Been Missed!",
+                    "Register to continue shopping",
 
                     style: TextStyle(
 
@@ -181,7 +211,67 @@ class _LoginScreenState
                     ),
                   ),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 40),
+
+                  /// NAME TITLE
+                  const Align(
+
+                    alignment:
+                        Alignment.centerLeft,
+
+                    child: Text(
+
+                      "Name",
+
+                      style: TextStyle(
+
+                        fontSize: 18,
+
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  /// NAME FIELD
+                  Container(
+
+                    decoration: BoxDecoration(
+
+                      color: Colors.white,
+
+                      borderRadius:
+                          BorderRadius.circular(
+                        30,
+                      ),
+                    ),
+
+                    child: TextField(
+
+                      controller:
+                          nameController,
+
+                      decoration:
+                          const InputDecoration(
+
+                        hintText:
+                            "Enter Name",
+
+                        border:
+                            InputBorder.none,
+
+                        contentPadding:
+                            EdgeInsets.symmetric(
+                          horizontal: 25,
+                          vertical: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
 
                   /// EMAIL TITLE
                   const Align(
@@ -223,11 +313,14 @@ class _LoginScreenState
                       controller:
                           emailcontroller,
 
+                      keyboardType:
+                          TextInputType.emailAddress,
+
                       decoration:
                           const InputDecoration(
 
                         hintText:
-                            "alissonbecker@gmail.com",
+                            "example@gmail.com",
 
                         border:
                             InputBorder.none,
@@ -241,7 +334,7 @@ class _LoginScreenState
                     ),
                   ),
 
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 30),
 
                   /// PASSWORD TITLE
                   const Align(
@@ -279,6 +372,7 @@ class _LoginScreenState
                     ),
 
                     child: TextField(
+                      
 
                       controller:
                           passwordController,
@@ -288,6 +382,7 @@ class _LoginScreenState
 
                       decoration:
                           InputDecoration(
+                            hintText: 'password',
 
                         border:
                             InputBorder.none,
@@ -321,20 +416,9 @@ class _LoginScreenState
                     ),
                   ),
 
-                  const SizedBox(height: 15),
-
-                  /// RECOVERY PASSWORD
-                  const Align(
-
-                    alignment:
-                        Alignment.centerLeft,
-
-                    
-                  ),
-
                   const SizedBox(height: 40),
 
-                  /// LOGIN BUTTON
+                  /// REGISTER BUTTON
                   SizedBox(
 
                     width: double.infinity,
@@ -373,7 +457,7 @@ class _LoginScreenState
                               )
                               : const Text(
 
-                                "Sign In",
+                                "Sign Up",
 
                                 style: TextStyle(
 
@@ -388,14 +472,9 @@ class _LoginScreenState
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 60),
 
-                  /// GOOGLE BUTTON
-                  
-
-                  const SizedBox(height: 120),
-
-                  /// REGISTER
+                  /// LOGIN
                   Row(
 
                     mainAxisAlignment:
@@ -405,7 +484,7 @@ class _LoginScreenState
 
                       const Text(
 
-                        "already have a Account",
+                        "Already have an account?",
 
                         style: TextStyle(
                           color: Colors.grey,
@@ -430,7 +509,7 @@ class _LoginScreenState
 
                         child: const Text(
 
-                          "login",
+                          " Login",
 
                           style: TextStyle(
 

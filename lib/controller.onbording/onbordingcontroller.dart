@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mgcollection_app/authu/login_screen.dart';
+import 'package:mgcollection_app/authu/splash_screen.dart';
 import 'package:mgcollection_app/controller.onbording/onbordingscreen.dart';
 
 class OnboardingController
@@ -24,7 +25,7 @@ class OnboardingController
 
     if (onboardingDone) {
 
-      return const LoginScreen();
+      return const SplashScreen();
 
     } else {
 
