@@ -1,84 +1,257 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class AdminDashboard extends StatelessWidget {
-  const AdminDashboard({super.key});
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
+
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    final productBox = Hive.box('products');
+    final orderBox = Hive.box('orders');
+
+    final products = productBox.values.toList();
+
+    int shirtCount = 0;
+    int watchCount = 0;
+    int skincareCount = 0;
+    int shoesCount = 0;
+    int jewelleryCount = 0;
+
+    double totalRevenue = 0;
+
+    for (var order in orderBox.values) {
+
+      totalRevenue +=
+          double.tryParse(order["price"].toString()) ?? 0;
+    }
+
+    for (var product in products) {
+
+      if (product["category"] == "Shirt") {
+        shirtCount++;
+      }
+
+      if (product["category"] == "Watch") {
+        watchCount++;
+      }
+
+      if (product["category"] == "Skincare") {
+        skincareCount++;
+      }
+
+      if (product["category"] == "Shoes") {
+        shoesCount++;
+      }
+
+      if (product["category"] == "Jewellery") {
+        jewelleryCount++;
+      }
+    }
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
       appBar: AppBar(
-        title: const Text("Admin Dashboard"),
-      ),
-
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              child: Center(
-                child: Text(
-                  "Admin Panel",
-                  style: TextStyle(fontSize: 22),
-                ),
-              ),
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.dashboard),
-              title: const Text("Dashboard"),
-              onTap: () {},
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.shopping_bag),
-              title: const Text("Products"),
-              onTap: () {},
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.shopping_cart),
-              title: const Text("Orders"),
-              onTap: () {},
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.people),
-              title: const Text("Users"),
-              onTap: () {},
-            ),
-          ],
-        ),
+        title: const Text("Dashboard"),
       ),
 
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
+
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
-            dashboardCard(
-              title: "Products",
-              count: "120",
-              icon: Icons.shopping_bag,
+
+            const Text(
+              "Analytics",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
-            dashboardCard(
-              title: "Orders",
-              count: "45",
-              icon: Icons.shopping_cart,
+            const SizedBox(height: 20),
+
+            GridView.count(
+
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+
+              crossAxisCount: 2,
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 15,
+
+              children: [
+
+                dashboardCard(
+                  title: "Products",
+                  count: products.length.toString(),
+                  icon: Icons.shopping_bag,
+                  color: Colors.blue,
+                ),
+
+                dashboardCard(
+                  title: "Revenue",
+                  count: "₹${totalRevenue.toInt()}",
+                  icon: Icons.currency_rupee,
+                  color: Colors.green,
+                ),
+
+                dashboardCard(
+                  title: "Shoes",
+                  count: shoesCount.toString(),
+                  icon: Icons.checkroom,
+                  color: Colors.orange,
+                ),
+
+                dashboardCard(
+                  title: "Watches",
+                  count: watchCount.toString(),
+                  icon: Icons.watch,
+                  color: Colors.purple,
+                ),
+
+                dashboardCard(
+                  title: "Shirts",
+                  count: shirtCount.toString(),
+                  icon: Icons.shopping_bag,
+                  color: Colors.red,
+                ),
+
+                dashboardCard(
+                  title: "Skincare",
+                  count: skincareCount.toString(),
+                  icon: Icons.spa,
+                  color: Colors.teal,
+                ),
+
+                dashboardCard(
+                  title: "Jewellery",
+                  count: jewelleryCount.toString(),
+                  icon: Icons.diamond,
+                  color: Colors.pink,
+                ),
+              ],
             ),
 
-            dashboardCard(
-              title: "Users",
-              count: "80",
-              icon: Icons.people,
+            const SizedBox(height: 25),
+
+            const Text(
+              "Recent Products",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
-            dashboardCard(
-              title: "Revenue",
-              count: "₹25K",
-              icon: Icons.currency_rupee,
+            const SizedBox(height: 15),
+
+            Expanded(
+
+              child: products.isEmpty
+
+                  ? const Center(
+                      child: Text(
+                        "No Products Added",
+                      ),
+                    )
+
+                  : ListView.builder(
+
+                      itemCount: products.length,
+
+                      itemBuilder: (context, index) {
+
+                        final product =
+                            products.reversed.toList()[index];
+
+                        return Card(
+
+                          margin: const EdgeInsets.only(
+                            bottom: 12,
+                          ),
+
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15),
+                          ),
+
+                          child: ListTile(
+
+                            contentPadding:
+                                const EdgeInsets.all(10),
+
+                            leading:
+
+                                product["image"] != null &&
+                                        product["image"] != ""
+
+                                    ? CircleAvatar(
+                                        radius: 28,
+
+                                        backgroundImage:
+                                            FileImage(
+                                          File(
+                                            product["image"],
+                                          ),
+                                        ),
+                                      )
+
+                                    : const CircleAvatar(
+                                        radius: 28,
+                                        child:
+                                            Icon(Icons.image),
+                                      ),
+
+                            title: Text(
+                              product["name"] ??
+                                  "No Name",
+                              style: const TextStyle(
+                                fontWeight:
+                                    FontWeight.bold,
+                              ),
+                            ),
+
+                            subtitle: Text(
+                              "₹${product["price"] ?? "0"}",
+                            ),
+
+                            trailing: Container(
+
+                              padding:
+                                  const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+
+                              decoration: BoxDecoration(
+
+                                color:
+                                    Colors.blue.shade100,
+
+                                borderRadius:
+                                    BorderRadius.circular(
+                                        20),
+                              ),
+
+                              child: Text(
+
+                                product["category"] ?? "",
+
+                                style: const TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight:
+                                      FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
@@ -87,28 +260,43 @@ class AdminDashboard extends StatelessWidget {
   }
 
   Widget dashboardCard({
+
     required String title,
     required String count,
     required IconData icon,
+    required Color color,
   }) {
+
     return Container(
+
       padding: const EdgeInsets.all(16),
+
       decoration: BoxDecoration(
-        color: Colors.blue.shade100,
+
+        color: color.withOpacity(0.15),
+
         borderRadius: BorderRadius.circular(20),
       ),
+
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+
         children: [
-          Icon(icon, size: 40),
+
+          Icon(
+            icon,
+            size: 40,
+            color: color,
+          ),
 
           const SizedBox(height: 10),
 
           Text(
             count,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
+              color: color,
             ),
           ),
 
@@ -116,7 +304,9 @@ class AdminDashboard extends StatelessWidget {
 
           Text(
             title,
-            style: const TextStyle(fontSize: 18),
+            style: const TextStyle(
+              fontSize: 18,
+            ),
           ),
         ],
       ),

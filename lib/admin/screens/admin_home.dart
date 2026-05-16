@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/admin/screens/admindashbored.dart';
+import 'package:mgcollection_app/admin/screens/orderscreen.dart';
 import 'package:mgcollection_app/admin/screens/productscreen.dart';
 
 class AdminHome extends StatefulWidget {
@@ -13,9 +15,9 @@ class _AdminHomeState extends State<AdminHome> {
   int currentIndex = 0;
 
   final List<Widget> screens = [
-    //const DashboardScreen(),
-     ProductScreen()
-   // const OrderScreen(),
+     DashboardScreen(),
+     AdminProductScreen(),
+     AdminOrderScreen()
    // const UserScreen(),
   ];
 
