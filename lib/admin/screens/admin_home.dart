@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/admin/adminuserscreen.dart';
 import 'package:mgcollection_app/admin/screens/admindashbored.dart';
 import 'package:mgcollection_app/admin/screens/orderscreen.dart';
 import 'package:mgcollection_app/admin/screens/productscreen.dart';
@@ -17,8 +18,8 @@ class _AdminHomeState extends State<AdminHome> {
   final List<Widget> screens = [
      DashboardScreen(),
      AdminProductScreen(),
-     AdminOrderScreen()
-   // const UserScreen(),
+     AdminOrderScreen(),
+     Adminuserscreen(),
   ];
 
   @override

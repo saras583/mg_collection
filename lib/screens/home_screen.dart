@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Category> categories = [
     Category(name: "Shirt", image: "assets/images/shirt.jpg"),
-    Category(name: "Watch", image: "assets/images/letstartmg.jpg"),
+    Category(name: "Watch", image: "assets/images/watch.jpg"),
     Category(name: "Skincare", image: "assets/images/skincare.jpg"),
     Category(name: "Pants", image: "assets/images/next.jpg"),
     Category(name: "Shoes", image: "assets/images/air1.jpg"),

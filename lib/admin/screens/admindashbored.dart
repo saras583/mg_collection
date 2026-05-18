@@ -25,7 +25,10 @@ class DashboardScreen extends StatelessWidget {
     for (var order in orderBox.values) {
 
       totalRevenue +=
-          double.tryParse(order["price"].toString()) ?? 0;
+          double.tryParse(
+                order["price"].toString(),
+              ) ??
+              0;
     }
 
     for (var product in products) {
@@ -57,137 +60,161 @@ class DashboardScreen extends StatelessWidget {
         title: const Text("Dashboard"),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: SingleChildScrollView(
 
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
 
-          children: [
+          child: Column(
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
 
-            const Text(
-              "Analytics",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            children: [
+
+              const Text(
+                "Analytics",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            GridView.count(
+              GridView.count(
 
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
 
-              crossAxisCount: 2,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15,
+                physics:
+                    const NeverScrollableScrollPhysics(),
 
-              children: [
+                crossAxisCount: 2,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
 
-                dashboardCard(
-                  title: "Products",
-                  count: products.length.toString(),
-                  icon: Icons.shopping_bag,
-                  color: Colors.blue,
-                ),
+                children: [
 
-                dashboardCard(
-                  title: "Revenue",
-                  count: "₹${totalRevenue.toInt()}",
-                  icon: Icons.currency_rupee,
-                  color: Colors.green,
-                ),
+                  dashboardCard(
+                    title: "Products",
+                    count: products.length.toString(),
+                    icon: Icons.shopping_bag,
+                    color: Colors.blue,
+                  ),
 
-                dashboardCard(
-                  title: "Shoes",
-                  count: shoesCount.toString(),
-                  icon: Icons.checkroom,
-                  color: Colors.orange,
-                ),
+                  dashboardCard(
+                    title: "Revenue",
+                    count:
+                        "₹${totalRevenue.toInt()}",
+                    icon: Icons.currency_rupee,
+                    color: Colors.green,
+                  ),
 
-                dashboardCard(
-                  title: "Watches",
-                  count: watchCount.toString(),
-                  icon: Icons.watch,
-                  color: Colors.purple,
-                ),
+                  dashboardCard(
+                    title: "Shoes",
+                    count: shoesCount.toString(),
+                    icon: Icons.checkroom,
+                    color: Colors.orange,
+                  ),
 
-                dashboardCard(
-                  title: "Shirts",
-                  count: shirtCount.toString(),
-                  icon: Icons.shopping_bag,
-                  color: Colors.red,
-                ),
+                  dashboardCard(
+                    title: "Watches",
+                    count: watchCount.toString(),
+                    icon: Icons.watch,
+                    color: Colors.purple,
+                  ),
 
-                dashboardCard(
-                  title: "Skincare",
-                  count: skincareCount.toString(),
-                  icon: Icons.spa,
-                  color: Colors.teal,
-                ),
+                  dashboardCard(
+                    title: "Shirts",
+                    count: shirtCount.toString(),
+                    icon: Icons.shopping_bag,
+                    color: Colors.red,
+                  ),
 
-                dashboardCard(
-                  title: "Jewellery",
-                  count: jewelleryCount.toString(),
-                  icon: Icons.diamond,
-                  color: Colors.pink,
-                ),
-              ],
-            ),
+                  dashboardCard(
+                    title: "Skincare",
+                    count:
+                        skincareCount.toString(),
+                    icon: Icons.spa,
+                    color: Colors.teal,
+                  ),
 
-            const SizedBox(height: 25),
-
-            const Text(
-              "Recent Products",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+                  dashboardCard(
+                    title: "Jewellery",
+                    count:
+                        jewelleryCount.toString(),
+                    icon: Icons.diamond,
+                    color: Colors.pink,
+                  ),
+                ],
               ),
-            ),
 
-            const SizedBox(height: 15),
+              const SizedBox(height: 30),
 
-            Expanded(
+              const Text(
+                "Recent Products",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
 
-              child: products.isEmpty
+              const SizedBox(height: 15),
+
+              products.isEmpty
 
                   ? const Center(
-                      child: Text(
-                        "No Products Added",
+                      child: Padding(
+                        padding: EdgeInsets.all(30),
+                        child: Text(
+                          "No Products Added",
+                        ),
                       ),
                     )
 
                   : ListView.builder(
 
+                      shrinkWrap: true,
+
+                      physics:
+                          const NeverScrollableScrollPhysics(),
+
                       itemCount: products.length,
 
-                      itemBuilder: (context, index) {
+                      itemBuilder:
+                          (context, index) {
 
                         final product =
-                            products.reversed.toList()[index];
+                            products.reversed
+                                .toList()[index];
 
                         return Card(
 
-                          margin: const EdgeInsets.only(
+                          margin:
+                              const EdgeInsets.only(
                             bottom: 12,
                           ),
 
-                          shape: RoundedRectangleBorder(
+                          shape:
+                              RoundedRectangleBorder(
                             borderRadius:
-                                BorderRadius.circular(15),
+                                BorderRadius.circular(
+                              15,
+                            ),
                           ),
 
                           child: ListTile(
 
                             contentPadding:
-                                const EdgeInsets.all(10),
+                                const EdgeInsets.all(
+                              10,
+                            ),
 
                             leading:
 
-                                product["image"] != null &&
-                                        product["image"] != ""
+                                product["image"] !=
+                                            null &&
+                                        product["image"] !=
+                                            ""
 
                                     ? CircleAvatar(
                                         radius: 28,
@@ -195,21 +222,26 @@ class DashboardScreen extends StatelessWidget {
                                         backgroundImage:
                                             FileImage(
                                           File(
-                                            product["image"],
+                                            product[
+                                                "image"],
                                           ),
                                         ),
                                       )
 
                                     : const CircleAvatar(
                                         radius: 28,
-                                        child:
-                                            Icon(Icons.image),
+                                        child: Icon(
+                                          Icons.image,
+                                        ),
                                       ),
 
                             title: Text(
+
                               product["name"] ??
                                   "No Name",
-                              style: const TextStyle(
+
+                              style:
+                                  const TextStyle(
                                 fontWeight:
                                     FontWeight.bold,
                               ),
@@ -227,21 +259,26 @@ class DashboardScreen extends StatelessWidget {
                                 vertical: 5,
                               ),
 
-                              decoration: BoxDecoration(
+                              decoration:
+                                  BoxDecoration(
 
-                                color:
-                                    Colors.blue.shade100,
+                                color: Colors
+                                    .blue
+                                    .shade100,
 
                                 borderRadius:
                                     BorderRadius.circular(
-                                        20),
+                                  20,
+                                ),
                               ),
 
                               child: Text(
 
-                                product["category"] ?? "",
+                                product["category"] ??
+                                    "",
 
-                                style: const TextStyle(
+                                style:
+                                    const TextStyle(
                                   color: Colors.blue,
                                   fontWeight:
                                       FontWeight.bold,
@@ -252,8 +289,8 @@ class DashboardScreen extends StatelessWidget {
                         );
                       },
                     ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -275,11 +312,13 @@ class DashboardScreen extends StatelessWidget {
 
         color: color.withOpacity(0.15),
 
-        borderRadius: BorderRadius.circular(20),
+        borderRadius:
+            BorderRadius.circular(20),
       ),
 
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment:
+            MainAxisAlignment.center,
 
         children: [
 
@@ -292,7 +331,9 @@ class DashboardScreen extends StatelessWidget {
           const SizedBox(height: 10),
 
           Text(
+
             count,
+
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -303,7 +344,9 @@ class DashboardScreen extends StatelessWidget {
           const SizedBox(height: 10),
 
           Text(
+
             title,
+
             style: const TextStyle(
               fontSize: 18,
             ),

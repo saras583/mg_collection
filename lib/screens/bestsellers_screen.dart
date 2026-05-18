@@ -5,217 +5,642 @@ class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
 
   @override
-  State<ExploreScreen> createState() => _ExploreScreenState();
+  State<ExploreScreen> createState() =>
+      _ExploreScreenState();
 }
 
-class _ExploreScreenState extends State<ExploreScreen> {
+class _ExploreScreenState
+    extends State<ExploreScreen> {
+
+  String selectedFilter = 'Default';
+
   List<Map<String, dynamic>> products = [
+
     {
-      "name": "wathes",
-      "category": "Men’s Shoes",
+      "name": "Watches",
+      "category": "Accessories",
       "price": 367.76,
-      "image": "assets/images/watch.jpg",
+      "image":
+          "assets/images/watch.jpg",
+      "rating": 4.5,
     },
+
     {
-      "name": "pant",
-      "category": "Men’s Shoes",
+      "name": "Pant",
+      "category": "Fashion",
       "price": 299.99,
-      "image": "assets/images/grey trouser.jpg",
+      "image":
+          "assets/images/grey trouser.jpg",
+      "rating": 4.2,
     },
+
     {
       "name": "Nike Jordan",
-      "category": "Men’s Shoes",
+      "category": "Shoes",
       "price": 399.99,
-      "image": "assets/images/air1.jpg",
+      "image":
+          "assets/images/air1.jpg",
+      "rating": 4.8,
     },
+
     {
-      "name": "shirt",
-      "category": "Running Shoes",
+      "name": "Shirt",
+      "category": "Fashion",
       "price": 249.99,
-      "image": "assets/images/black_shirt.jpg",
+      "image":
+          "assets/images/black_shirt.jpg",
+      "rating": 4.4,
     },
+
     {
       "name": "Black Linen Shirt",
-      
+      "category": "Shirts",
       "price": 899,
-      "image": "assets/images/black_shirt.jpg",
+      "image":
+          "assets/images/black_shirt.jpg",
+      "rating": 4.7,
     },
+
     {
-      "name": " Casual Shirt",
+      "name": "Casual Shirt",
+      "category": "Shirts",
       "price": 799,
-      "image": 'assets/images/laventer.jpg',
+      "image":
+          "assets/images/laventer.jpg",
+      "rating": 4.3,
     },
+
     {
       "name": "Blue Denim Shirt",
+      "category": "Shirts",
       "price": 999,
-      "image": "assets/images/checkshirt.jpg",
+      "image":
+          "assets/images/checkshirt.jpg",
+      "rating": 4.6,
     },
+
     {
       "name": "Checked Cotton Shirt",
+      "category": "Shirts",
       "price": 849,
-      "image": "assets/images/black_shirt.jpg",
+      "image":
+          "assets/images/black_shirt.jpg",
+      "rating": 4.5,
     },
+
     {
-      "name": "laveder Shirt",
+      "name": "Lavender Shirt",
+      "category": "Shirts",
       "price": 950,
-      "image": "assets/images/laventer.jpg",
+      "image":
+          "assets/images/laventer.jpg",
+      "rating": 4.1,
     },
+
     {
       "name": "Striped Office Shirt",
+      "category": "Shirts",
       "price": 899,
-      "image": "assets/images/checkshirt.jpg",
-    },{
-      "name": "Slim Fit Jeans",
-      
-      "price": 1299,
-      "image": "assets/images/grey trouser.jpg",
+      "image":
+          "assets/images/checkshirt.jpg",
+      "rating": 4.2,
     },
+
+    {
+      "name": "Slim Fit Jeans",
+      "category": "Pants",
+      "price": 1299,
+      "image":
+          "assets/images/grey trouser.jpg",
+      "rating": 4.7,
+    },
+
     {
       "name": "Formal Trousers",
+      "category": "Pants",
       "price": 999,
-      "image": "assets/images/next.jpg",
+      "image":
+          "assets/images/next.jpg",
+      "rating": 4.3,
     },
-    {"name": "Cargo Pants", "price": 1499, "image": "assets/images/next.jpg"},
+
     {
-      "name": " spiderring",
+      "name": "Cargo Pants",
+      "category": "Pants",
+      "price": 1499,
+      "image":
+          "assets/images/next.jpg",
+      "rating": 4.6,
+    },
+
+    {
+      "name": "Spider Ring",
+      "category": "Jewellery",
       "price": 2999,
-      "image": "assets/images/spiderring.jpg",
+      "image":
+          "assets/images/spiderring.jpg",
+      "rating": 4.9,
     },
+
     {
-      "name": "mountainring",
+      "name": "Mountain Ring",
+      "category": "Jewellery",
       "price": 4999,
-      "image": "assets/images/mountainrings.jpg",
+      "image":
+          "assets/images/mountainrings.jpg",
+      "rating": 4.8,
     },
+
     {
-      "name": "ring gravur",
+      "name": "Ring Gravur",
+      "category": "Jewellery",
       "price": 1999,
-      "image": "assets/images/Ring  Gravur.jpg",
-    },{
-      "name": "Face Cleanser",
-      "price": 499,
-      "image": "assets/images/cetapfilne.jpg",
+      "image":
+          "assets/images/Ring  Gravur.jpg",
+      "rating": 4.2,
     },
+
+    {
+      "name": "Face Cleanser",
+      "category": "Skincare",
+      "price": 499,
+      "image":
+          "assets/images/cetapfilne.jpg",
+      "rating": 4.4,
+    },
+
     {
       "name": "Moisturizing Cream",
+      "category": "Skincare",
       "price": 699,
-      "image": "assets/images/vitaminc serm.jpg",
+      "image":
+          "assets/images/vitaminc serm.jpg",
+      "rating": 4.5,
     },
 
     {
       "name": "Sunscreen SPF 50",
+      "category": "Skincare",
       "price": 599,
-      "image": "assets/images/sunscreen.jpg",
+      "image":
+          "assets/images/sunscreen.jpg",
+      "rating": 4.6,
     },
+
     {
       "name": "Face Wash Gel",
+      "category": "Skincare",
       "price": 399,
-      "image": "assets/images/simplefacewash.jpg",
+      "image":
+          "assets/images/simplefacewash.jpg",
+      "rating": 4.1,
     },
   ];
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
+      backgroundColor:
+          Theme.of(context)
+              .scaffoldBackgroundColor,
 
       body: SafeArea(
+
         child: Column(
+
           children: [
+
+            /// TOP BAR
             Padding(
-              padding: const EdgeInsets.all(16),
+
+              padding:
+                  const EdgeInsets.all(16),
+
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                mainAxisAlignment:
+                    MainAxisAlignment
+                        .spaceBetween,
+
                 children: [
-                  Text(
+
+                  const Text(
+
                     "Best Sellers",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
+                    style: TextStyle(
+
+                      fontSize: 28,
+
+                      fontWeight:
+                          FontWeight.bold,
+                    ),
                   ),
+
                   Row(
+
                     children: [
-                      Icon(Icons.tune),
-                      SizedBox(width: 10),
-                      Icon(Icons.search),
+
+                      PopupMenuButton<String>(
+
+                        icon: const Icon(
+                          Icons.tune,
+                        ),
+
+                        onSelected: (value) {
+
+                          setState(() {
+
+                            selectedFilter =
+                                value;
+
+                            if (value ==
+                                'Low to High') {
+
+                              products.sort(
+
+                                (a, b) =>
+
+                                    a['price']
+                                        .compareTo(
+                                      b['price'],
+                                    ),
+                              );
+
+                            } else if (value ==
+                                'High to Low') {
+
+                              products.sort(
+
+                                (a, b) =>
+
+                                    b['price']
+                                        .compareTo(
+                                      a['price'],
+                                    ),
+                              );
+
+                            } else if (value ==
+                                'A-Z') {
+
+                              products.sort(
+
+                                (a, b) =>
+
+                                    a['name']
+                                        .compareTo(
+                                      b['name'],
+                                    ),
+                              );
+
+                            } else if (value ==
+                                'Rating') {
+
+                              products.sort(
+
+                                (a, b) =>
+
+                                    b['rating']
+                                        .compareTo(
+                                      a['rating'],
+                                    ),
+                              );
+                            }
+                          });
+                        },
+
+                        itemBuilder:
+                            (context) => [
+
+                          const PopupMenuItem(
+                            value:
+                                'Low to High',
+
+                            child: Text(
+                              'Price: Low to High',
+                            ),
+                          ),
+
+                          const PopupMenuItem(
+                            value:
+                                'High to Low',
+
+                            child: Text(
+                              'Price: High to Low',
+                            ),
+                          ),
+
+                          const PopupMenuItem(
+                            value: 'A-Z',
+
+                            child: Text(
+                              'Name: A-Z',
+                            ),
+                          ),
+
+                          const PopupMenuItem(
+                            value: 'Rating',
+
+                            child: Text(
+                              'Top Rated',
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(
+                        width: 10,
+                      ),
+
+                      const Icon(
+                        Icons.search,
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
 
+            /// PRODUCTS GRID
             Expanded(
+
               child: GridView.builder(
-                padding: EdgeInsets.all(12),
-                itemCount: products.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+
+                padding:
+                    const EdgeInsets.all(12),
+
+                itemCount:
+                    products.length,
+
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+
                   crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.75,
+
+                  crossAxisSpacing: 14,
+
+                  mainAxisSpacing: 14,
+
+                  childAspectRatio: 0.68,
                 ),
-                itemBuilder: (context, index) {
-                  final product = products[index];
+
+                itemBuilder:
+                    (context, index) {
+
+                  final product =
+                      products[index];
 
                   return GestureDetector(
+
                     onTap: () {
+
                       Navigator.push(
+
                         context,
+
                         MaterialPageRoute(
-                          builder: (_) => ShirtDetailsScreen(product: product),
+
+                          builder: (_) =>
+
+                              ShirtDetailsScreen(
+                                product:
+                                    product,
+                              ),
                         ),
                       );
                     },
+
                     child: Container(
-                      padding: EdgeInsets.all(10),
+
+                      padding:
+                          const EdgeInsets.all(
+                        12,
+                      ),
+
                       decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(20),
+
+                        color:
+                            Theme.of(context)
+                                .cardColor,
+
+                        borderRadius:
+                            BorderRadius.circular(
+                          22,
+                        ),
+
+                        boxShadow: [
+
+                          BoxShadow(
+
+                            color: Colors.black
+                                .withOpacity(
+                              0.05,
+                            ),
+
+                            blurRadius: 10,
+
+                            offset:
+                                const Offset(
+                              0,
+                              4,
+                            ),
+                          ),
+                        ],
                       ),
 
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                        crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
+
                         children: [
+
                           /// IMAGE
                           Expanded(
-                            child: Center(
-                              child: Image.asset(
-                                product["image"],
-                                fit: BoxFit.contain,
+
+                            child: Container(
+
+                              width:
+                                  double.infinity,
+
+                              decoration:
+                                  BoxDecoration(
+
+                                color: Colors
+                                    .grey
+                                    .shade100,
+
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  18,
+                                ),
+                              ),
+
+                              child: ClipRRect(
+
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  18,
+                                ),
+
+                                child: Image.asset(
+
+                                  product["image"],
+
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
 
-                          /// BEST SELLER
+                          const SizedBox(
+                            height: 12,
+                          ),
+
+                          /// PRODUCT NAME
                           Text(
+
                             product["name"],
-                            style: TextStyle(fontSize: 10, color: Theme.of(context).textTheme.bodyMedium?.color),
+
+                            maxLines: 1,
+
+                            overflow:
+                                TextOverflow
+                                    .ellipsis,
+
+                            style:
+                                const TextStyle(
+
+                              fontSize: 15,
+
+                              fontWeight:
+                                  FontWeight.bold,
+                            ),
                           ),
 
-                          SizedBox(height: 4),
+                          const SizedBox(
+                            height: 5,
+                          ),
 
+                          /// CATEGORY
                           Text(
-                            product["category"]??'no category',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+
+                            product["category"],
+
+                            style: TextStyle(
+
+                              fontSize: 12,
+
+                              color:
+                                  Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
+                            ),
                           ),
 
-                          Text(
-                            "\$${product["price"]}",
-                            style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
+                          const SizedBox(
+                            height: 6,
                           ),
 
-                          SizedBox(height: 6),
-
+                          /// RATING
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                             children: [
+
+                              const Icon(
+
+                                Icons.star,
+
+                                color:
+                                    Colors.orange,
+
+                                size: 16,
+                              ),
+
+                              const SizedBox(
+                                width: 5,
+                              ),
+
                               Text(
-                                "\$367.76",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+
+                                product["rating"]
+                                    .toString(),
+
+                                style:
+                                    const TextStyle(
+                                  color:
+                                      Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          /// PRICE + BUTTON
+                          Row(
+
+                            mainAxisAlignment:
+                                MainAxisAlignment
+                                    .spaceBetween,
+
+                            children: [
+
+                              Text(
+
+                                "₹${product["price"]}",
+
+                                style:
+                                    const TextStyle(
+
+                                  fontSize: 17,
+
+                                  fontWeight:
+                                      FontWeight.bold,
+                                ),
+                              ),
+
+                              Container(
+
+                                padding:
+                                    const EdgeInsets.all(
+                                  8,
+                                ),
+
+                                decoration:
+                                    BoxDecoration(
+
+                                  color:
+                                      Colors.black,
+
+                                  borderRadius:
+                                      BorderRadius.circular(
+                                    12,
+                                  ),
+                                ),
+
+                                child: const Icon(
+
+                                  Icons
+                                      .shopping_bag_outlined,
+
+                                  color:
+                                      Colors.white,
+
+                                  size: 18,
+                                ),
                               ),
                             ],
                           ),
                         ],
                       ),
                     ),
-
                   );
                 },
               ),

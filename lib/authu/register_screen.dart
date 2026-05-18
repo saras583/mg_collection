@@ -4,7 +4,6 @@ import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterScreen extends StatefulWidget {
-
   const RegisterScreen({super.key});
 
   @override
@@ -34,6 +33,23 @@ class _RegisterScreenState
   /// REGISTER
   Future<void> register() async {
 
+    if (nameController.text.isEmpty ||
+        emailcontroller.text.isEmpty ||
+        passwordController.text.isEmpty) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            "Please fill all fields",
+          ),
+        ),
+      );
+
+      return;
+    }
+
     setState(() {
       loading = true;
     });
@@ -44,22 +60,40 @@ class _RegisterScreenState
           await supabase.auth.signUp(
 
         email:
-            emailcontroller.text
-                .trim(),
+            emailcontroller.text.trim(),
 
         password:
-            passwordController.text
-                .trim(),
+            passwordController.text.trim(),
 
         data: {
 
           'name':
-              nameController.text
-                  .trim(),
+              nameController.text.trim(),
         },
       );
 
       if (result.user != null) {
+
+        /// SAVE USER TO USERS TABLE
+        await supabase
+            .from('users')
+            .insert({
+
+              "id": result.user!.id,
+
+              "name":
+                  nameController.text.trim(),
+
+              "email":
+                  emailcontroller.text.trim(),
+
+              "joined":
+                  DateTime.now()
+                      .toString()
+                      .substring(0, 10),
+
+              "blocked": false,
+            });
 
         ScaffoldMessenger.of(context)
             .showSnackBar(
@@ -93,6 +127,18 @@ class _RegisterScreenState
 
         SnackBar(
           content: Text(e.message),
+        ),
+      );
+
+    } catch (e) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
         ),
       );
 
@@ -372,7 +418,6 @@ class _RegisterScreenState
                     ),
 
                     child: TextField(
-                      
 
                       controller:
                           passwordController,
@@ -382,7 +427,8 @@ class _RegisterScreenState
 
                       decoration:
                           InputDecoration(
-                            hintText: 'password',
+
+                        hintText: 'Password',
 
                         border:
                             InputBorder.none,
@@ -452,23 +498,27 @@ class _RegisterScreenState
 
                       child:
                           loading
+
                               ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
+                                  color:
+                                      Colors.white,
+                                )
+
                               : const Text(
 
-                                "Sign Up",
+                                  "Sign Up",
 
-                                style: TextStyle(
+                                  style: TextStyle(
 
-                                  fontSize: 20,
+                                    fontSize: 20,
 
-                                  color: Colors.white,
+                                    color:
+                                        Colors.white,
 
-                                  fontWeight:
-                                      FontWeight.bold,
+                                    fontWeight:
+                                        FontWeight.bold,
+                                  ),
                                 ),
-                              ),
                     ),
                   ),
 

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mgcollection_app/admin/screens/product_detailed_screen.dart';
 
 class AdminProductScreen extends StatefulWidget {
   const AdminProductScreen({super.key});
@@ -404,7 +405,21 @@ final stockController =
 
           return Card(
 
-            child: ListTile(
+            child: ListTile(onTap: () {
+
+    Navigator.push(
+
+      context,
+
+      MaterialPageRoute(
+
+        builder: (context) =>
+            ProductDetailsScreen(
+          product: product,
+        ),
+      ),
+    );
+  },
 
               leading: product["image"] != null &&
         product["image"] != ""

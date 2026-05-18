@@ -68,7 +68,7 @@ class _WatchesDetailsScreenState
                     child: const CircleAvatar(
 
                       backgroundColor:
-                          Colors.white,
+                          Colors.black,
 
                       child: Icon(
                         Icons.arrow_back,

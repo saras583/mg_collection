@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/admin/screens/admin_home.dart';
 import 'package:mgcollection_app/admin/screens/adminlogin.dart';
 import 'package:mgcollection_app/authu/register_screen.dart';
 import 'package:mgcollection_app/screens/bottomnavigationbarScreen.dart';
@@ -21,12 +22,12 @@ class _LoginScreenState
   final passwordController =
       TextEditingController();
 
-bool obscurePassword = true;
+  bool obscurePassword = true;
 
-bool loading = false;
+  bool loading = false;
 
-final supabase =
-  Supabase.instance.client;
+  final supabase =
+      Supabase.instance.client;
 
   /// LOGIN
   Future<void> login() async {
@@ -37,17 +38,43 @@ final supabase =
 
     try {
 
+      final email =
+          emailcontroller.text.trim();
+
+      final password =
+          passwordController.text.trim();
+
+      /// ADMIN LOGIN
+      if (
+
+        email == "admin@gmail.com" &&
+        password == "123456"
+
+      ) {
+
+        Navigator.pushAndRemoveUntil(
+
+          context,
+
+          MaterialPageRoute(
+
+            builder: (_) =>
+                const AdminHome(),
+          ),
+
+          (route) => false,
+        );
+
+        return;
+      }
+
+      /// USER LOGIN
       final result =
           await supabase.auth
               .signInWithPassword(
 
-        email:
-            emailcontroller.text
-                .trim(),
-
-        password:
-            passwordController.text
-                .trim(),
+        email: email,
+        password: password,
       );
 
       if (result.user != null) {
@@ -66,13 +93,28 @@ final supabase =
         );
       }
 
-    } on AuthException catch (e) {
+    } on AuthException {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Invalid Email or Password",
+          ),
+        ),
+      );
+
+    } catch (e) {
 
       ScaffoldMessenger.of(context)
           .showSnackBar(
 
         SnackBar(
-          content: Text(e.message),
+          content: Text(
+            e.toString(),
+          ),
         ),
       );
 
@@ -127,23 +169,33 @@ final supabase =
                     alignment:
                         Alignment.topLeft,
 
-                    child: Container(
+                    child: GestureDetector(
 
-                      height: 50,
+                      onTap: () {
 
-                      width: 50,
+                        Navigator.pop(
+                          context,
+                        );
+                      },
 
-                      decoration:
-                          const BoxDecoration(
+                      child: Container(
 
-                        color: Colors.white,
+                        height: 50,
 
-                        shape:
-                            BoxShape.circle,
-                      ),
+                        width: 50,
 
-                      child: const Icon(
-                        Icons.arrow_back_ios_new,
+                        decoration:
+                            const BoxDecoration(
+
+                          color: Colors.white,
+
+                          shape:
+                              BoxShape.circle,
+                        ),
+
+                        child: const Icon(
+                          Icons.arrow_back_ios_new,
+                        ),
                       ),
                     ),
                   ),
@@ -223,11 +275,14 @@ final supabase =
                       controller:
                           emailcontroller,
 
+                      keyboardType:
+                          TextInputType.emailAddress,
+
                       decoration:
                           const InputDecoration(
 
                         hintText:
-                            "alissonbecker@gmail.com",
+                            "example@gmail.com",
 
                         border:
                             InputBorder.none,
@@ -288,6 +343,9 @@ final supabase =
 
                       decoration:
                           InputDecoration(
+
+                        hintText:
+                            "Enter Password",
 
                         border:
                             InputBorder.none,
@@ -374,24 +432,29 @@ final supabase =
                               : login,
 
                       child:
+
                           loading
+
                               ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
+                                  color:
+                                      Colors.white,
+                                )
+
                               : const Text(
 
-                                "Sign In",
+                                  "Sign In",
 
-                                style: TextStyle(
+                                  style: TextStyle(
 
-                                  fontSize: 20,
+                                    fontSize: 20,
 
-                                  color: Colors.white,
+                                    color:
+                                        Colors.white,
 
-                                  fontWeight:
-                                      FontWeight.bold,
+                                    fontWeight:
+                                        FontWeight.bold,
+                                  ),
                                 ),
-                              ),
                     ),
                   ),
 
@@ -421,7 +484,11 @@ final supabase =
 
                       children: const [
 
-                        Image(image: AssetImage('assets/images/search.png',)),
+                        Image(
+                          image: AssetImage(
+                            'assets/images/search.png',
+                          ),
+                        ),
 
                         SizedBox(width: 15),
 
@@ -441,9 +508,9 @@ final supabase =
                     ),
                   ),
 
-                  const SizedBox(height: 120),
+                  const SizedBox(height: 100),
 
-                  /// REGISTER
+                  /// REGISTER + ADMIN
                   Row(
 
                     mainAxisAlignment:
@@ -478,7 +545,7 @@ final supabase =
 
                         child: const Text(
 
-                          " Sign Up For Free",
+                          " Sign Up For",
 
                           style: TextStyle(
 
@@ -487,8 +554,11 @@ final supabase =
                           ),
                         ),
                       ),
-                      
+
+                      const SizedBox(width: 10),
+
                       GestureDetector(
+
                         onTap: () {
 
                           Navigator.push(
@@ -498,23 +568,25 @@ final supabase =
                             MaterialPageRoute(
 
                               builder: (_) =>
-                                  AdminLoginScreen(),
+                                  const AdminLoginScreen(),
                             ),
                           );
                         },
 
                         child: const Text(
 
-                          "admin",
+                          "Admin",
 
                           style: TextStyle(
 
                             fontWeight:
                                 FontWeight.bold,
+
+                            color: Colors.blue,
                           ),
                         ),
-                      
-                  )],
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 30),

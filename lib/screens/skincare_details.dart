@@ -68,7 +68,7 @@ class _SkincareDetailsScreenState
                     child: const CircleAvatar(
 
                       backgroundColor:
-                          Colors.white,
+                          Colors.black,
 
                       child: Icon(
                         Icons.arrow_back,

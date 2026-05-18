@@ -3,149 +3,383 @@ import 'package:mgcollection_app/screens/contactSupportscreen.dart';
 import 'package:mgcollection_app/screens/orderdetailedscreen.dart';
 
 class OrderStatusScreen extends StatelessWidget {
+
   final Map<String, dynamic> order;
 
-  const OrderStatusScreen({super.key, required this.order});
+  const OrderStatusScreen({
+    super.key,
+    required this.order,
+  });
 
   @override
   Widget build(BuildContext context) {
+
+    final status =
+        order["status"] ?? "Pending";
+
     return Scaffold(
-      backgroundColor: Color(0xFFF4ECEC),
+
+      backgroundColor:
+          Theme.of(context)
+              .scaffoldBackgroundColor,
+
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
 
-              SizedBox(height: 30),
+        child: SingleChildScrollView(
 
-              Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "ESTIMATED ARRIVAL",
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+          child: Padding(
+
+            padding:
+                const EdgeInsets.all(20),
+
+            child: Column(
+
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+
+              children: [
+
+                /// BACK BUTTON
+                CircleAvatar(
+
+                  backgroundColor:
+                      Theme.of(context)
+                          .cardColor,
+
+                  child: IconButton(
+
+                    icon: const Icon(
+                      Icons.arrow_back,
                     ),
 
-                    SizedBox(height: 8),
+                    onPressed: () {
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Tomorrow, Oct 24",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            "In Transit",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: 30),
-
-              Text(
-                "Shipment Journey",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-
-              SizedBox(height: 20),
-
-              _timelineItem(
-                title: "Out for Delivery",
-                subtitle: "Expected by 6:00 PM",
-                active: false,
-              ),
-
-              _timelineItem(
-                title: "Arrived at Hub",
-                subtitle: "Today, 08:42 AM",
-                active: true,
-              ),
-
-              _timelineItem(
-                title: "Shipped",
-                subtitle: "Oct 22, 02:15 PM",
-                active: true,
-              ),
-
-              _timelineItem(
-                title: "Order Placed",
-                subtitle: "Oct 21, 11:30 AM",
-                active: true,
-                isLast: true,
-              ),
-
-              Spacer(),
-
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 55),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                      Navigator.pop(
+                        context,
+                      );
+                    },
                   ),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => OrderDetailsScreen(order: order),
+
+                const SizedBox(
+                  height: 30,
+                ),
+
+                /// ORDER STATUS CARD
+                Container(
+
+                  padding:
+                      const EdgeInsets.all(
+                    20,
+                  ),
+
+                  decoration: BoxDecoration(
+
+                    color:
+                        Theme.of(context)
+                            .cardColor,
+
+                    borderRadius:
+                        BorderRadius.circular(
+                      25,
                     ),
-                  );
-                },
-                child: Text("View Order Details"),
-              ),
 
-              SizedBox(height: 15),
+                    boxShadow: [
 
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 55),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                      BoxShadow(
+
+                        color: Colors.black
+                            .withOpacity(
+                          0.05,
+                        ),
+
+                        blurRadius: 10,
+
+                        offset:
+                            const Offset(
+                          0,
+                          4,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  child: Column(
+
+                    crossAxisAlignment:
+                        CrossAxisAlignment
+                            .start,
+
+                    children: [
+
+                      const Text(
+
+                        "ESTIMATED ARRIVAL",
+
+                        style: TextStyle(
+
+                          fontSize: 12,
+
+                          color:
+                              Colors.grey,
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      Row(
+
+                        mainAxisAlignment:
+                            MainAxisAlignment
+                                .spaceBetween,
+
+                        children: [
+
+                          const Expanded(
+
+                            child: Text(
+
+                              "Tomorrow, Oct 24",
+
+                              style: TextStyle(
+
+                                fontSize: 22,
+
+                                fontWeight:
+                                    FontWeight
+                                        .bold,
+                              ),
+                            ),
+                          ),
+
+                          /// STATUS
+                          Container(
+
+                            padding:
+                                const EdgeInsets.symmetric(
+                              horizontal:
+                                  14,
+                              vertical: 8,
+                            ),
+
+                            decoration:
+                                BoxDecoration(
+
+                              color:
+
+                                  status ==
+                                          "Completed"
+
+                                      ? Colors
+                                          .green
+
+                                      : status ==
+                                              "Cancelled"
+
+                                          ? Colors
+                                              .red
+
+                                          : Colors
+                                              .orange,
+
+                              borderRadius:
+                                  BorderRadius.circular(
+                                20,
+                              ),
+                            ),
+
+                            child: Text(
+
+                              status,
+
+                              style:
+                                  const TextStyle(
+
+                                color:
+                                    Colors
+                                        .white,
+
+                                fontWeight:
+                                    FontWeight
+                                        .bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => ContactSupportScreen()),
-                  );
-                },
-                child: Text("Contact Support"),
-              ),
-            ],
+
+                const SizedBox(
+                  height: 30,
+                ),
+
+                /// TITLE
+                const Text(
+
+                  "Shipment Journey",
+
+                  style: TextStyle(
+
+                    fontSize: 20,
+
+                    fontWeight:
+                        FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 25,
+                ),
+
+                /// TIMELINE
+                _timelineItem(
+
+                  title:
+                      "Out for Delivery",
+
+                  subtitle:
+                      "Expected by 6:00 PM",
+
+                  active:
+                      status == "Completed",
+                ),
+
+                _timelineItem(
+
+                  title:
+                      "Arrived at Hub",
+
+                  subtitle:
+                      "Today, 08:42 AM",
+
+                  active: true,
+                ),
+
+                _timelineItem(
+
+                  title: "Shipped",
+
+                  subtitle:
+                      "Oct 22, 02:15 PM",
+
+                  active: true,
+                ),
+
+                _timelineItem(
+
+                  title:
+                      "Order Placed",
+
+                  subtitle:
+                      "Oct 21, 11:30 AM",
+
+                  active: true,
+
+                  isLast: true,
+                ),
+
+                const SizedBox(
+                  height: 40,
+                ),
+
+                /// VIEW DETAILS BUTTON
+                ElevatedButton(
+
+                  style:
+                      ElevatedButton.styleFrom(
+
+                    minimumSize:
+                        const Size(
+                      double.infinity,
+                      55,
+                    ),
+
+                    shape:
+                        RoundedRectangleBorder(
+
+                      borderRadius:
+                          BorderRadius.circular(
+                        30,
+                      ),
+                    ),
+                  ),
+
+                  onPressed: () {
+
+                    Navigator.push(
+
+                      context,
+
+                      MaterialPageRoute(
+
+                        builder: (_) =>
+
+                            OrderDetailsScreen(
+                              order: order,
+                            ),
+                      ),
+                    );
+                  },
+
+                  child: const Text(
+                    "View Order Details",
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 15,
+                ),
+
+                /// CONTACT SUPPORT BUTTON
+                OutlinedButton(
+
+                  style:
+                      OutlinedButton.styleFrom(
+
+                    minimumSize:
+                        const Size(
+                      double.infinity,
+                      55,
+                    ),
+
+                    shape:
+                        RoundedRectangleBorder(
+
+                      borderRadius:
+                          BorderRadius.circular(
+                        30,
+                      ),
+                    ),
+                  ),
+
+                  onPressed: () {
+
+                    Navigator.push(
+
+                      context,
+
+                      MaterialPageRoute(
+
+                        builder: (_) =>
+                            const ContactSupportScreen(),
+                      ),
+                    );
+                  },
+
+                  child: const Text(
+                    "Contact Support",
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -153,34 +387,115 @@ class OrderStatusScreen extends StatelessWidget {
   }
 
   Widget _timelineItem({
+
     required String title,
+
     required String subtitle,
+
     required bool active,
+
     bool isLast = false,
   }) {
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+
+      crossAxisAlignment:
+          CrossAxisAlignment.start,
+
       children: [
+
         Column(
+
           children: [
+
             CircleAvatar(
+
               radius: 10,
-              backgroundColor: active ? Colors.green : Colors.grey.shade300,
-              child: Icon(Icons.check, size: 12, color: Colors.white),
+
+              backgroundColor:
+
+                  active
+
+                      ? Colors.green
+
+                      : Colors.grey
+                          .shade300,
+
+              child: const Icon(
+
+                Icons.check,
+
+                size: 12,
+
+                color: Colors.white,
+              ),
             ),
 
-            if (!isLast) Container(width: 2, height: 50, color: Colors.green),
+            if (!isLast)
+
+              Container(
+
+                width: 2,
+
+                height: 55,
+
+                color:
+
+                    active
+
+                        ? Colors.green
+
+                        : Colors.grey
+                            .shade300,
+              ),
           ],
         ),
 
-        SizedBox(width: 15),
+        const SizedBox(width: 15),
 
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(subtitle, style: TextStyle(color: Colors.grey)),
-          ],
+        Expanded(
+
+          child: Column(
+
+            crossAxisAlignment:
+                CrossAxisAlignment
+                    .start,
+
+            children: [
+
+              Text(
+
+                title,
+
+                style:
+                    const TextStyle(
+
+                  fontWeight:
+                      FontWeight.bold,
+
+                  fontSize: 16,
+                ),
+              ),
+
+              const SizedBox(
+                height: 4,
+              ),
+
+              Text(
+
+                subtitle,
+
+                style:
+                    const TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+
+              const SizedBox(
+                height: 25,
+              ),
+            ],
+          ),
         ),
       ],
     );
