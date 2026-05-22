@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/screens/theme.dart';
+import 'package:mgcollection_app/views/user/screens/theme.dart';
 
 class ThemeProvider with ChangeNotifier {
 
