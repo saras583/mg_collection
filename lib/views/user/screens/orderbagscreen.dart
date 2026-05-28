@@ -20,6 +20,8 @@ class Orderbagscreen extends StatelessWidget {
 
       appBar: AppBar(
 
+        centerTitle: true,
+
         title: const Text(
           "My Orders",
         ),
@@ -33,17 +35,49 @@ class Orderbagscreen extends StatelessWidget {
         builder:
             (context, Box box, _) {
 
+          /// EMPTY
           if (box.isEmpty) {
 
-            return const Center(
+            return Center(
 
-              child: Text(
+              child: Column(
 
-                "No Orders Yet",
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
 
-                style: TextStyle(
-                  fontSize: 16,
-                ),
+                children: [
+
+                  Icon(
+                    Icons.shopping_bag_outlined,
+                    size: 80,
+                    color: Colors.grey.shade400,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  const Text(
+
+                    "No Orders Yet",
+
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight:
+                          FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+
+                    "Your orders will appear here",
+
+                    style: TextStyle(
+                      color:
+                          Colors.grey.shade600,
+                    ),
+                  ),
+                ],
               ),
             );
           }
@@ -51,7 +85,7 @@ class Orderbagscreen extends StatelessWidget {
           return ListView.builder(
 
             padding:
-                const EdgeInsets.all(12),
+                const EdgeInsets.all(16),
 
             itemCount: box.length,
 
@@ -86,12 +120,12 @@ class Orderbagscreen extends StatelessWidget {
 
                   margin:
                       const EdgeInsets.only(
-                    bottom: 15,
+                    bottom: 18,
                   ),
 
                   padding:
                       const EdgeInsets.all(
-                    12,
+                    14,
                   ),
 
                   decoration: BoxDecoration(
@@ -102,7 +136,7 @@ class Orderbagscreen extends StatelessWidget {
 
                     borderRadius:
                         BorderRadius.circular(
-                      22,
+                      24,
                     ),
 
                     boxShadow: [
@@ -114,7 +148,7 @@ class Orderbagscreen extends StatelessWidget {
                           0.05,
                         ),
 
-                        blurRadius: 10,
+                        blurRadius: 12,
 
                         offset:
                             const Offset(
@@ -127,18 +161,16 @@ class Orderbagscreen extends StatelessWidget {
 
                   child: Row(
 
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
                     children: [
 
                       /// PRODUCT IMAGE
                       Container(
 
-                        height: 90,
-                        width: 90,
-
-                        padding:
-                            const EdgeInsets.all(
-                          8,
-                        ),
+                        height: 100,
+                        width: 100,
 
                         decoration:
                             BoxDecoration(
@@ -149,7 +181,7 @@ class Orderbagscreen extends StatelessWidget {
 
                           borderRadius:
                               BorderRadius.circular(
-                            18,
+                            20,
                           ),
                         ),
 
@@ -157,14 +189,38 @@ class Orderbagscreen extends StatelessWidget {
 
                           borderRadius:
                               BorderRadius.circular(
-                            18,
+                            20,
                           ),
 
-                          child: Image.asset(
+                          child: Image.network(
 
-                            item['image'],
+                            item['image'] ??
+                                "",
 
                             fit: BoxFit.cover,
+
+                            errorBuilder: (
+                              context,
+                              error,
+                              stackTrace,
+                            ) {
+
+                              return Container(
+
+                                color: Colors
+                                    .grey
+                                    .shade300,
+
+                                child: const Center(
+
+                                  child: Icon(
+                                    Icons
+                                        .image_not_supported,
+                                    size: 35,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -184,7 +240,7 @@ class Orderbagscreen extends StatelessWidget {
 
                           children: [
 
-                            /// PRODUCT NAME
+                            /// NAME
                             Text(
 
                               item['name'] ??
@@ -199,7 +255,7 @@ class Orderbagscreen extends StatelessWidget {
                               style:
                                   const TextStyle(
 
-                                fontSize: 16,
+                                fontSize: 17,
 
                                 fontWeight:
                                     FontWeight.bold,
@@ -208,6 +264,27 @@ class Orderbagscreen extends StatelessWidget {
 
                             const SizedBox(
                               height: 8,
+                            ),
+
+                            /// CATEGORY
+                            Text(
+
+                              item['category'] ??
+                                  "",
+
+                              style:
+                                  TextStyle(
+
+                                color:
+                                    Colors.grey
+                                        .shade600,
+
+                                fontSize: 13,
+                              ),
+                            ),
+
+                            const SizedBox(
+                              height: 10,
                             ),
 
                             /// PRICE
@@ -218,7 +295,7 @@ class Orderbagscreen extends StatelessWidget {
                               style:
                                   const TextStyle(
 
-                                fontSize: 16,
+                                fontSize: 18,
 
                                 fontWeight:
                                     FontWeight.bold,
@@ -229,7 +306,80 @@ class Orderbagscreen extends StatelessWidget {
                             ),
 
                             const SizedBox(
-                              height: 8,
+                              height: 10,
+                            ),
+
+                            /// SIZE + QUANTITY
+                            Row(
+
+                              children: [
+
+                                Container(
+
+                                  padding:
+                                      const EdgeInsets.symmetric(
+                                    horizontal:
+                                        10,
+                                    vertical:
+                                        5,
+                                  ),
+
+                                  decoration:
+                                      BoxDecoration(
+
+                                    color: Colors
+                                        .grey
+                                        .shade100,
+
+                                    borderRadius:
+                                        BorderRadius.circular(
+                                      20,
+                                    ),
+                                  ),
+
+                                  child: Text(
+
+                                    "Size: ${item['size'] ?? 'M'}",
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  width: 10,
+                                ),
+
+                                Container(
+
+                                  padding:
+                                      const EdgeInsets.symmetric(
+                                    horizontal:
+                                        10,
+                                    vertical:
+                                        5,
+                                  ),
+
+                                  decoration:
+                                      BoxDecoration(
+
+                                    color: Colors
+                                        .grey
+                                        .shade100,
+
+                                    borderRadius:
+                                        BorderRadius.circular(
+                                      20,
+                                    ),
+                                  ),
+
+                                  child: Text(
+
+                                    "Qty: ${item['quantity']}",
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(
+                              height: 12,
                             ),
 
                             /// PAYMENT
@@ -237,97 +387,140 @@ class Orderbagscreen extends StatelessWidget {
 
                               children: [
 
-                                const Icon(
+                                Icon(
 
                                   Icons
                                       .payments_outlined,
 
-                                  size: 16,
+                                  size: 18,
 
                                   color:
-                                      Colors.grey,
+                                      Colors.grey
+                                          .shade600,
                                 ),
 
                                 const SizedBox(
-                                  width: 5,
+                                  width: 6,
                                 ),
 
-                                Text(
+                                Expanded(
 
-                                  item['payment'] ??
-                                      "",
+                                  child: Text(
 
-                                  style:
-                                      const TextStyle(
-                                    color:
-                                        Colors.grey,
+                                    item['payment'] ??
+                                        "",
+
+                                    style:
+                                        TextStyle(
+
+                                      color:
+                                          Colors
+                                              .grey
+                                              .shade700,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
 
                             const SizedBox(
-                              height: 8,
+                              height: 12,
                             ),
 
                             /// STATUS
-                            Container(
+                            Row(
 
-                              padding:
-                                  const EdgeInsets.symmetric(
-                                horizontal:
-                                    12,
-                                vertical: 6,
-                              ),
+                              mainAxisAlignment:
+                                  MainAxisAlignment
+                                      .spaceBetween,
 
-                              decoration:
-                                  BoxDecoration(
+                              children: [
 
-                                color:
+                                Container(
 
-                                    item['status'] ==
-                                            "Completed"
+                                  padding:
+                                      const EdgeInsets.symmetric(
+                                    horizontal:
+                                        14,
+                                    vertical:
+                                        7,
+                                  ),
 
-                                        ? Colors.green
-                                            .shade100
+                                  decoration:
+                                      BoxDecoration(
 
-                                        : Colors.orange
-                                            .shade100,
+                                    color:
 
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  20,
+                                        item['status'] ==
+                                                "Completed"
+
+                                            ? Colors.green
+                                                .shade100
+
+                                            : Colors.orange
+                                                .shade100,
+
+                                    borderRadius:
+                                        BorderRadius.circular(
+                                      30,
+                                    ),
+                                  ),
+
+                                  child: Text(
+
+                                    item['status'] ??
+                                        "Pending",
+
+                                    style:
+                                        TextStyle(
+
+                                      color:
+
+                                          item['status'] ==
+                                                  "Completed"
+
+                                              ? Colors
+                                                  .green
+
+                                              : Colors
+                                                  .orange,
+
+                                      fontWeight:
+                                          FontWeight
+                                              .bold,
+                                    ),
+                                  ),
                                 ),
-                              ),
 
-                              child: Text(
+                                /// RATING
+                                Row(
 
-                                item['status'] ??
-                                    "Pending",
+                                  children: [
 
-                                style:
-                                    TextStyle(
+                                    const Icon(
+                                      Icons.star,
+                                      color:
+                                          Colors.amber,
+                                      size: 18,
+                                    ),
 
-                                  color:
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
 
-                                      item['status'] ==
-                                              "Completed"
+                                    Text(
 
-                                          ? Colors
-                                              .green
-
-                                          : Colors
-                                              .orange,
-
-                                  fontWeight:
-                                      FontWeight
-                                          .bold,
+                                      item['rating']
+                                              ?.toString() ??
+                                          "0",
+                                    ),
+                                  ],
                                 ),
-                              ),
+                              ],
                             ),
 
                             const SizedBox(
-                              height: 8,
+                              height: 10,
                             ),
 
                             /// TIME
@@ -337,12 +530,13 @@ class Orderbagscreen extends StatelessWidget {
                                   "",
 
                               style:
-                                  const TextStyle(
+                                  TextStyle(
 
                                 fontSize: 11,
 
                                 color:
-                                    Colors.grey,
+                                    Colors.grey
+                                        .shade500,
                               ),
                             ),
                           ],

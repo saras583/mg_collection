@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/views/user/screens/contactSupportscreen.dart';
+import 'package:mgcollection_app/views/user/screens/cancelproductscreen.dart';
 import 'package:mgcollection_app/views/user/screens/orderdetailedscreen.dart';
 
 class OrderStatusScreen extends StatelessWidget {
@@ -15,7 +15,7 @@ class OrderStatusScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final status =
-        order["status"] ?? "Pending";
+        order["status"]?.toString() ?? "Pending";
 
     return Scaffold(
 
@@ -53,10 +53,7 @@ class OrderStatusScreen extends StatelessWidget {
                     ),
 
                     onPressed: () {
-
-                      Navigator.pop(
-                        context,
-                      );
+                      Navigator.pop(context);
                     },
                   ),
                 ),
@@ -334,7 +331,7 @@ class OrderStatusScreen extends StatelessWidget {
                   height: 15,
                 ),
 
-                /// CONTACT SUPPORT BUTTON
+                /// CANCEL ORDER BUTTON
                 OutlinedButton(
 
                   style:
@@ -358,6 +355,36 @@ class OrderStatusScreen extends StatelessWidget {
 
                   onPressed: () {
 
+                    /// SAFE ORDER ID
+                    final orderId =
+                        order['id']
+                            ?.toString() ?? '';
+
+                    /// SAFE PRICE
+                    final refundAmount =
+                        double.tryParse(
+                          order['price']
+                              .toString(),
+                        ) ?? 0;
+
+                    /// CHECK ID
+                    if (orderId.isEmpty) {
+
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(
+
+                        const SnackBar(
+
+                          content: Text(
+                            "Order ID not found",
+                          ),
+                        ),
+                      );
+
+                      return;
+                    }
+
                     Navigator.push(
 
                       context,
@@ -365,13 +392,21 @@ class OrderStatusScreen extends StatelessWidget {
                       MaterialPageRoute(
 
                         builder: (_) =>
-                            const ContactSupportScreen(),
+
+                            OrderSettingsScreen(
+
+                          orderId:
+                              orderId,
+
+                          refundAmount:
+                              refundAmount,
+                        ),
                       ),
                     );
                   },
 
                   child: const Text(
-                    "Contact Support",
+                    "Cancel the Order",
                   ),
                 ),
 

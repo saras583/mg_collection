@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/models/categories_items.dart';
+import 'package:mgcollection_app/models/product_model.dart';
+import 'package:mgcollection_app/services/product_service.dart';
 import 'package:mgcollection_app/views/user/screens/cart.dart';
 import 'package:mgcollection_app/views/user/screens/favoriteScreen.dart';
 import 'package:mgcollection_app/views/user/screens/jalorescreen.dart';
 import 'package:mgcollection_app/views/user/screens/pants.dart';
-import 'package:mgcollection_app/views/user/screens/pants_detailed_screen.dart';
-import 'package:mgcollection_app/views/user/screens/shirt_details_screen.dart';
+import 'package:mgcollection_app/views/user/screens/productdetailedscreens.dart';
 import 'package:mgcollection_app/views/user/screens/shirts.dart';
 import 'package:mgcollection_app/views/user/screens/shoesScreen.dart';
-import 'package:mgcollection_app/views/user/screens/shoes_detailed_screen.dart';
 import 'package:mgcollection_app/views/user/screens/skincareScreen.dart';
+import 'package:mgcollection_app/views/user/screens/walletscreen.dart';
 import 'package:mgcollection_app/views/user/screens/watches.dart';
-import 'package:mgcollection_app/views/user/screens/watches_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +23,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool isFavorite = false;
 
+  final productService = ProductService();
+
   List<Category> categories = [
     Category(name: "Shirt", image: "assets/images/shirt.jpg"),
     Category(name: "Watch", image: "assets/images/watch.jpg"),
@@ -31,53 +33,40 @@ class _HomeScreenState extends State<HomeScreen> {
     Category(name: "Shoes", image: "assets/images/air1.jpg"),
     Category(name: "jalore", image: "assets/images/jalore.jpg"),
   ];
-  List<Map<String, dynamic>> products = [
-    {
-      "name": "wathes",
-      "category": "Men’s Shoes",
-      "price": 367.76,
-      "image": "assets/images/watch.jpg",
-    },
-    {
-      "name": "pant",
-      "category": "Men’s Shoes",
-      "price": 299.99,
-      "image": "assets/images/grey trouser.jpg",
-    },
-    {
-      "name": "Nike Jordan",
-      "category": "Men’s Shoes",
-      "price": 399.99,
-      "image": "assets/images/air1.jpg",
-    },
-    {
-      "name": "shirt",
-      "category": "Running Shoes",
-      "price": 249.99,
-      "image": "assets/images/black_shirt.jpg",
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
       body: SafeArea(
         child: Column(
           children: [
+            /// TOP BAR
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                 children: [
-                  ///  (Menu)
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: Colors.grey.shade200,
-                    child: Icon(Icons.grid_view, color: Colors.black),
+                  /// MENU
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder:  (_)=> MGWalletScreen()),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.grey.shade200,
+
+                      child: const Icon(Icons.wallet, color: Colors.black),
+                    ),
                   ),
 
-                  ///  LOCATION
+                  /// LOCATION
                   Column(
                     children: [
                       Text(
@@ -87,10 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Theme.of(context).textTheme.bodyMedium?.color,
                         ),
                       ),
-                      Row(
+
+                      const Row(
                         children: [
                           Icon(Icons.location_on, color: Colors.red, size: 16),
+
                           SizedBox(width: 4),
+
                           Text(
                             "Mondolibug, Sylhet",
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -100,10 +92,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
 
-                  /// ICONS
-                  /// favoraite
+                  /// ACTIONS
                   Row(
                     children: [
+                      /// FAVORITE
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -113,16 +105,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           );
                         },
+
                         child: CircleAvatar(
                           radius: 22,
                           backgroundColor: Colors.grey.shade200,
+
                           child: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
+
                             color: isFavorite ? Colors.red : Colors.black,
                           ),
                         ),
                       ),
-                      SizedBox(width: 10),
+
+                      const SizedBox(width: 10),
 
                       /// CART
                       Stack(
@@ -134,9 +130,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 MaterialPageRoute(builder: (_) => Cart()),
                               );
                             },
+
                             child: CircleAvatar(
                               radius: 22,
                               backgroundColor: Colors.grey.shade200,
+
                               child: Icon(
                                 Icons.shopping_bag_outlined,
                                 color: Theme.of(context).iconTheme.color,
@@ -147,10 +145,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           Positioned(
                             right: 4,
                             top: 4,
+
                             child: Container(
                               width: 10,
                               height: 10,
-                              decoration: BoxDecoration(
+
+                              decoration: const BoxDecoration(
                                 color: Colors.red,
                                 shape: BoxShape.circle,
                               ),
@@ -163,47 +163,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10),
 
-            /// categories
+            const SizedBox(height: 10),
+
+            /// CATEGORIES
             Padding(
               padding: const EdgeInsets.all(10),
+
               child: SizedBox(
                 height: 100,
+
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
+
                   itemBuilder: (BuildContext context, int index) {
                     final category = categories[index];
 
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
 
                       child: GestureDetector(
-                        child: GestureDetector(
-                          onTap: () {
-                            _navigateToCategory(category.name);
-                          },
+                        onTap: () {
+                          _navigateToCategory(category.name);
+                        },
 
-                          child: Column(
-                            children: [
-                              Column(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: AssetImage(category.image),
-                                  ),
-                                  SizedBox(height: 5),
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundImage: AssetImage(category.image),
+                            ),
 
-                                  /// CATEGORY
-                                  Text(
-                                    category.name,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                            const SizedBox(height: 5),
+
+                            Text(
+                              category.name,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -211,13 +209,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 5),
+
+            const SizedBox(height: 5),
+
+            /// SEARCH
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
+
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: "Looking for shoes",
-                  prefixIcon: Icon(Icons.search),
+                  hintText: "Search products",
+                  prefixIcon: const Icon(Icons.search),
+
                   filled: true,
                   fillColor: Colors.grey.shade200,
 
@@ -228,152 +231,181 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            //product  lists
+
+            const SizedBox(height: 10),
+
+            /// PRODUCTS
             Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.7,
-                ),
-                itemCount: products.length,
+              child: FutureBuilder<List<ProductModel>>(
+                future: productService.fetchProducts(),
 
-                itemBuilder: (BuildContext context, int index) {
-                  final product = products[index];
-                  return GestureDetector(
-                    onTap: () {
-                      if (product['name'] == 'wathes') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                WatchesDetailsScreen(product: product),
+                builder: (context, snapshot) {
+                  /// LOADING
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  /// ERROR
+                  if (snapshot.hasError) {
+                    return Center(child: Text(snapshot.error.toString()));
+                  }
+
+                  /// DATA
+                  final products = snapshot.data ?? [];
+
+                  if (products.isEmpty) {
+                    return const Center(child: Text("No products found"));
+                  }
+
+                  return GridView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.7,
+                        ),
+
+                    itemCount: products.length,
+
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  ProductDetailsScreen(product: product),
+                            ),
+                          );
+                        },
+
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                        );
-                      } else if (product['name'] == 'Nike Jordan') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ShoesDetailsScreen(product: product),
-                          ),
-                        );
-                      } else if (product['name'] == 'pant') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                PantsDetailsScreen(product: product),
-                          ),
-                        );
-                      } else if (product['name'] == 'shirt') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ShirtDetailsScreen(product: product),
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          //product image
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadiusGeometry.circular(10),
-                              child: Image.asset(
-                                product["image"],
-                                fit: BoxFit.cover,
-                                width: double.infinity,
+
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                            children: [
+                              /// IMAGE
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+
+                                  child: Image.network(
+                                    product.image,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.grey.shade300,
+
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.image_not_supported,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              product["name"],
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Text("\$899", textAlign: TextAlign.center),
-                          ),
 
-                          SizedBox(height: 8),
-                        ],
-                      ),
-                    ),
+                              /// PRODUCT NAME
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+
+                                child: Text(
+                                  product.name,
+
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+
+                              /// CATEGORY
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+
+                                child: Text(
+                                  product.category,
+
+                                  style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 5),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
+
+                                    const SizedBox(width: 4),
+
+                                    Text(
+                                      product.rating.toString(),
+
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              /// PRICE
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+
+                                child: Text(
+                                  "₹${product.price}",
+
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 10),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ShoesDetailsScreen(product: products[2]),
-                  ),
-                );
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
-                ),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    /// LEFT TEXT PART
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "BEST CHOICE",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-
-                        SizedBox(height: 5),
-
-                        Text(
-                          "Nike Air Jordan",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        SizedBox(height: 5),
-
-                        Text("\$849.69", style: TextStyle(fontSize: 16)),
-                      ],
-                    ),
-
-                    /// RIGHT IMAGE
-                    Image.asset("assets/images/air1.jpg", height: 70),
-                  ],
-                ),
               ),
             ),
           ],

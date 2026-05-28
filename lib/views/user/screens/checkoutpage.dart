@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Checkoutpage extends StatefulWidget {
-
   final Map<String, dynamic> product;
 
   const Checkoutpage({
@@ -21,13 +20,19 @@ class _CheckoutpageState
   String selectedPayment =
       "Cash on Delivery";
 
+  bool placingOrder = false;
+
   @override
   Widget build(BuildContext context) {
 
-    double totalPrice =
+    double subtotal =
         (widget.product['price'] *
-                widget.product['quantity']) +
-            40;
+            (widget.product['quantity'] ?? 1));
+
+    double shipping = 40;
+
+    double totalPrice =
+        subtotal + shipping;
 
     return Scaffold(
 
@@ -47,58 +52,57 @@ class _CheckoutpageState
               Padding(
 
                 padding:
-                    const EdgeInsets.all(8.0),
+                    const EdgeInsets.all(16),
 
-                child: Stack(
-
-                  alignment: Alignment.center,
+                child: Row(
 
                   children: [
 
-                    Align(
+                    GestureDetector(
 
-                      alignment:
-                          Alignment.centerLeft,
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
 
-                      child: GestureDetector(
+                      child: CircleAvatar(
 
-                        onTap: () =>
-                            Navigator.pop(context),
+                        radius: 22,
 
-                        child: CircleAvatar(
+                        backgroundColor:
+                            Colors.grey.shade200,
 
-                          radius: 22,
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
 
-                          backgroundColor:
-                              Colors.grey.shade200,
+                    const Expanded(
 
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.black,
+                      child: Center(
+
+                        child: Text(
+
+                          'Checkout',
+
+                          style: TextStyle(
+
+                            fontSize: 20,
+
+                            fontWeight:
+                                FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
 
-                    const Text(
-
-                      'Checkout',
-
-                      style: TextStyle(
-
-                        fontSize: 18,
-
-                        fontWeight:
-                            FontWeight.bold,
-                      ),
-                    ),
+                    const SizedBox(width: 44),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 20),
-
-              /// CONTACT INFO
+              /// CONTACT INFO CARD
               Container(
 
                 margin:
@@ -120,6 +124,22 @@ class _CheckoutpageState
                       BorderRadius.circular(
                     20,
                   ),
+
+                  boxShadow: [
+
+                    BoxShadow(
+
+                      color: Colors.black
+                          .withOpacity(0.05),
+
+                      blurRadius: 10,
+
+                      offset: const Offset(
+                        0,
+                        4,
+                      ),
+                    ),
+                  ],
                 ),
 
                 child: Column(
@@ -129,21 +149,42 @@ class _CheckoutpageState
 
                   children: [
 
-                    const Text(
+                    /// TITLE
+                    Row(
 
-                      'Contact Information',
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
 
-                      style: TextStyle(
+                      children: [
 
-                        fontWeight:
-                            FontWeight.bold,
+                        const Text(
 
-                        fontSize: 16,
-                      ),
+                          'Contact Information',
+
+                          style: TextStyle(
+
+                            fontWeight:
+                                FontWeight.bold,
+
+                            fontSize: 18,
+                          ),
+                        ),
+
+                        TextButton(
+
+                          onPressed: () {},
+
+                          child: const Text(
+                            "Edit",
+                          ),
+                        ),
+                      ],
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
 
+                    /// EMAIL
                     WidgetInfoRow(
 
                       icon:
@@ -155,33 +196,37 @@ class _CheckoutpageState
                       subtitle: "Email",
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
 
+                    /// PHONE
                     WidgetInfoRow(
 
                       icon:
                           Icons.phone_outlined,
 
                       title:
-                          "+88-692-764-269",
+                          "+91 9876543210",
 
                       subtitle: "Phone",
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
 
+                    /// ADDRESS
                     WidgetInfoRow(
 
                       icon:
                           Icons.location_on_outlined,
 
-                      title: "Kinfra",
+                      title:
+                          "Kinfra, Calicut",
 
                       subtitle: "Address",
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 20),
 
+                    /// MAP IMAGE
                     ClipRRect(
 
                       borderRadius:
@@ -191,13 +236,65 @@ class _CheckoutpageState
 
                       child: Image.asset(
                         'assets/images/locationimage.png',
+
                         fit: BoxFit.cover,
+
+                        height: 160,
+
+                        width: double.infinity,
                       ),
                     ),
+                  ],
+                ),
+              ),
 
-                    const SizedBox(height: 20),
+              /// PAYMENT METHOD
+              Container(
 
-                    /// PAYMENT METHOD
+                margin:
+                    const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+
+                padding:
+                    const EdgeInsets.all(16),
+
+                decoration: BoxDecoration(
+
+                  color:
+                      Theme.of(context)
+                          .cardColor,
+
+                  borderRadius:
+                      BorderRadius.circular(
+                    20,
+                  ),
+
+                  boxShadow: [
+
+                    BoxShadow(
+
+                      color: Colors.black
+                          .withOpacity(0.05),
+
+                      blurRadius: 10,
+
+                      offset: const Offset(
+                        0,
+                        4,
+                      ),
+                    ),
+                  ],
+                ),
+
+                child: Column(
+
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+
+                  children: [
+
                     const Text(
 
                       "Payment Method",
@@ -207,11 +304,11 @@ class _CheckoutpageState
                         fontWeight:
                             FontWeight.bold,
 
-                        fontSize: 16,
+                        fontSize: 18,
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
 
                     GestureDetector(
 
@@ -231,7 +328,7 @@ class _CheckoutpageState
                         decoration: BoxDecoration(
 
                           color:
-                              Colors.grey.shade200,
+                              Colors.grey.shade100,
 
                           borderRadius:
                               BorderRadius.circular(
@@ -277,7 +374,7 @@ class _CheckoutpageState
                 ),
               ),
 
-              /// PRICE DETAILS
+              /// ORDER SUMMARY
               Container(
 
                 margin:
@@ -299,6 +396,22 @@ class _CheckoutpageState
                       BorderRadius.circular(
                     20,
                   ),
+
+                  boxShadow: [
+
+                    BoxShadow(
+
+                      color: Colors.black
+                          .withOpacity(0.05),
+
+                      blurRadius: 10,
+
+                      offset: const Offset(
+                        0,
+                        4,
+                      ),
+                    ),
+                  ],
                 ),
 
                 child: Column(
@@ -308,78 +421,184 @@ class _CheckoutpageState
 
                   children: [
 
-                    /// SUBTOTAL
-                    _priceRow(
+                    const Text(
 
-                      "Subtotal",
+                      "Order Summary",
 
-                      "₹${((widget.product['price']) * (widget.product['quantity'] ?? 1)).toStringAsFixed(2)}",
+                      style: TextStyle(
+
+                        fontWeight:
+                            FontWeight.bold,
+
+                        fontSize: 18,
+                      ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
 
-                    /// SHIPPING
+                    /// PRODUCT CARD
+                    Container(
+
+                      padding:
+                          const EdgeInsets.all(
+                        12,
+                      ),
+
+                      decoration: BoxDecoration(
+
+                        color:
+                            Colors.grey.shade100,
+
+                        borderRadius:
+                            BorderRadius.circular(
+                          15,
+                        ),
+                      ),
+
+                      child: Row(
+
+                        children: [
+
+                          /// IMAGE
+                          ClipRRect(
+
+                            borderRadius:
+                                BorderRadius.circular(
+                              12,
+                            ),
+
+                            child: Image.network(
+
+                              widget.product[
+                                  'image'],
+
+                              height: 90,
+
+                              width: 90,
+
+                              fit: BoxFit.cover,
+
+                              errorBuilder: (
+                                context,
+                                error,
+                                stackTrace,
+                              ) {
+
+                                return Container(
+
+                                  height: 90,
+
+                                  width: 90,
+
+                                  color: Colors
+                                      .grey.shade300,
+
+                                  child: const Icon(
+                                    Icons
+                                        .image_not_supported,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+
+                          const SizedBox(width: 12),
+
+                          /// DETAILS
+                          Expanded(
+
+                            child: Column(
+
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+
+                              children: [
+
+                                Text(
+
+                                  widget.product[
+                                      'name'],
+
+                                  style:
+                                      const TextStyle(
+
+                                    fontWeight:
+                                        FontWeight
+                                            .bold,
+
+                                    fontSize: 16,
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  height: 8,
+                                ),
+
+                                Text(
+
+                                  "Quantity: ${widget.product['quantity']}",
+
+                                  style:
+                                      TextStyle(
+                                    color: Colors
+                                        .grey.shade600,
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  height: 8,
+                                ),
+
+                                Text(
+
+                                  "₹${widget.product['price']}",
+
+                                  style:
+                                      const TextStyle(
+
+                                    fontWeight:
+                                        FontWeight
+                                            .bold,
+
+                                    color:
+                                        Colors.green,
+
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    /// PRICE DETAILS
+                    _priceRow(
+                      "Subtotal",
+                      "₹${subtotal.toStringAsFixed(2)}",
+                    ),
+
+                    const SizedBox(height: 12),
+
                     _priceRow(
                       "Shipping",
                       "₹40",
                     ),
 
+                    const SizedBox(height: 12),
+
+                    _priceRow(
+                      "Delivery",
+                      "Tomorrow",
+                    ),
+
                     const Divider(
-                      height: 20,
-                      thickness: 1,
+                      height: 30,
                     ),
-
-                    /// PRODUCT
-                    Row(
-
-                      children: [
-
-                        Image.asset(
-
-                          widget.product['image'],
-
-                          height: 60,
-
-                          width: 60,
-                        ),
-
-                        const SizedBox(width: 10),
-
-                        Expanded(
-
-                          child: Column(
-
-                            crossAxisAlignment:
-                                CrossAxisAlignment
-                                    .start,
-
-                            children: [
-
-                              Text(
-                                widget.product['name'],
-                              ),
-
-                              Text(
-                                "Qty: ${widget.product['quantity']}",
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Text(
-
-                          "₹${widget.product['price']}",
-
-                          style: const TextStyle(
-
-                            fontWeight:
-                                FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 20),
 
                     /// TOTAL
                     Row(
@@ -399,7 +618,7 @@ class _CheckoutpageState
                             fontWeight:
                                 FontWeight.bold,
 
-                            fontSize: 16,
+                            fontSize: 18,
                           ),
                         ),
 
@@ -412,7 +631,9 @@ class _CheckoutpageState
                             fontWeight:
                                 FontWeight.bold,
 
-                            fontSize: 18,
+                            fontSize: 22,
+
+                            color: Colors.green,
                           ),
                         ),
                       ],
@@ -420,53 +641,107 @@ class _CheckoutpageState
 
                     const SizedBox(height: 25),
 
-                    /// PAYMENT BUTTON
-                    GestureDetector(
+                    /// COUPON
+                    Container(
 
-                      onTap: () {
+                      padding:
+                          const EdgeInsets.all(
+                        15,
+                      ),
 
-                        placeOrder(
-                          context,
-                          selectedPayment,
-                        );
-                      },
+                      decoration: BoxDecoration(
 
-                      child: Container(
+                        color:
+                            Colors.grey.shade100,
 
-                        width: double.infinity,
-
-                        padding:
-                            const EdgeInsets.symmetric(
-                          vertical: 15,
+                        borderRadius:
+                            BorderRadius.circular(
+                          15,
                         ),
+                      ),
 
-                        decoration: BoxDecoration(
+                      child: Row(
 
-                          color: Colors.blue,
+                        mainAxisAlignment:
+                            MainAxisAlignment
+                                .spaceBetween,
 
-                          borderRadius:
-                              BorderRadius.circular(
-                            30,
+                        children: [
+
+                          const Row(
+
+                            children: [
+
+                              Icon(
+                                Icons.discount,
+                              ),
+
+                              SizedBox(width: 10),
+
+                              Text(
+                                "Apply Coupon",
+                              ),
+                            ],
                           ),
-                        ),
 
-                        child: Center(
+                          TextButton(
 
-                          child: Text(
+                            onPressed: () {},
 
-                            "Pay with $selectedPayment",
+                            child: const Text(
+                              "Apply",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                            style: TextStyle(
+                    const SizedBox(height: 30),
 
-                              color:
-                                  Theme.of(context)
-                                      .cardColor,
+                    /// PLACE ORDER BUTTON
+                    SizedBox(
 
-                              fontWeight:
-                                  FontWeight.bold,
+                      width: double.infinity,
+
+                      height: 55,
+
+                      child: ElevatedButton(
+
+                        style:
+                            ElevatedButton.styleFrom(
+
+                          shape:
+                              RoundedRectangleBorder(
+
+                            borderRadius:
+                                BorderRadius.circular(
+                              30,
                             ),
                           ),
                         ),
+
+                        onPressed:
+                            placingOrder
+                                ? null
+                                : () {
+
+                                    placeOrder(
+                                      context,
+                                      selectedPayment,
+                                    );
+                                  },
+
+                        child:
+                            placingOrder
+
+                                ? const CircularProgressIndicator(
+                                    color:
+                                        Colors.white,
+                                  )
+
+                                : Text(
+                                    "Pay with $selectedPayment",
+                                  ),
                       ),
                     ),
                   ],
@@ -517,7 +792,7 @@ class _CheckoutpageState
 
                 style: TextStyle(
 
-                  fontSize: 18,
+                  fontSize: 20,
 
                   fontWeight:
                       FontWeight.bold,
@@ -526,70 +801,29 @@ class _CheckoutpageState
 
               const SizedBox(height: 20),
 
-              ListTile(
-
-                leading:
-                    const Icon(Icons.money),
-
-                title: const Text(
-                  "Cash on Delivery",
-                ),
-
-                onTap: () {
-
-                  setState(() {
-
-                    selectedPayment =
-                        "Cash on Delivery";
-                  });
-
-                  Navigator.pop(context);
-                },
+              paymentTile(
+                icon: Icons.money,
+                title:
+                    "Cash on Delivery",
               ),
 
-              ListTile(
-
-                leading: const Icon(
-                  Icons
-                      .account_balance_wallet,
-                ),
-
-                title: const Text(
-                  "UPI / Google Pay",
-                ),
-
-                onTap: () {
-
-                  setState(() {
-
-                    selectedPayment =
-                        "UPI / Google Pay";
-                  });
-
-                  Navigator.pop(context);
-                },
+              paymentTile(
+                icon: Icons
+                    .account_balance_wallet,
+                title:
+                    "MGCollection Wallet",
               ),
 
-              ListTile(
+              paymentTile(
+                icon: Icons.payment,
+                title:
+                    "UPI / Google Pay",
+              ),
 
-                leading: const Icon(
-                  Icons.credit_card,
-                ),
-
-                title: const Text(
-                  "Card Payment",
-                ),
-
-                onTap: () {
-
-                  setState(() {
-
-                    selectedPayment =
-                        "Card Payment";
-                  });
-
-                  Navigator.pop(context);
-                },
+              paymentTile(
+                icon: Icons.credit_card,
+                title:
+                    "Card Payment",
               ),
             ],
           ),
@@ -598,11 +832,51 @@ class _CheckoutpageState
     );
   }
 
+  Widget paymentTile({
+
+    required IconData icon,
+
+    required String title,
+  }) {
+
+    return ListTile(
+
+      leading: Icon(icon),
+
+      title: Text(title),
+
+      trailing:
+          selectedPayment == title
+              ? const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                )
+              : null,
+
+      onTap: () {
+
+        setState(() {
+          selectedPayment = title;
+        });
+
+        Navigator.pop(context);
+      },
+    );
+  }
+
   /// PLACE ORDER
-  void placeOrder(
+  Future<void> placeOrder(
     BuildContext context,
     String method,
-  ) {
+  ) async {
+
+    setState(() {
+      placingOrder = true;
+    });
+
+    await Future.delayed(
+      const Duration(seconds: 2),
+    );
 
     var orderBox =
         Hive.box('orders');
@@ -628,18 +902,51 @@ class _CheckoutpageState
           DateTime.now().toString(),
     });
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
+    setState(() {
+      placingOrder = false;
+    });
 
-      SnackBar(
+    showDialog(
 
-        content: Text(
-          "Order placed using $method",
-        ),
-      ),
+      context: context,
+
+      builder: (_) {
+
+        return AlertDialog(
+
+          shape:
+              RoundedRectangleBorder(
+
+            borderRadius:
+                BorderRadius.circular(
+              20,
+            ),
+          ),
+
+          title: const Text(
+            "Order Successful",
+          ),
+
+          content: const Text(
+            "Your order has been placed successfully.",
+          ),
+
+          actions: [
+
+            TextButton(
+
+              onPressed: () {
+
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
     );
-
-    Navigator.pop(context);
   }
 }
 
@@ -660,8 +967,8 @@ Widget _priceRow(
 
         title,
 
-        style: const TextStyle(
-          color: Colors.grey,
+        style: TextStyle(
+          color: Colors.grey.shade600,
         ),
       ),
 
@@ -695,7 +1002,7 @@ Widget WidgetInfoRow({
 
       CircleAvatar(
 
-        radius: 20,
+        radius: 22,
 
         backgroundColor:
             Colors.grey.shade200,
@@ -706,7 +1013,7 @@ Widget WidgetInfoRow({
         ),
       ),
 
-      const SizedBox(width: 10),
+      const SizedBox(width: 12),
 
       Column(
 
@@ -723,15 +1030,19 @@ Widget WidgetInfoRow({
 
               fontWeight:
                   FontWeight.bold,
+
+              fontSize: 15,
             ),
           ),
+
+          const SizedBox(height: 2),
 
           Text(
 
             subtitle,
 
-            style: const TextStyle(
-              color: Colors.grey,
+            style: TextStyle(
+              color: Colors.grey.shade600,
             ),
           ),
         ],
