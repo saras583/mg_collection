@@ -1,68 +1,71 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:mgcollection_app/models/controller.onbording/onbordingcontroller.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:mgcollection_app/views/user/screens/theme.dart';
-import 'package:mgcollection_app/services/themeprovider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() async {
+import 'package:mgcollection_app/models/controller.onbording/onbordingcontroller.dart';
+import 'package:mgcollection_app/services/themeprovider.dart';
+import 'package:mgcollection_app/views/user/screens/theme.dart';
 
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// LOAD ENV
-  await dotenv.load(
-    fileName: ".env",
-  );
+  runZonedGuarded(
+    () async {
+      FlutterError.onError = (FlutterErrorDetails details) {
+        FlutterError.presentError(details);
 
-  /// HIVE
-  await Hive.initFlutter();
+        debugPrint("========== FLUTTER ERROR ==========");
+        debugPrint(details.exceptionAsString());
+        debugPrint(details.stack.toString());
+      };
 
-  /// SUPABASE
-  await Supabase.initialize(
+      /// LOAD ENV
+      await dotenv.load(fileName: ".env");
 
-    url:
-        dotenv.env['SUPABASE_URL']!,
+      /// HIVE INIT
+      await Hive.initFlutter();
 
-    anonKey:
-        dotenv.env['SUPABASE_ANON_KEY']!,
-  );
+      /// OPEN HIVE BOXES
+      await Hive.openBox('favorites');
+      await Hive.openBox('cart');
+      await Hive.openBox('orders');
+      await Hive.openBox('settings');
+      await Hive.openBox('products');
+      await Hive.openBox('adminBox');
 
-  /// OPEN HIVE BOXES
-  await Hive.openBox('favorites');
-  await Hive.openBox('cart');
-  await Hive.openBox('orders');
-  await Hive.openBox('settings');
-  await Hive.openBox('products');
-  await Hive.openBox('adminBox');
+      /// SUPABASE INIT
+      await Supabase.initialize(
+        url: dotenv.env['SUPABASE_URL'] ?? '',
+        anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
+      );
 
-  runApp(
-
-    ChangeNotifierProvider(
-
-      create: (_) => ThemeProvider(),
-
-      child: const MgCollection(),
-    ),
+      runApp(
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+          child: const MgCollection(),
+        ),
+      );
+    },
+    (error, stackTrace) {
+      debugPrint("========== UNHANDLED ERROR ==========");
+      debugPrint(error.toString());
+      debugPrint(stackTrace.toString());
+    },
   );
 }
 
 class MgCollection extends StatelessWidget {
-
-  const MgCollection({
-    super.key,
-  });
+  const MgCollection({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<ThemeProvider>(
-
       builder: (context, provider, child) {
-
         return MaterialApp(
-
           debugShowCheckedModeBanner: false,
 
           /// LIGHT THEME
@@ -72,14 +75,15 @@ class MgCollection extends StatelessWidget {
           darkTheme: darkTheme,
 
           /// THEME MODE
-          themeMode:
-              provider.themeData == darkTheme
-                  ? ThemeMode.dark
-                  : ThemeMode.light,
+          themeMode: provider.themeData == darkTheme
+              ? ThemeMode.dark
+              : ThemeMode.light,
 
-          /// APP FLOW
-          home:
-              const OnboardingController(),
+          /// TEST SCREEN
+          home: OnboardingController(),
+
+          // AFTER TESTING CHANGE TO:
+          // home: const OnboardingController(),
         );
       },
     );

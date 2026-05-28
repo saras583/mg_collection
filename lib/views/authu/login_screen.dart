@@ -1,5 +1,13 @@
+import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mgcollection_app/views/admin/screens/admin_home.dart';
+import 'package:mgcollection_app/views/authu/otp_screen.dart';
 import 'package:mgcollection_app/views/authu/register_screen.dart';
 import 'package:mgcollection_app/views/user/screens/bottomnavigationbarScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,425 +16,265 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() =>
-      _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState
-    extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
-  final emailController =
-      TextEditingController();
+  final supabase = Supabase.instance.client;
 
-  final passwordController =
-      TextEditingController();
+  StreamSubscription<AuthState>? _authSubscription;
 
   bool obscurePassword = true;
-
   bool loading = false;
+  bool _navigating = false;
 
-  final supabase =
-      Supabase.instance.client;
+  @override
+  void initState() {
+    super.initState();
 
-  /// EMAIL LOGIN
+    _checkCurrentSession();
+
+    _authSubscription = supabase.auth.onAuthStateChange.listen((data) async {
+      final session = data.session;
+
+      log("AUTH EVENT: ${data.event}");
+      log("AUTH SESSION: $session");
+
+      if (session != null) {
+        await _handleLoggedInUser(session.user);
+      }
+    });
+  }
+  
+  Future<void> sendOtp() async {
+  try {
+    await supabase.auth.signInWithOtp(
+      email: emailController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => OtpScreen(
+          email: emailController.text.trim(),
+        ),
+      ),
+    );
+  } on AuthException catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(e.message)),
+    );
+  }
+}
+
+  Future<void> _checkCurrentSession() async {
+    final session = supabase.auth.currentSession;
+
+    if (session != null) {
+      await _handleLoggedInUser(session.user);
+    }
+  }
+
+  Future<void> _handleLoggedInUser(User user) async {
+    if (_navigating) return;
+    _navigating = true;
+
+    try {
+      await supabase.from('users').upsert({
+        "id": user.id,
+        "name":
+            user.userMetadata?['name'] ??
+            user.userMetadata?['full_name'] ??
+            "User",
+        "email": user.email,
+        "joined": DateTime.now().toIso8601String().substring(0, 10),
+        "blocked": false,
+      });
+    } catch (e) {
+      log("USER TABLE ERROR: $e");
+    }
+
+    if (!mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const Bottomnavigationbarscreen()),
+      (route) => false,
+    );
+  }
+
   Future<void> login() async {
-
     setState(() {
       loading = true;
     });
 
     try {
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
 
-      final email =
-          emailController.text.trim();
-
-      final password =
-          passwordController.text.trim();
-
-      /// ADMIN LOGIN
-      if (
-
-        email == "admin@gmail.com" &&
-        password == "123456"
-
-      ) {
+      if (email == "admin@gmail.com" && password == "123456") {
+        if (!mounted) return;
 
         Navigator.pushAndRemoveUntil(
-
           context,
-
-          MaterialPageRoute(
-
-            builder: (_) =>
-                const AdminHome(),
-          ),
-
+          MaterialPageRoute(builder: (_) => const AdminHome()),
           (route) => false,
         );
 
         return;
       }
 
-      /// USER LOGIN
-      final result =
-          await supabase.auth
-              .signInWithPassword(
-
+      final result = await supabase.auth.signInWithPassword(
         email: email,
-
         password: password,
       );
 
-      final user =
-          result.user;
+      final user = result.user;
 
       if (user != null) {
-
-        /// CHECK USER EXISTS
-        final existingUser =
-            await supabase
-                .from('users')
-                .select()
-                .eq('id', user.id);
-
-        /// INSERT USER
-        if (existingUser.isEmpty) {
-
-          await supabase
-              .from('users')
-              .insert({
-
-            "id":
-                user.id,
-
-            "name":
-                user.userMetadata?['full_name']
-                    ?? "User",
-
-            "email":
-                user.email,
-
-            "joined":
-                DateTime.now()
-                    .toString()
-                    .substring(0, 10),
-
-            "blocked":
-                false,
-          });
-        }
-
-        Navigator.pushAndRemoveUntil(
-
-          context,
-
-          MaterialPageRoute(
-
-            builder: (_) =>
-                const Bottomnavigationbarscreen(),
-          ),
-
-          (route) => false,
-        );
+        await _handleLoggedInUser(user);
       }
-
     } on AuthException catch (e) {
+      if (!mounted) return;
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
-        SnackBar(
-          content: Text(
-            e.message,
-          ),
-        ),
-      );
-
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } catch (e) {
+      if (!mounted) return;
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
-
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
-
-      setState(() {
-        loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
     }
   }
 
-  /// GOOGLE LOGIN
-  Future<void> continueWithGoogle() async {
-
+  continueWithGoogle() async {
     try {
-
-      await supabase.auth.signInWithOAuth(
-
-        OAuthProvider.google,
+      GoogleSignIn signIn = GoogleSignIn.instance;
+      await signIn.initialize(
+        serverClientId: dotenv.env['WEB_CLIENT_1'],
+        clientId: Platform.isAndroid
+            ? dotenv.env['ANDROID_CLIENT_1']
+            : dotenv.env['IOS_CLIENT_1'],
       );
+      GoogleSignInAccount account = await signIn.authenticate();
+      String idToken = account.authentication.idToken ?? '';
+      final authorization =
+          await account.authorizationClient.authorizationForScopes([
+            'email',
+            'profile',
+          ]) ??
+          await account.authorizationClient.authorizationForScopes([
+            'email',
+            'profile',
+          ]);
 
-      /// LISTEN LOGIN
-      supabase.auth.onAuthStateChange.listen(
-
-        (data) async {
-
-          final session =
-              data.session;
-
-          if (session != null) {
-
-            final user =
-                session.user;
-
-            /// CHECK USER EXISTS
-            final existingUser =
-                await supabase
-                    .from('users')
-                    .select()
-                    .eq('id', user.id);
-
-            /// INSERT USER
-            if (existingUser.isEmpty) {
-
-              await supabase
-                  .from('users')
-                  .insert({
-
-                "id":
-                    user.id,
-
-                "name":
-                    user.userMetadata?[
-                            'full_name'] ??
-                        "Google User",
-
-                "email":
-                    user.email,
-
-                "joined":
-                    DateTime.now()
-                        .toString()
-                        .substring(0, 10),
-
-                "blocked":
-                    false,
-              });
-            }
-
-            /// GO HOME
-            if (mounted) {
-
-              Navigator.pushAndRemoveUntil(
-
-                context,
-
-                MaterialPageRoute(
-
-                  builder: (_) =>
-                      const Bottomnavigationbarscreen(),
-                ),
-
-                (route) => false,
-              );
-            }
-          }
-        },
+      final result =  await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: authorization?.accessToken,
       );
+    
+  if (result.user != null && result.session != null) {
+    
+  await _handleLoggedInUser(result.user!);
+}
+
+
+
 
     } catch (e) {
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
+      print(e);
     }
   }
 
   @override
   void dispose() {
-
+    _authSubscription?.cancel();
     emailController.dispose();
-
     passwordController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       resizeToAvoidBottomInset: true,
-
-      backgroundColor:
-          const Color(0xFFF5EFEF),
-
+      backgroundColor: const Color(0xFFF5EFEF),
       body: SafeArea(
-
         child: Padding(
-
-          padding:
-              const EdgeInsets.symmetric(
-            horizontal: 25,
-          ),
-
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           child: SingleChildScrollView(
-
             child: ConstrainedBox(
-
               constraints: BoxConstraints(
-
-                minHeight:
-                    MediaQuery.of(context)
-                        .size
-                        .height,
+                minHeight: MediaQuery.of(context).size.height,
               ),
-
               child: Column(
-
                 children: [
-
                   const SizedBox(height: 20),
 
-                  /// BACK BUTTON
                   Align(
-
-                    alignment:
-                        Alignment.topLeft,
-
+                    alignment: Alignment.topLeft,
                     child: GestureDetector(
-
                       onTap: () {
-
-                        Navigator.pop(
-                          context,
-                        );
+                        Navigator.pop(context);
                       },
-
                       child: Container(
-
                         height: 50,
-
                         width: 50,
-
-                        decoration:
-                            const BoxDecoration(
-
+                        decoration: const BoxDecoration(
                           color: Colors.white,
-
-                          shape:
-                              BoxShape.circle,
+                          shape: BoxShape.circle,
                         ),
-
-                        child: const Icon(
-                          Icons.arrow_back_ios_new,
-                        ),
+                        child: const Icon(Icons.arrow_back_ios_new),
                       ),
                     ),
                   ),
 
                   const SizedBox(height: 70),
 
-                  /// TITLE
                   const Text(
-
                     "Hello Again!",
-
                     style: TextStyle(
-
                       fontSize: 35,
-
-                      fontWeight:
-                          FontWeight.bold,
-
-                      color:
-                          Color(0xFF1F2937),
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1F2937),
                     ),
                   ),
 
                   const SizedBox(height: 10),
 
                   const Text(
-
                     "Welcome Back You've Been Missed!",
-
-                    style: TextStyle(
-
-                      fontSize: 16,
-
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
 
                   const SizedBox(height: 50),
 
-                  /// EMAIL TITLE
-                  const Align(
-
-                    alignment:
-                        Alignment.centerLeft,
-
-                    child: Text(
-
-                      "Email Address",
-
-                      style: TextStyle(
-
-                        fontSize: 18,
-
-                        fontWeight:
-                            FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 15),
-
-                  /// EMAIL FIELD
                   Container(
-
                     decoration: BoxDecoration(
-
                       color: Colors.white,
-
-                      borderRadius:
-                          BorderRadius.circular(
-                        30,
-                      ),
+                      borderRadius: BorderRadius.circular(30),
                     ),
-
                     child: TextField(
-
-                      controller:
-                          emailController,
-
-                      keyboardType:
-                          TextInputType.emailAddress,
-
-                      decoration:
-                          const InputDecoration(
-
-                        hintText:
-                            "example@gmail.com",
-
-                        border:
-                            InputBorder.none,
-
-                        contentPadding:
-                            EdgeInsets.symmetric(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: "example@gmail.com",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(
                           horizontal: 25,
                           vertical: 20,
                         ),
@@ -434,82 +282,32 @@ class _LoginScreenState
                     ),
                   ),
 
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 30),
 
-                  /// PASSWORD TITLE
-                  const Align(
-
-                    alignment:
-                        Alignment.centerLeft,
-
-                    child: Text(
-
-                      "Password",
-
-                      style: TextStyle(
-
-                        fontSize: 18,
-
-                        fontWeight:
-                            FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 15),
-
-                  /// PASSWORD FIELD
                   Container(
-
                     decoration: BoxDecoration(
-
                       color: Colors.white,
-
-                      borderRadius:
-                          BorderRadius.circular(
-                        30,
-                      ),
+                      borderRadius: BorderRadius.circular(30),
                     ),
-
                     child: TextField(
-
-                      controller:
-                          passwordController,
-
-                      obscureText:
-                          obscurePassword,
-
-                      decoration:
-                          InputDecoration(
-
-                        hintText:
-                            "Enter Password",
-
-                        border:
-                            InputBorder.none,
-
-                        contentPadding:
-                            const EdgeInsets.symmetric(
+                      controller: passwordController,
+                      obscureText: obscurePassword,
+                      decoration: InputDecoration(
+                        hintText: "Enter Password",
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 25,
                           vertical: 20,
                         ),
-
-                        suffixIcon:
-                            IconButton(
-
+                        suffixIcon: IconButton(
                           icon: Icon(
-
                             obscurePassword
                                 ? Icons.visibility_off
                                 : Icons.visibility,
                           ),
-
                           onPressed: () {
-
                             setState(() {
-
-                              obscurePassword =
-                                  !obscurePassword;
+                              obscurePassword = !obscurePassword;
                             });
                           },
                         ),
@@ -517,136 +315,56 @@ class _LoginScreenState
                     ),
                   ),
 
-                  const SizedBox(height: 15),
-
-                  const Align(
-
-                    alignment:
-                        Alignment.centerLeft,
-
-                    child: Text(
-
-                      "Recovery Password",
-
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-
                   const SizedBox(height: 40),
 
-                  /// LOGIN BUTTON
                   SizedBox(
-
                     width: double.infinity,
-
                     height: 60,
-
                     child: ElevatedButton(
-
-                      style:
-                          ElevatedButton.styleFrom(
-
-                        backgroundColor:
-                            const Color(
-                          0xFF5DA9E9,
-                        ),
-
-                        shape:
-                            RoundedRectangleBorder(
-
-                          borderRadius:
-                              BorderRadius.circular(
-                            35,
-                          ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF5DA9E9),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(35),
                         ),
                       ),
-
-                      onPressed:
-                          loading
-                              ? null
-                              : login,
-
-                      child:
-
-                          loading
-
-                              ? const CircularProgressIndicator(
-                                  color:
-                                      Colors.white,
-                                )
-
-                              : const Text(
-
-                                  "Sign In",
-
-                                  style: TextStyle(
-
-                                    fontSize: 20,
-
-                                    color:
-                                        Colors.white,
-
-                                    fontWeight:
-                                        FontWeight.bold,
-                                  ),
-                                ),
+                      onPressed: loading ? null : sendOtp,
+                      child: loading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              "Sign In",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
 
                   const SizedBox(height: 40),
 
-                  /// GOOGLE BUTTON
                   GestureDetector(
-
-                    onTap:
-                        continueWithGoogle,
-
+                    onTap: continueWithGoogle,
                     child: Container(
-
                       height: 60,
-
                       width: double.infinity,
-
                       decoration: BoxDecoration(
-
                         color: Colors.white,
-
-                        borderRadius:
-                            BorderRadius.circular(
-                          35,
-                        ),
+                        borderRadius: BorderRadius.circular(35),
                       ),
-
-                      child: Row(
-
-                        mainAxisAlignment:
-                            MainAxisAlignment.center,
-
-                        children: const [
-
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           Image(
-
-                            image: AssetImage(
-                              'assets/images/search.png',
-                            ),
-
+                            image: AssetImage('assets/images/search.png'),
                             height: 25,
                           ),
-
                           SizedBox(width: 15),
-
                           Text(
-
                             "Sign in with Google",
-
                             style: TextStyle(
-
                               fontSize: 20,
-
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -654,50 +372,27 @@ class _LoginScreenState
                     ),
                   ),
 
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 80),
 
-                  /// REGISTER
                   Row(
-
-                    mainAxisAlignment:
-                        MainAxisAlignment.center,
-
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       const Text(
-
                         "Don’t Have An Account?",
-
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(color: Colors.grey),
                       ),
-
                       GestureDetector(
-
                         onTap: () {
-
                           Navigator.push(
-
                             context,
-
                             MaterialPageRoute(
-
-                              builder: (_) =>
-                                  const RegisterScreen(),
+                              builder: (_) => const RegisterScreen(),
                             ),
                           );
                         },
-
                         child: const Text(
-
                           " Sign Up For free",
-
-                          style: TextStyle(
-
-                            fontWeight:
-                                FontWeight.bold,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
