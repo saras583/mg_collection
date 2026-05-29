@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/models/product_model.dart';
 import 'package:mgcollection_app/views/user/screens/checkoutpage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mgcollection_app/models/product_model.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final ProductModel product;
-
   const ProductDetailsScreen({
     super.key,
     required this.product,
@@ -41,65 +40,60 @@ class _ProductDetailsScreenState
 
   Future<void> submitReview() async {
 
-    if (reviewController.text
-        .trim()
-        .isEmpty) {
-      return;
-    }
-
-    final newReview = {
-      'name': 'Customer',
-      'rating': userRating.toInt(),
-      'review':
-          reviewController.text.trim(),
-    };
-
-    try {
-
-      await Supabase.instance.client
-          .from('reviews')
-          .insert({
-
-        'product_id':
-            widget.product.id,
-
-        'user_name': 'Customer',
-
-        'rating': userRating,
-
-        'review':
-            reviewController.text.trim(),
-      });
-
-      setState(() {
-        reviews.add(newReview);
-      });
-
-      reviewController.clear();
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
-        const SnackBar(
-          content: Text(
-            "Review added successfully",
-          ),
-        ),
-      );
-
-    } catch (e) {
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
-    }
+  if (reviewController.text.trim().isEmpty) {
+    return;
   }
+
+  try {
+
+    await Supabase.instance.client
+        .from('productreviews')
+        .insert({
+
+      'product_id': widget.product.id,
+      'user_name': 'Customer',
+      'rating': userRating.toInt(),
+      'review': reviewController.text.trim(),
+    });
+
+    setState(() {
+
+      reviews.add({
+
+        'name': 'Customer',
+        'rating': userRating.toInt(),
+        'review': reviewController.text.trim(),
+      });
+    });
+
+    reviewController.clear();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+
+      const SnackBar(
+        content: Text(
+          "Review submitted successfully",
+        ),
+      ),
+    );
+
+  } catch (e) {
+
+    ScaffoldMessenger.of(context).showSnackBar(
+
+      SnackBar(
+        content: Text(
+          e.toString(),
+        ),
+      ),
+    );
+
+    print("Review Error: $e");
+  }
+}
+
+    
+    
 
   @override
   void dispose() {
@@ -228,29 +222,19 @@ class _ProductDetailsScreenState
                     width: double.infinity,
 
                     child: Image.network(
-                      product.image,
-                      fit: BoxFit.cover,
-
-                      errorBuilder: (
-                        context,
-                        error,
-                        stackTrace,
-                      ) {
-
-                        return Container(
-                          color:
-                              Colors.grey.shade300,
-
-                          child: const Center(
-                            child: Icon(
-                              Icons
-                                  .image_not_supported,
-                              size: 50,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+  product.image ,
+  fit: BoxFit.cover,
+  errorBuilder: (
+    context,
+    error,
+    stackTrace,
+  ) {
+    return const Icon(
+      Icons.broken_image,
+      size: 80,
+    );
+  },
+),
                   ),
 
                   /// BACK BUTTON

@@ -136,29 +136,19 @@ class _CartState extends State<Cart> {
                             15,
                           ),
 
-                          child: Image.asset(
-
-                            item['image'] ??
-                                'assets/images/placeholder.png',
-
-                            width: 90,
-
-                            height: 90,
-
-                            fit: BoxFit.cover,
-
-                            errorBuilder:
-                                (
-                                  context,
-                                  error,
-                                  stackTrace,
-                                ) {
-
-                              return const Icon(
-                                Icons.image,
-                              );
-                            },
-                          ),
+                          child: Image.network(
+  item['image'],
+  width: 90,
+  height: 90,
+  fit: BoxFit.cover,
+  errorBuilder: (
+    context,
+    error,
+    stackTrace,
+  ) {
+    return const Icon(Icons.image);
+  },
+),
                         ),
 
                         const SizedBox(width: 15),

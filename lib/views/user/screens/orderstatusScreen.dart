@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/views/user/screens/cancelproductscreen.dart';
 import 'package:mgcollection_app/views/user/screens/orderdetailedscreen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OrderStatusScreen extends StatelessWidget {
 
@@ -353,57 +354,67 @@ class OrderStatusScreen extends StatelessWidget {
                     ),
                   ),
 
-                  onPressed: () {
+                  onPressed: () async {
 
-                    /// SAFE ORDER ID
-                    final orderId =
-                        order['id']
-                            ?.toString() ?? '';
+  final orderId =
+      order['id']?.toString() ?? '';
 
-                    /// SAFE PRICE
-                    final refundAmount =
-                        double.tryParse(
-                          order['price']
-                              .toString(),
-                        ) ?? 0;
+  if (orderId.isEmpty) {
 
-                    /// CHECK ID
-                    if (orderId.isEmpty) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Order ID not found",
+        ),
+      ),
+    );
 
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(
+    return;
+  }
 
-                        const SnackBar(
+  try {
 
-                          content: Text(
-                            "Order ID not found",
-                          ),
-                        ),
-                      );
+    await Supabase.instance.client
+        .from('orders')
+        .update({
 
-                      return;
-                    }
+      "status":
+          "Refund Requested",
 
-                    Navigator.push(
+    })
+        .eq(
+          'id',
+          int.parse(orderId),
+        );
 
-                      context,
+    if (!context.mounted) return;
 
-                      MaterialPageRoute(
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
 
-                        builder: (_) =>
+      const SnackBar(
+        content: Text(
+          "Refund Request Sent Successfully",
+        ),
+      ),
+    );
 
-                            OrderSettingsScreen(
+    Navigator.pop(context);
 
-                          orderId:
-                              orderId,
+  } catch (e) {
 
-                          refundAmount:
-                              refundAmount,
-                        ),
-                      ),
-                    );
-                  },
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+
+      SnackBar(
+        content: Text(
+          e.toString(),
+        ),
+      ),
+    );
+  }
+},
 
                   child: const Text(
                     "Cancel the Order",

@@ -1,69 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:mgcollection_app/views/admin/screens/product_detailed_screen.dart';
 import 'package:mgcollection_app/views/user/screens/shirt_details_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mgcollection_app/models/product_model.dart';
 
-class ShirtsScreen extends StatefulWidget {
-  const ShirtsScreen({super.key});
+
+
+  class ShirtsScreen extends StatefulWidget {
+
+  const ShirtsScreen({
+    super.key,
+  });
 
   @override
   State<ShirtsScreen> createState() =>
       _ShirtsScreenState();
 }
+  
+  
+  
+
+  @override
+  State<ShirtsScreen> createState() =>
+      _ShirtsScreenState();
 
 class _ShirtsScreenState
     extends State<ShirtsScreen> {
 
-  String selectedFilter = 'Default';
+  String selectedFilter = "Default";
+  
 
-  List<Map<String, dynamic>> shirts = [
 
-    {
-      "name": "Black Linen Shirt",
-      "price": 899.0,
-      "image":
-          "assets/images/black_shirt.jpg",
-      "rating": 4.5,
-    },
+  final supabase = Supabase.instance.client;
+  
+  Future<List<Map<String, dynamic>>> getShirts() async {
 
-    {
-      "name": "Casual Shirt",
-      "price": 799.0,
-      "image":
-          "assets/images/laventer.jpg",
-      "rating": 3.5,
-    },
+  final data = await supabase
+      .from('products')
+      .select()
+      .eq('category', 'Shirt')
+      .order(
+        'created_at',
+        ascending: false,
+      );
 
-    {
-      "name": "Blue Denim Shirt",
-      "price": 999.0,
-      "image":
-          "assets/images/checkshirt.jpg",
-      "rating": 4.2,
-    },
+  return List<Map<String, dynamic>>
+      .from(data);
+}
 
-    {
-      "name": "Checked Cotton Shirt",
-      "price": 849.0,
-      "image":
-          "assets/images/black_shirt.jpg",
-      "rating": 4.0,
-    },
-
-    {
-      "name": "Lavender Shirt",
-      "price": 950.0,
-      "image":
-          "assets/images/laventer.jpg",
-      "rating": 4.7,
-    },
-
-    {
-      "name": "Striped Office Shirt",
-      "price": 899.0,
-      "image":
-          "assets/images/checkshirt.jpg",
-      "rating": 4.3,
-    },
-  ];
+  
 
   @override
   Widget build(BuildContext context) {
@@ -117,67 +102,14 @@ class _ShirtsScreenState
                           Icons.tune,
                         ),
 
-                        onSelected: (value) {
+                       onSelected: (value) {
 
-                          setState(() {
+  setState(() {
 
-                            selectedFilter =
-                                value;
+    selectedFilter = value;
 
-                            if (value ==
-                                'Low to High') {
-
-                              shirts.sort(
-
-                                (a, b) =>
-
-                                    a['price']
-                                        .compareTo(
-                                      b['price'],
-                                    ),
-                              );
-
-                            } else if (value ==
-                                'High to Low') {
-
-                              shirts.sort(
-
-                                (a, b) =>
-
-                                    b['price']
-                                        .compareTo(
-                                      a['price'],
-                                    ),
-                              );
-
-                            } else if (value ==
-                                'A-Z') {
-
-                              shirts.sort(
-
-                                (a, b) =>
-
-                                    a['name']
-                                        .compareTo(
-                                      b['name'],
-                                    ),
-                              );
-
-                            } else if (value ==
-                                'Rating') {
-
-                              shirts.sort(
-
-                                (a, b) =>
-
-                                    b['rating']
-                                        .compareTo(
-                                      a['rating'],
-                                    ),
-                              );
-                            }
-                          });
-                        },
+  });
+},
 
                         itemBuilder:
                             (context) => [
@@ -233,264 +165,124 @@ class _ShirtsScreenState
 
             /// PRODUCTS GRID
             Expanded(
+  child: FutureBuilder<List<Map<String, dynamic>>>(
 
-              child: GridView.builder(
+    future: getShirts(),
 
-                padding:
-                    const EdgeInsets.all(12),
+    builder: (context, snapshot) {
 
-                itemCount: shirts.length,
+      if (snapshot.connectionState ==
+          ConnectionState.waiting) {
 
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+        return const Center(
+          child:
+              CircularProgressIndicator(),
+        );
+      }
 
-                  crossAxisCount: 2,
+      if (snapshot.hasError) {
 
-                  crossAxisSpacing: 14,
+        return Center(
+          child: Text(
+            snapshot.error.toString(),
+          ),
+        );
+      }
 
-                  mainAxisSpacing: 14,
+      final shirts =
+          snapshot.data ?? [];
 
-                  childAspectRatio: 0.68,
-                ),
+      if (shirts.isEmpty) {
 
-                itemBuilder:
-                    (context, index) {
+        return const Center(
+          child: Text(
+            "No Shirts Found",
+          ),
+        );
+      }
 
-                  final shirtsList =
-                      shirts[index];
+      return GridView.builder(
 
-                  return GestureDetector(
+        padding:
+            const EdgeInsets.all(12),
 
-                    onTap: () {
+        itemCount: shirts.length,
 
-                      Navigator.push(
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(
 
-                        context,
+          crossAxisCount: 2,
+          crossAxisSpacing: 14,
+          mainAxisSpacing: 14,
+          childAspectRatio: 0.68,
+        ),
 
-                        MaterialPageRoute(
+        itemBuilder:
+            (context, index) {
 
-                          builder: (_) =>
+          final shirtsList =
+              shirts[index];
 
-                              ShirtDetailsScreen(
-                                product:
-                                    shirtsList,
-                              ),
-                        ),
-                      );
-                    },
+          return GestureDetector(
 
-                    child: Container(
+            onTap: () {
 
-                      padding:
-                          const EdgeInsets.all(
-                        12,
-                      ),
+  Navigator.push(
 
-                      decoration: BoxDecoration(
+    context,
 
-                        color: Theme.of(context).scaffoldBackgroundColor,
+    MaterialPageRoute(
 
-                        borderRadius:
-                            BorderRadius.circular(
-                          22,
-                        ),
+      builder: (_) => ShirtDetailsScreen(product: product)
+    ),
+  );
+},
 
-                        boxShadow: [
+            child: Container(
+              padding: const EdgeInsets.all(12),
 
-                          BoxShadow(
+decoration: BoxDecoration(
+  color: Colors.white,
+  borderRadius: BorderRadius.circular(20),
+),
 
-                            color: Colors.black
-                                .withOpacity(
-                              0.05,
-                            ),
+child: Column(
+  children: [
 
-                            blurRadius: 10,
+    Expanded(
+      child: ClipRRect(
+        borderRadius:
+            BorderRadius.circular(15),
 
-                            offset:
-                                const Offset(
-                              0,
-                              4,
-                            ),
-                          ),
-                        ],
-                      ),
+        child: Image.network(
+          shirtsList['image'],
+          fit: BoxFit.cover,
+          width: double.infinity,
+        ),
+      ),
+    ),
 
-                      child: Column(
+    const SizedBox(height: 10),
 
-                        crossAxisAlignment:
-                            CrossAxisAlignment
-                                .start,
-
-                        children: [
-
-                          /// IMAGE
-                          Expanded(
-
-                            child: Container(
-
-                              width:
-                                  double.infinity,
-
-                              decoration:
-                                  BoxDecoration(
-
-                                color: Colors
-                                    .grey
-                                    .shade100,
-
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  18,
-                                ),
-                              ),
-
-                              child: ClipRRect(
-
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  18,
-                                ),
-
-                                child: Image.asset(
-
-                                  shirtsList[
-                                      'image'],
-
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(
-                            height: 12,
-                          ),
-
-                          /// PRODUCT NAME
-                          Text(
-
-                            shirtsList['name'],
-
-                            maxLines: 1,
-
-                            overflow:
-                                TextOverflow
-                                    .ellipsis,
-
-                            style:
-                                const TextStyle(
-
-                              fontSize: 15,
-
-                              fontWeight:
-                                  FontWeight.bold,
-                            ),
-                          ),
-
-                          const SizedBox(
-                            height: 6,
-                          ),
-
-                          /// RATING
-                          Row(
-
-                            children: [
-
-                              const Icon(
-
-                                Icons.star,
-
-                                color:
-                                    Colors.orange,
-
-                                size: 16,
-                              ),
-
-                              const SizedBox(
-                                width: 5,
-                              ),
-
-                              Text(
-
-                                shirtsList[
-                                        'rating']
-                                    .toString(),
-
-                                style:
-                                    const TextStyle(
-                                  color:
-                                      Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          /// PRICE + BUTTON
-                          Row(
-
-                            mainAxisAlignment:
-                                MainAxisAlignment
-                                    .spaceBetween,
-
-                            children: [
-
-                              Text(
-
-                                "₹${shirtsList['price']}",
-
-                                style:
-                                    const TextStyle(
-
-                                  fontSize: 17,
-
-                                  fontWeight:
-                                      FontWeight.bold,
-                                ),
-                              ),
-
-                              Container(
-
-                                padding:
-                                    const EdgeInsets.all(
-                                  8,
-                                ),
-
-                                decoration:
-                                    BoxDecoration(
-
-                                  color:
-                                      Colors.black,
-
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                    12,
-                                  ),
-                                ),
-
-                                child: const Icon(
-
-                                  Icons
-                                      .shopping_bag_outlined,
-
-                                  color:
-                                      Colors.white,
-
-                                  size: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+    Text(
+      shirtsList['name'],
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    ),
+
+    Text(
+      "₹${shirtsList['price']}",
+    ),
+  ],
+),
+              // Keep your existing UI
             ),
+          );
+        },
+      );
+    },
+  ),
+),
           ],
         ),
       ),

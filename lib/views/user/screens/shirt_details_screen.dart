@@ -41,16 +41,24 @@ class _ShirtDetailsScreenState
 
               children: [
 
-                Image.asset(
-
-                  widget.product['image'],
-
-                  height: 300,
-
-                  width: double.infinity,
-
-                  fit: BoxFit.contain,
-                ),
+                Image.network(
+  widget.product['image'],
+  height: 300,
+  width: double.infinity,
+  fit: BoxFit.cover,
+  errorBuilder: (
+    context,
+    error,
+    stackTrace,
+  ) {
+    return const Center(
+      child: Icon(
+        Icons.broken_image,
+        size: 80,
+      ),
+    );
+  },
+),
 
                 /// BACK BUTTON
                 Positioned(

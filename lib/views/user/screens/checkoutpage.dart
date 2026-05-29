@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Checkoutpage extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -21,6 +22,8 @@ class _CheckoutpageState
       "Cash on Delivery";
 
   bool placingOrder = false;
+  
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -866,88 +869,55 @@ class _CheckoutpageState
 
   /// PLACE ORDER
   Future<void> placeOrder(
-    BuildContext context,
-    String method,
-  ) async {
+  BuildContext context,
+  String method,
+) async {
 
-    setState(() {
-      placingOrder = true;
-    });
+  try {
 
-    await Future.delayed(
-      const Duration(seconds: 2),
+    final user =
+        Supabase.instance.client.auth.currentUser;
+
+    if (user == null) {
+      throw Exception("User not logged in");
+    }
+
+    final insertedOrder =
+        await Supabase.instance.client
+            .from('orders')
+            .insert({
+
+          "user_id": user.id,
+          "product_name": widget.product['name'],
+          "price": widget.product['price'],
+          "quantity": widget.product['quantity'],
+          "payment_method": method,
+          "status": "Pending",
+          "image": widget.product['image'],
+
+        })
+        .select()
+        .single();
+
+    print(insertedOrder);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Order placed successfully"),
+      ),
     );
 
-    var orderBox =
-        Hive.box('orders');
+  } catch (e) {
 
-    orderBox.add({
+    print("ORDER ERROR: $e");
 
-      "name":
-          widget.product['name'],
-
-      "price":
-          widget.product['price'],
-
-      "image":
-          widget.product['image'],
-
-      "quantity":
-          widget.product['quantity'],
-
-      "payment":
-          method,
-
-      "time":
-          DateTime.now().toString(),
-    });
-
-    setState(() {
-      placingOrder = false;
-    });
-
-    showDialog(
-
-      context: context,
-
-      builder: (_) {
-
-        return AlertDialog(
-
-          shape:
-              RoundedRectangleBorder(
-
-            borderRadius:
-                BorderRadius.circular(
-              20,
-            ),
-          ),
-
-          title: const Text(
-            "Order Successful",
-          ),
-
-          content: const Text(
-            "Your order has been placed successfully.",
-          ),
-
-          actions: [
-
-            TextButton(
-
-              onPressed: () {
-
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(e.toString()),
+      ),
     );
   }
+}
 }
 
 /// PRICE ROW
