@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mgcollection_app/views/user/screens/watches_details_screen.dart';
+import 'package:mgcollection_app/models/product_model.dart';
+import 'package:mgcollection_app/views/user/screens/productdetailedscreens.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -10,309 +11,222 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+  final supabase = Supabase.instance.client;
+
+  Future<List<Map<String, dynamic>>> getCartItems() async {
+    final user = supabase.auth.currentUser;
+
+    if (user == null) return [];
+
+    final data = await supabase
+        .from('cart')
+        .select()
+        .eq('user_id', user.id)
+        .order('created_at', ascending: false);
+
+    return List<Map<String, dynamic>>.from(data);
+  }
+
+  Future<void> deleteItem(int id) async {
+    try {
+      await supabase.from('cart').delete().eq('id', id);
+
+      if (!mounted) return;
+
+      setState(() {});
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Item removed from cart')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+  Future<void> openProductDetails(Map<String, dynamic> cartItem) async {
+    try {
+      final productId = cartItem['product_id'];
+
+      if (productId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Product id not found')),
+        );
+        return;
+      }
+
+      final data = await supabase
+          .from('products')
+          .select()
+          .eq('id', productId)
+          .single();
+
+      final product = ProductModel(
+        id: data['id'],
+        name: data['name']?.toString() ?? '',
+        price: (data['price'] as num?)?.toDouble() ?? 0.0,
+        image: data['image']?.toString() ?? '',
+        description: data['description']?.toString() ?? '',
+        category: data['category']?.toString() ?? '',
+        rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
+      );
+
+      if (!mounted) return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ProductDetailsScreen(product: product),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+  Widget cartImage(String image) {
+    return Image.network(
+      image,
+      width: 70,
+      height: 70,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: 70,
+          height: 70,
+          color: Colors.grey.shade300,
+          child: const Icon(Icons.image_not_supported),
+        );
+      },
+    );
+  }
+
+  double calculateTotal(List<Map<String, dynamic>> items) {
+    double total = 0;
+
+    for (final item in items) {
+      final price = (item['price'] as num?)?.toDouble() ?? 0.0;
+      final quantity = (item['quantity'] as num?)?.toInt() ?? 1;
+
+      total += price * quantity;
+    }
+
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
-    var box = Hive.box('cart');
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Cart'),
       ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: getCartItems(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-      backgroundColor:
-          Theme.of(context).scaffoldBackgroundColor,
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
 
-      body: SafeArea(
-        child: ValueListenableBuilder(
-          valueListenable: box.listenable(),
+          final items = snapshot.data ?? [];
 
-          builder: (context, Box box, _) {
+          if (items.isEmpty) {
+            return const Center(
+              child: Text('Cart is Empty'),
+            );
+          }
 
-            if (box.isEmpty) {
+          final total = calculateTotal(items);
 
-              return const Center(
-                child: Text(
-                  'Cart is Empty',
-                ),
-              );
-            }
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
 
-            return ListView.builder(
-
-              padding: const EdgeInsets.all(12),
-
-              itemCount: box.length,
-
-              itemBuilder:
-                  (BuildContext context,
-                      int index) {
-
-                final reversedIndex =
-                    box.length - 1 - index;
-
-                final rawItem =
-                    box.getAt(reversedIndex);
-
-                if (rawItem == null ||
-                    rawItem is! Map) {
-
-                  return const SizedBox();
-                }
-
-                final item =
-                    Map<String, dynamic>.from(
-                  rawItem,
-                );
-
-                return GestureDetector(
-
-                  onTap: () {
-
-                    Navigator.push(
-
-                      context,
-
-                      MaterialPageRoute(
-
-                        builder: (_) =>
-                            WatchesDetailsScreen(
-                          product: item,
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      child: ListTile(
+                        onTap: () {
+                          openProductDetails(item);
+                        },
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: cartImage(item['image']?.toString() ?? ''),
+                        ),
+                        title: Text(
+                          item['product_name']?.toString() ?? 'No Name',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          '₹${item['price'] ?? 0}  |  Qty: ${item['quantity'] ?? 1}',
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () async {
+                            await deleteItem(item['id']);
+                          },
                         ),
                       ),
                     );
                   },
-
-                  child: Container(
-
-                    margin:
-                        const EdgeInsets.only(
-                      bottom: 15,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 8,
+                      color: Colors.black12,
                     ),
-
-                    padding:
-                        const EdgeInsets.all(
-                      12,
-                    ),
-
-                    decoration:
-                        BoxDecoration(
-
-                      color:
-                          Theme.of(context)
-                              .cardColor,
-
-                      borderRadius:
-                          BorderRadius.circular(
-                        20,
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Total: ₹${total.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-
-                      boxShadow: [
-
-                        BoxShadow(
-
-                          color:
-                              Colors.black12,
-
-                          blurRadius: 5,
-
-                          offset:
-                              const Offset(
-                            0,
-                            3,
-                          ),
-                        ),
-                      ],
                     ),
-
-                    child: Row(
-
-                      children: [
-
-                        /// IMAGE
-                        ClipRRect(
-
-                          borderRadius:
-                              BorderRadius.circular(
-                            15,
-                          ),
-
-                          child: Image.network(
-  item['image'],
-  width: 90,
-  height: 90,
-  fit: BoxFit.cover,
-  errorBuilder: (
-    context,
-    error,
-    stackTrace,
-  ) {
-    return const Icon(Icons.image);
-  },
-),
-                        ),
-
-                        const SizedBox(width: 15),
-
-                        /// DETAILS
-                        Expanded(
-
-                          child: Column(
-
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
-
-                            children: [
-
-                              Text(
-
-                                item['name'] ??
-                                    'No Name',
-
-                                style:
-                                    const TextStyle(
-
-                                  fontSize: 18,
-
-                                  fontWeight:
-                                      FontWeight.bold,
-                                ),
-                              ),
-
-                              const SizedBox(height: 8),
-
-                              Text(
-
-                                "₹${item['price'] ?? 0}",
-
-                                style:
-                                    const TextStyle(
-
-                                  fontSize: 16,
-
-                                  color: Colors.blue,
-
-                                  fontWeight:
-                                      FontWeight.w600,
-                                ),
-                              ),
-
-                              const SizedBox(height: 12),
-
-                              /// QUANTITY UI
-                              Row(
-
-                                children: [
-
-                                  Container(
-
-                                    decoration:
-                                        BoxDecoration(
-
-                                      color:
-                                          Colors.grey.shade300,
-
-                                      borderRadius:
-                                          BorderRadius.circular(
-                                        10,
-                                      ),
-                                    ),
-
-                                    child:
-                                        const Padding(
-
-                                      padding:
-                                          EdgeInsets.all(
-                                        5,
-                                      ),
-
-                                      child: Icon(
-                                        Icons.remove,
-                                        size: 18,
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 12),
-
-                                  const Text(
-
-                                    "1",
-
-                                    style:
-                                        TextStyle(
-
-                                      fontSize: 16,
-
-                                      fontWeight:
-                                          FontWeight.bold,
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 12),
-
-                                  Container(
-
-                                    decoration:
-                                        BoxDecoration(
-
-                                      color: Colors.blue,
-
-                                      borderRadius:
-                                          BorderRadius.circular(
-                                        10,
-                                      ),
-                                    ),
-
-                                    child:
-                                        const Padding(
-
-                                      padding:
-                                          EdgeInsets.all(
-                                        5,
-                                      ),
-
-                                      child: Icon(
-
-                                        Icons.add,
-
-                                        size: 18,
-
-                                        color:
-                                            Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        /// DELETE BUTTON
-                        IconButton(
-
-                          onPressed: () {
-
-                            box.deleteAt(
-                              reversedIndex,
-                            );
-                          },
-
-                          icon: const Icon(
-
-                            Icons.delete,
-
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
+                    ElevatedButton(
+                      onPressed: () {
+                        // Add checkout navigation here if needed
+                      },
+                      child: const Text('Checkout'),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

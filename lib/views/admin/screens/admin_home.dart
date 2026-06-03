@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/views/admin/adminuserscreen.dart';
+import 'package:mgcollection_app/views/admin/admin_user_screen.dart';
 import 'package:mgcollection_app/views/admin/screens/admindashbored.dart';
 import 'package:mgcollection_app/views/admin/screens/orderscreen.dart';
 import 'package:mgcollection_app/views/admin/screens/productscreen.dart';

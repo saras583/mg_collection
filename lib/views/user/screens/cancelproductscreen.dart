@@ -1,286 +1,199 @@
 import 'package:flutter/material.dart';
-import 'package:mgcollection_app/services/walletservice.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class OrderSettingsScreen extends StatefulWidget {
+class CancelProductScreen extends StatefulWidget {
+  final Map<String, dynamic> order;
 
-  final String orderId;
-  final double refundAmount;
-
-  const OrderSettingsScreen({
+  const CancelProductScreen({
     super.key,
-    required this.orderId,
-    required this.refundAmount,
+    required this.order,
   });
 
   @override
-  State<OrderSettingsScreen> createState() =>
-      _OrderSettingsScreenState();
+  State<CancelProductScreen> createState() => _CancelProductScreenState();
 }
 
-class _OrderSettingsScreenState
-    extends State<OrderSettingsScreen> {
+class _CancelProductScreenState extends State<CancelProductScreen> {
+  final supabase = Supabase.instance.client;
 
-  final walletService = WalletService();
+  String refundMethod = 'MG Wallet';
+  bool loading = false;
 
-  bool isLoading = false;
+  final accountNameController = TextEditingController();
+  final accountNumberController = TextEditingController();
+  final ifscController = TextEditingController();
 
-  /// CANCEL ORDER + REFUND TO WALLET
-  Future<void> refundToWallet() async {
+  double get refundAmount {
+    final value = widget.order['total_price'] ?? widget.order['price'];
 
-    setState(() {
-      isLoading = true;
-    });
+    if (value is int) return value.toDouble();
+    if (value is double) return value;
+    if (value is String) return double.tryParse(value) ?? 0.0;
 
-    try {
-
-      // ADD MONEY TO WALLET
-      await walletService.addMoney(
-        widget.refundAmount,
-      );
-
-      // UPDATE ORDER STATUS
-      await Supabase.instance.client
-          .from('orders')
-          .update({
-            "status": "cancelled",
-          })
-          .eq('id', widget.orderId);
-
-      if (mounted) {
-
-        Navigator.pop(context);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              "₹${widget.refundAmount} refunded to MG Wallet",
-            ),
-          ),
-        );
-      }
-
-    } catch (e) {
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "Refund failed: $e",
-          ),
-        ),
-      );
-
-    } finally {
-
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
-  }
-
-  /// BANK REFUND
-  Future<void> refundToBank() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-
-      // UPDATE ORDER STATUS
-      await Supabase.instance.client
-          .from('orders')
-          .update({
-            "status": "cancelled",
-          })
-          .eq('id', widget.orderId);
-
-      if (mounted) {
-
-        Navigator.pop(context);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Refund will arrive in 2-5 working days",
-            ),
-          ),
-        );
-      }
-
-    } catch (e) {
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "Refund failed: $e",
-          ),
-        ),
-      );
-
-    } finally {
-
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
-  }
-
-  /// DIALOG
-  void showCancelOrderDialog() {
-
-    showDialog(
-      context: context,
-
-      builder: (context) {
-
-        return AlertDialog(
-
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-
-          title: const Text(
-            "Cancel Order",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-
-              Text(
-                "Refund Amount: ₹${widget.refundAmount}",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              const Text(
-                "Choose where you want the refund.",
-              ),
-
-              const SizedBox(height: 20),
-
-              /// WALLET REFUND
-              ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: Colors.green,
-
-                  child: Icon(
-                    Icons.account_balance_wallet,
-                    color: Colors.white,
-                  ),
-                ),
-
-                title: const Text("MG Wallet"),
-
-                subtitle: const Text(
-                  "Instant refund",
-                ),
-
-                onTap: refundToWallet,
-              ),
-
-              const Divider(),
-
-              /// BANK REFUND
-              ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: Colors.blue,
-
-                  child: Icon(
-                    Icons.account_balance,
-                    color: Colors.white,
-                  ),
-                ),
-
-                title: const Text("Bank Account"),
-
-                subtitle: const Text(
-                  "2-5 working days",
-                ),
-
-                onTap: refundToBank,
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    return 0.0;
   }
 
   @override
+  void dispose() {
+    accountNameController.dispose();
+    accountNumberController.dispose();
+    ifscController.dispose();
+    super.dispose();
+  }
+
+Future<void> cancelOrder() async {
+  final user = supabase.auth.currentUser;
+
+  if (user == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please login first')),
+    );
+    return;
+  }
+
+  setState(() {
+    loading = true;
+  });
+
+  try {
+    final orderId = widget.order['id'];
+
+    await supabase.from('orders').update({
+      'status': 'Refund Requested',
+      'refund_method': refundMethod,
+      'refund_amount': refundAmount,
+      'refund_status': 'Pending',
+      'bank_account_name': refundMethod == 'Bank Account'
+          ? accountNameController.text.trim()
+          : null,
+      'bank_account_number': refundMethod == 'Bank Account'
+          ? accountNumberController.text.trim()
+          : null,
+      'bank_ifsc': refundMethod == 'Bank Account'
+          ? ifscController.text.trim()
+          : null,
+    }).eq('id', orderId);
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Refund request submitted')),
+    );
+
+    Navigator.pop(context);
+    Navigator.pop(context);
+  } catch (e) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(e.toString())),
+    );
+  } finally {
+    if (!mounted) return;
+
+    setState(() {
+      loading = false;
+    });
+  }
+}   
+  @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       appBar: AppBar(
-        title: const Text("Order Settings"),
+        title: const Text('Cancel Order'),
       ),
-
-      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-
-          : Padding(
-              padding: const EdgeInsets.all(20),
-
-              child: Column(
-                children: [
-
-                  ListTile(
-                    leading: const Icon(
-                      Icons.shopping_bag,
-                    ),
-
-                    title: const Text(
-                      "My Orders",
-                    ),
-
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios,
-                    ),
-
-                    onTap: () {},
-                  ),
-
-                  const Divider(),
-
-                  ListTile(
-                    leading: const Icon(
-                      Icons.cancel,
-                      color: Colors.red,
-                    ),
-
-                    title: const Text(
-                      "Cancel Product Order",
-
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    subtitle: const Text(
-                      "Cancel your placed order",
-                    ),
-
-                    onTap: showCancelOrderDialog,
-                  ),
-                ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Refund Amount',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
+            const SizedBox(height: 8),
+            Text(
+              '₹${refundAmount.toStringAsFixed(2)}',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(height: 25),
+            const Text(
+              'Select Refund Method',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            RadioListTile<String>(
+              value: 'MG Wallet',
+              groupValue: refundMethod,
+              title: const Text('MG Wallet'),
+              subtitle: const Text('Refund amount will be added instantly'),
+              onChanged: (value) {
+                setState(() {
+                  refundMethod = value!;
+                });
+              },
+            ),
+            RadioListTile<String>(
+              value: 'Bank Account',
+              groupValue: refundMethod,
+              title: const Text('Bank Account'),
+              subtitle: const Text('Refund request will be submitted'),
+              onChanged: (value) {
+                setState(() {
+                  refundMethod = value!;
+                });
+              },
+            ),
+            if (refundMethod == 'Bank Account') ...[
+              const SizedBox(height: 15),
+              TextField(
+                controller: accountNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Account Holder Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: accountNumberController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Account Number',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: ifscController,
+                decoration: const InputDecoration(
+                  labelText: 'IFSC Code',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+            const SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                onPressed: loading ? null : cancelOrder,
+                child: loading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('Confirm Cancellation'),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -233,7 +233,7 @@ class _ShirtsScreenState
 
     MaterialPageRoute(
 
-      builder: (_) => ShirtDetailsScreen(product: product)
+      builder: (_) => ShirtDetailsScreen(product: shirtsList)
     ),
   );
 },

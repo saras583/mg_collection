@@ -17,6 +17,10 @@ class OrderStatusScreen extends StatelessWidget {
 
     final status =
         order["status"]?.toString() ?? "Pending";
+        final canCancel =
+      status != "Cancelled" &&
+      status != "Completed" &&
+      status != "Refund Requested";
 
     return Scaffold(
 
@@ -333,93 +337,47 @@ class OrderStatusScreen extends StatelessWidget {
                 ),
 
                 /// CANCEL ORDER BUTTON
-                OutlinedButton(
-
-                  style:
-                      OutlinedButton.styleFrom(
-
-                    minimumSize:
-                        const Size(
-                      double.infinity,
-                      55,
-                    ),
-
-                    shape:
-                        RoundedRectangleBorder(
-
-                      borderRadius:
-                          BorderRadius.circular(
-                        30,
-                      ),
-                    ),
-                  ),
-
-                  onPressed: () async {
-
-  final orderId =
-      order['id']?.toString() ?? '';
-
-  if (orderId.isEmpty) {
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-      const SnackBar(
-        content: Text(
-          "Order ID not found",
-        ),
+                if (canCancel)
+  OutlinedButton(
+    style: OutlinedButton.styleFrom(
+      minimumSize: const Size(double.infinity, 55),
+      side: const BorderSide(color: Colors.red),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
       ),
-    );
+    ),
+    onPressed: () async {Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => CancelProductScreen(order: order),
+  ),
+);},
+    child: const Text(
+      "Cancel Order",
+      style: TextStyle(color: Colors.red),
+    ),
+  ),
 
-    return;
-  }
-
-  try {
-
-    await Supabase.instance.client
-        .from('orders')
-        .update({
-
-      "status":
-          "Refund Requested",
-
-    })
-        .eq(
-          'id',
-          int.parse(orderId),
-        );
-
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-
-      const SnackBar(
-        content: Text(
-          "Refund Request Sent Successfully",
-        ),
+if (!canCancel)
+  Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.grey.shade200,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Text(
+      status == "Cancelled"
+          ? "This order is already cancelled"
+          : status == "Completed"
+              ? "Completed orders cannot be cancelled"
+              : "Cancellation request already submitted",
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
       ),
-    );
-
-    Navigator.pop(context);
-
-  } catch (e) {
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-
-      SnackBar(
-        content: Text(
-          e.toString(),
-        ),
-      ),
-    );
-  }
-},
-
-                  child: const Text(
-                    "Cancel the Order",
-                  ),
-                ),
+    ),
+  ),
 
                 const SizedBox(
                   height: 30,

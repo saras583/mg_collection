@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -48,29 +46,25 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     });
   }
-  
+
   Future<void> sendOtp() async {
-  try {
-    await supabase.auth.signInWithOtp(
-      email: emailController.text.trim(),
-    );
+    try {
+      await supabase.auth.signInWithOtp(email: emailController.text.trim());
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => OtpScreen(
-          email: emailController.text.trim(),
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OtpScreen(email: emailController.text.trim()),
         ),
-      ),
-    );
-  } on AuthException catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(e.message)),
-    );
+      );
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
+    }
   }
-}
 
   Future<void> _checkCurrentSession() async {
     final session = supabase.auth.currentSession;
@@ -80,34 +74,49 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _handleLoggedInUser(User user) async {
-    if (_navigating) return;
-    _navigating = true;
+Future<void> _handleLoggedInUser(User user) async {
+  
 
-    try {
-      await supabase.from('users').upsert({
-        "id": user.id,
-        "name":
-            user.userMetadata?['name'] ??
-            user.userMetadata?['full_name'] ??
-            "User",
-        "email": user.email,
-        "joined": DateTime.now().toIso8601String().substring(0, 10),
-        "blocked": false,
-      });
-    } catch (e) {
-      log("USER TABLE ERROR: $e");
+  _navigating = true;
+ 
+
+  try {
+    final userData = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+        print('BLOCKED => ${userData['blocked']}');
+  print('ROLE => ${userData['role']}');
+
+    if (userData['role'] == 'admin') {
+      if (!mounted) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const AdminHome(),
+        ),
+        (_) => false,
+      );
+
+      return;
     }
 
     if (!mounted) return;
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const Bottomnavigationbarscreen()),
-      (route) => false,
+      MaterialPageRoute(
+        builder: (_) => const Bottomnavigationbarscreen(),
+      ),
+      (_) => false,
     );
+  } catch (e) {
+    _navigating = false;
+    print(e);
   }
-
+}
   Future<void> login() async {
     setState(() {
       loading = true;
@@ -117,15 +126,16 @@ class _LoginScreenState extends State<LoginScreen> {
       final email = emailController.text.trim();
       final password = passwordController.text.trim();
 
-      if (email == "admin@gmail.com" && password == "123456") {
-        if (!mounted) return;
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const AdminHome()),
-          (route) => false,
+      if (email == "admin@gmail.com") {
+        final result = await supabase.auth.signInWithPassword(
+          email: email,
+          password: password,
         );
 
+        if (result.user == null) {
+          throw Exception("Admin login failed");
+        }
+        await _handleLoggedInUser(result.user!);
         return;
       }
 
@@ -136,9 +146,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final user = result.user;
 
-      if (user != null) {
-        await _handleLoggedInUser(user);
-      }
+      await supabase.auth.signInWithPassword(
+  email: email,
+  password: password,
+);
     } on AuthException catch (e) {
       if (!mounted) return;
 
@@ -181,20 +192,15 @@ class _LoginScreenState extends State<LoginScreen> {
             'profile',
           ]);
 
-      final result =  await supabase.auth.signInWithIdToken(
+      final result = await supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
         accessToken: authorization?.accessToken,
       );
-    
-  if (result.user != null && result.session != null) {
-    
-  await _handleLoggedInUser(result.user!);
-}
 
-
-
-
+      if (result.user != null && result.session != null) {
+        await _handleLoggedInUser(result.user!);
+      }
     } catch (e) {
       print(e);
     }
@@ -327,7 +333,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(35),
                         ),
                       ),
-                      onPressed: loading ? null : sendOtp,
+                      onPressed: loading ? null : login,
                       child: loading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(
