@@ -39,8 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final session = data.session;
 
       log("AUTH EVENT: ${data.event}");
-      log("AUTH SESSION: $session");
-
+log("AUTH USER ID: ${session?.user.id}");
       if (session != null) {
         await _handleLoggedInUser(session.user);
       }
@@ -74,49 +73,67 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-Future<void> _handleLoggedInUser(User user) async {
-  
+  Future<void> _handleLoggedInUser(User user) async {
 
-  _navigating = true;
- 
+    if (_navigating) return;
 
-  try {
-    final userData = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-        print('BLOCKED => ${userData['blocked']}');
-  print('ROLE => ${userData['role']}');
+    _navigating = true;
 
-    if (userData['role'] == 'admin') {
+    try {
+      final userData = await supabase
+          .from('users')
+          .select()
+          .eq('id', user.id)
+          .single();
+
+      print("USERDATA => $userData");
+
+      if (userData['blocked'] == true) {
+        print('USER IS BLOCKED');
+
+        await supabase.auth.signOut();
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Your account has been blocked by the admin'),
+          ),
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => LoginScreen()),
+          (route) => false,
+        );
+
+        return;
+      }
+
+      if (userData['role'] == 'admin') {
+        if (!mounted) return;
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const AdminHome()),
+          (_) => false,
+        );
+
+        return;
+      }
+
       if (!mounted) return;
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-          builder: (_) => const AdminHome(),
-        ),
+        MaterialPageRoute(builder: (_) => const Bottomnavigationbarscreen()),
         (_) => false,
       );
-
-      return;
+    } catch (e) {
+      _navigating = false;
+      print(e);
     }
-
-    if (!mounted) return;
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const Bottomnavigationbarscreen(),
-      ),
-      (_) => false,
-    );
-  } catch (e) {
-    _navigating = false;
-    print(e);
   }
-}
+
   Future<void> login() async {
     setState(() {
       loading = true;
@@ -126,30 +143,12 @@ Future<void> _handleLoggedInUser(User user) async {
       final email = emailController.text.trim();
       final password = passwordController.text.trim();
 
-      if (email == "admin@gmail.com") {
-        final result = await supabase.auth.signInWithPassword(
-          email: email,
-          password: password,
-        );
-
-        if (result.user == null) {
-          throw Exception("Admin login failed");
-        }
-        await _handleLoggedInUser(result.user!);
-        return;
-      }
+      
 
       final result = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
-
-      final user = result.user;
-
-      await supabase.auth.signInWithPassword(
-  email: email,
-  password: password,
-);
     } on AuthException catch (e) {
       if (!mounted) return;
 

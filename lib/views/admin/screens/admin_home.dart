@@ -12,58 +12,56 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
-
   int currentIndex = 0;
 
-  final List<Widget> screens = [
-     DashboardScreen(),
-     AdminProductScreen(),
-     AdminOrderScreen(),
-     Adminuserscreen(),
-  ];
+  late final List<Widget> screens;
+
+  @override
+  void initState() {
+    super.initState();
+
+    screens = const [
+      DashboardScreen(),
+      AdminProductScreen(),
+      AdminOrderScreen(),
+      Adminuserscreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      body: screens[currentIndex],
-
+      body: IndexedStack(
+        index: currentIndex,
+        children: screens,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-
+        type: BottomNavigationBarType.fixed,
         onTap: (index) {
           setState(() {
             currentIndex = index;
           });
         },
-
-        type: BottomNavigationBarType.fixed,
-
         items: const [
-
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
-            label: "Dashboard",
+            label: 'Dashboard',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag),
-            label: "Products",
+            label: 'Products',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: "Orders",
+            label: 'Orders',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
-            label: "Users",
+            label: 'Users',
           ),
         ],
-        
       ),
     );
   }
 }
-

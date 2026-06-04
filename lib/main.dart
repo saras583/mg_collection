@@ -11,10 +11,10 @@ import 'package:mgcollection_app/services/themeprovider.dart';
 import 'package:mgcollection_app/views/user/screens/theme.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   runZonedGuarded(
     () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
       FlutterError.onError = (FlutterErrorDetails details) {
         FlutterError.presentError(details);
 
@@ -23,13 +23,10 @@ Future<void> main() async {
         debugPrint(details.stack.toString());
       };
 
-      /// LOAD ENV
       await dotenv.load(fileName: ".env");
 
-      /// HIVE INIT
       await Hive.initFlutter();
 
-      /// OPEN HIVE BOXES
       await Hive.openBox('favorites');
       await Hive.openBox('cart');
       await Hive.openBox('orders');
@@ -37,7 +34,6 @@ Future<void> main() async {
       await Hive.openBox('products');
       await Hive.openBox('adminBox');
 
-      /// SUPABASE INIT
       await Supabase.initialize(
         url: dotenv.env['SUPABASE_URL'] ?? '',
         anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',

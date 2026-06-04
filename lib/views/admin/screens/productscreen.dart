@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mgcollection_app/views/admin/screens/product_detailed_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AdminProductScreen extends StatefulWidget {
   const AdminProductScreen({super.key});
@@ -12,8 +12,17 @@ class AdminProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<AdminProductScreen> {
+  @override
+void initState() {
+  super.initState();
+  fetchProducts();
+}
+ 
 
-  final productBox = Hive.box('products');
+  final supabase = Supabase.instance.client;
+List products = [];
+
+
 
   final List<String> categories = [
 
@@ -54,25 +63,48 @@ final stockController =
     }
   }
 
-  void addProduct() {
+  Future<void> addProduct() async {
+  try {
+    print("ADDING PRODUCT...");
 
-    productBox.add({
-
+    final response = await supabase
+        .from('products')
+        .insert({
       "name": nameController.text,
-      "price": priceController.text,
+      "price": int.parse(priceController.text),
       "category": selectedCategory,
-      "image": selectedImage?.path ?? "","description": descriptionController.text,
-"stock": stockController.text,
-
+      "description": descriptionController.text,
+      "stock": 0,
+      "image_url": "",
     });
 
-    setState(() {});
+    print("PRODUCT ADDED");
+    print(response);
 
-    nameController.clear();
-    priceController.clear();
+    await fetchProducts();
 
-    selectedImage = null;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Product Added Successfully"),
+      ),
+    );
+  } catch (e) {
+    print("ADD PRODUCT ERROR => $e");
   }
+}
+Future<void> fetchProducts() async {
+  try {
+    final response = await supabase
+        .from('products')
+        .select();
+  
+    setState(() {
+      products = response;
+    });
+  } catch (e) {
+    print(e);
+  }
+}
 
   void editProduct(int index, Map product) {
 
@@ -202,26 +234,20 @@ final stockController =
 
                 ElevatedButton(
 
-                  onPressed: () {
+                 onPressed: () async {
+  await supabase
+      .from('products')
+      .update({
+        "name": nameController.text,
+        "price": double.parse(priceController.text),
+        "category": selectedCategory,
+      })
+      .eq('id', product['id']);
 
-                    productBox.putAt(index, {
+  await fetchProducts();
 
-                      "name": nameController.text,
-                      "price": priceController.text,
-                      "category": selectedCategory,
-                      "image":
-                          selectedImage?.path ?? "",
-                    });
-
-                    setState(() {});
-
-                    nameController.clear();
-                    priceController.clear();
-
-                    selectedImage = null;
-
-                    Navigator.pop(context);
-                  },
+  Navigator.pop(context);
+},
 
                   child: const Text("Update"),
                 ),
@@ -375,9 +401,9 @@ final stockController =
 
                       ElevatedButton(
 
-                        onPressed: () {
+                        onPressed: () async{
 
-                          addProduct();
+                         await addProduct();
 
                           Navigator.pop(context);
                         },
@@ -397,11 +423,11 @@ final stockController =
 
       body: ListView.builder(
 
-        itemCount: productBox.length,
+        itemCount: products.length,
 
         itemBuilder: (context, index) {
 
-          final product = productBox.getAt(index);
+          final product = products[index];
 
           return Card(
 
@@ -421,16 +447,11 @@ final stockController =
     );
   },
 
-              leading: product["image"] != null &&
-        product["image"] != ""
+              leading:
 
-                  ? CircleAvatar(
-                      backgroundImage: FileImage(
-                        File(product["image"]),
-                      ),
-                    )
+                  
 
-                  : const CircleAvatar(
+                   const CircleAvatar(
                       child: Icon(Icons.image),
                     ),
 
@@ -470,12 +491,14 @@ final stockController =
 
                     icon: const Icon(Icons.delete),
 
-                    onPressed: () {
+                    onPressed: () async{
+                     await supabase
+    .from('products')
+    .delete()
+    .eq('id', product['id']);
 
-                      setState(() {
-
-                        productBox.deleteAt(index);
-                      });
+await fetchProducts();
+                      
                     },
                   ),
                 ],

@@ -12,36 +12,44 @@ class AdminOrderScreen extends StatefulWidget {
 class _AdminOrderScreenState extends State<AdminOrderScreen> {
   final supabase = Supabase.instance.client;
 
+  late Future<List<Map<String, dynamic>>> ordersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    ordersFuture = getOrders();
+  }
+
   Future<List<Map<String, dynamic>>> getOrders() async {
-    final user = supabase.auth.currentUser;
-
-    debugPrint('ADMIN USER: ${user?.id}');
-    debugPrint('ADMIN EMAIL: ${user?.email}');
-
     final data = await supabase
         .from('orders')
         .select()
         .order('created_at', ascending: false);
 
-    debugPrint('ADMIN ORDERS DATA: $data');
+    debugPrint('ADMIN ORDERS COUNT: ${data.length}');
 
     return List<Map<String, dynamic>>.from(data);
   }
 
+  Future<void> refreshOrders() async {
+    setState(() {
+      ordersFuture = getOrders();
+    });
+
+    await ordersFuture;
+  }
+
   Future<void> updateOrderStatus(int orderId, String status) async {
     try {
-      await supabase
-          .from('orders')
-          .update({'status': status})
-          .eq('id', orderId);
+      await supabase.from('orders').update({'status': status}).eq('id', orderId);
 
       if (!mounted) return;
-
-      setState(() {});
 
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Order marked as $status')));
+
+      await refreshOrders();
     } catch (e) {
       if (!mounted) return;
 
@@ -73,6 +81,15 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
   }
 
   Widget orderImage(String image) {
+    if (image.isEmpty) {
+      return Container(
+        width: 70,
+        height: 70,
+        color: Colors.grey.shade300,
+        child: const Icon(Icons.image_not_supported),
+      );
+    }
+
     return Image.network(
       image,
       width: 70,
@@ -95,7 +112,7 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
     if (orderId == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('order id not found')));
+      ).showSnackBar(const SnackBar(content: Text('Order id not found')));
       return;
     }
 
@@ -244,14 +261,14 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
                 context,
                 MaterialPageRoute(builder: (_) => const RefundRequestsScreen()),
               ).then((_) {
-                setState(() {});
+                refreshOrders();
               });
             },
           ),
         ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: getOrders(),
+        future: ordersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -268,9 +285,7 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
           }
 
           return RefreshIndicator(
-            onRefresh: () async {
-              setState(() {});
-            },
+            onRefresh: refreshOrders,
             child: ListView.builder(
               padding: const EdgeInsets.all(12),
               itemCount: orders.length,
