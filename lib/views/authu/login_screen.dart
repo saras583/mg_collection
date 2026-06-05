@@ -74,65 +74,69 @@ log("AUTH USER ID: ${session?.user.id}");
   }
 
   Future<void> _handleLoggedInUser(User user) async {
+  if (_navigating) return;
+  _navigating = true;
 
-    if (_navigating) return;
+  try {
+    // Use maybeSingle() instead of single() — returns null if no row exists
+    Map<String, dynamic>? userData = await supabase
+        .from('users')
+        .select()
+        .eq('id', user.id)
+        .maybeSingle();
 
-    _navigating = true;
+    // First-time Google sign-in: create the user row
+    if (userData == null) {
+      await supabase.from('users').insert({
+        'id': user.id,
+        'email': user.email,
+        'role': 'user',
+        'blocked': false,
+        // add any other fields your table requires
+      });
 
-    try {
-      final userData = await supabase
+      userData = await supabase
           .from('users')
           .select()
           .eq('id', user.id)
           .single();
+    }
 
-      print("USERDATA => $userData");
-
-      if (userData['blocked'] == true) {
-        print('USER IS BLOCKED');
-
-        await supabase.auth.signOut();
-
-        if (!mounted) return;
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Your account has been blocked by the admin'),
-          ),
-        );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => LoginScreen()),
-          (route) => false,
-        );
-
-        return;
-      }
-
-      if (userData['role'] == 'admin') {
-        if (!mounted) return;
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const AdminHome()),
-          (_) => false,
-        );
-
-        return;
-      }
-
+    if (userData['blocked'] == true) {
+      await supabase.auth.signOut();
       if (!mounted) return;
-
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Your account has been blocked by the admin')),
+      );
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const Bottomnavigationbarscreen()),
+        MaterialPageRoute(builder: (_) => LoginScreen()),
+        (route) => false,
+      );
+      return;
+    }
+
+    if (!mounted) return;
+
+    if (userData['role'] == 'admin') {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const AdminHome()),
         (_) => false,
       );
-    } catch (e) {
-      _navigating = false;
-      print(e);
+      return;
     }
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const Bottomnavigationbarscreen()),
+      (_) => false,
+    );
+  } catch (e) {
+    _navigating = false;
+    print('_handleLoggedInUser error: $e');
   }
+}
 
   Future<void> login() async {
     setState(() {
@@ -170,7 +174,7 @@ log("AUTH USER ID: ${session?.user.id}");
     }
   }
 
-  continueWithGoogle() async {
+  Future<void> continueWithGoogle() async {
     try {
       GoogleSignIn signIn = GoogleSignIn.instance;
       await signIn.initialize(
@@ -198,6 +202,8 @@ log("AUTH USER ID: ${session?.user.id}");
       );
 
       if (result.user != null && result.session != null) {
+        print(result.user?.id);
+        print(result.user?.email);
         await _handleLoggedInUser(result.user!);
       }
     } catch (e) {

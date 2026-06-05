@@ -18,25 +18,37 @@ Future<void> main() async {
       FlutterError.onError = (FlutterErrorDetails details) {
         FlutterError.presentError(details);
 
-        debugPrint("========== FLUTTER ERROR ==========");
+        debugPrint('========== FLUTTER ERROR ==========');
         debugPrint(details.exceptionAsString());
         debugPrint(details.stack.toString());
       };
 
-      await dotenv.load(fileName: ".env");
+      await dotenv.load(fileName: '.env');
 
       await Hive.initFlutter();
 
-      await Hive.openBox('favorites');
-      await Hive.openBox('cart');
-      await Hive.openBox('orders');
-      await Hive.openBox('settings');
-      await Hive.openBox('products');
-      await Hive.openBox('adminBox');
+      await Future.wait([
+        Hive.openBox('favorites'),
+        Hive.openBox('cart'),
+        Hive.openBox('orders'),
+        Hive.openBox('settings'),
+        Hive.openBox('products'),
+        Hive.openBox('adminBox'),
+      ]);
+
+      final supabaseUrl = dotenv.env['SUPABASE_URL'];
+      final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
+
+      if (supabaseUrl == null ||
+          supabaseUrl.isEmpty ||
+          supabaseAnonKey == null ||
+          supabaseAnonKey.isEmpty) {
+        throw Exception('Missing Supabase environment variables');
+      }
 
       await Supabase.initialize(
-        url: dotenv.env['SUPABASE_URL'] ?? '',
-        anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
+        url: supabaseUrl,
+        anonKey: supabaseAnonKey,
       );
 
       runApp(
@@ -47,7 +59,7 @@ Future<void> main() async {
       );
     },
     (error, stackTrace) {
-      debugPrint("========== UNHANDLED ERROR ==========");
+      debugPrint('========== UNHANDLED ERROR ==========');
       debugPrint(error.toString());
       debugPrint(stackTrace.toString());
     },
@@ -63,23 +75,12 @@ class MgCollection extends StatelessWidget {
       builder: (context, provider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-
-          /// LIGHT THEME
           theme: lightTheme,
-
-          /// DARK THEME
           darkTheme: darkTheme,
-
-          /// THEME MODE
           themeMode: provider.themeData == darkTheme
               ? ThemeMode.dark
               : ThemeMode.light,
-
-          /// TEST SCREEN
-          home: OnboardingController(),
-
-          // AFTER TESTING CHANGE TO:
-          // home: const OnboardingController(),
+          home: const OnboardingController(),
         );
       },
     );
