@@ -281,8 +281,10 @@ log("AUTH USER ID: ${session?.user.id}");
                     ),
                     child: TextField(
                       controller: emailController,
+                      
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
+                        filled: true,
                         hintText: "example@gmail.com",
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/views/admin/admin_user_screen.dart';
+import 'package:mgcollection_app/views/admin/screens/admin_bannerscreen.dart';
 import 'package:mgcollection_app/views/admin/screens/admindashbored.dart';
 import 'package:mgcollection_app/views/admin/screens/orderscreen.dart';
 import 'package:mgcollection_app/views/admin/screens/productscreen.dart';
@@ -21,11 +22,12 @@ class _AdminHomeState extends State<AdminHome> {
     super.initState();
 
     screens = const [
-      DashboardScreen(),
-      AdminProductScreen(),
-      AdminOrderScreen(),
-      Adminuserscreen(),
-    ];
+  DashboardScreen(),      
+  AdminProductScreen(),   
+  AdminOrderScreen(),     
+  AdminBannerScreen(),    
+  Adminuserscreen(),      
+];
   }
 
   @override
@@ -38,6 +40,8 @@ class _AdminHomeState extends State<AdminHome> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFF5DA9E9),
+        unselectedItemColor: Colors.grey,
         onTap: (index) {
           setState(() {
             currentIndex = index;
@@ -55,6 +59,10 @@ class _AdminHomeState extends State<AdminHome> {
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Orders',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo_library_outlined), // ✅ add this
+            label: 'Banners',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),

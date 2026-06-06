@@ -30,19 +30,25 @@ class _BottomnavigationbarscreenState extends State<Bottomnavigationbarscreen> {
     return Scaffold(backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Screens[currentIndex],
 
-      bottomNavigationBar: BottomNavigationBar(backgroundColor: const Color.fromARGB(255, 13, 13, 13),
-        currentIndex: currentIndex,
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-        items: [BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor:Color(0xFFE6E6FA) ,label: 'home'),
-        BottomNavigationBarItem(icon: Icon(Icons.explore),label: 'bestsellers'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart),label: 'cart'),
-        BottomNavigationBarItem(icon: Icon(Icons.person),label: 'home') ],
-        
-      ),
+      bottomNavigationBar: BottomNavigationBar(
+  backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor 
+      ?? Theme.of(context).scaffoldBackgroundColor, 
+  selectedItemColor: const Color(0xFF5DA9E9),       
+  unselectedItemColor: Colors.grey,
+  type: BottomNavigationBarType.fixed,              
+  currentIndex: currentIndex,
+  onTap: (index) {
+    setState(() {
+      currentIndex = index;
+    });
+  },
+  items: const [
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+    BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Bestsellers'),
+    BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
+    BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'), // ✅ fixed label
+  ],
+),
     );
   }
 }

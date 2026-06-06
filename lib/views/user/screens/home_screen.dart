@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/models/categories_items.dart';
 import 'package:mgcollection_app/models/product_model.dart';
@@ -12,6 +13,7 @@ import 'package:mgcollection_app/views/user/screens/shoesScreen.dart';
 import 'package:mgcollection_app/views/user/screens/skincareScreen.dart';
 import 'package:mgcollection_app/views/user/screens/walletscreen.dart';
 import 'package:mgcollection_app/views/user/screens/watches.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isFavorite = false;
-
   final productService = ProductService();
 
   final List<Category> categories = [
@@ -33,6 +34,84 @@ class _HomeScreenState extends State<HomeScreen> {
     Category(name: "Shoes", image: "assets/images/air1.jpg"),
     Category(name: "jalore", image: "assets/images/jalore.jpg"),
   ];
+
+  List<Map<String, dynamic>> _banners = [];
+  final PageController _bannerController = PageController();
+  int _currentBanner = 0;
+  Timer? _bannerTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchBanners();
+  }
+
+  @override
+  void dispose() {
+    _bannerTimer?.cancel();
+    _bannerController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchBanners() async {
+    try {
+      final data = await Supabase.instance.client
+          .from('banners')
+          .select()
+          .eq('is_active', true)
+          .order('created_at', ascending: false);
+
+      setState(() {
+        _banners = List<Map<String, dynamic>>.from(data);
+      });
+
+      if (_banners.length > 1) {
+        _bannerTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+          if (_bannerController.hasClients) {
+            _currentBanner = (_currentBanner + 1) % _banners.length;
+            _bannerController.animateToPage(
+              _currentBanner,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
+          }
+        });
+      }
+    } catch (e) {
+      print('Fetch banners error: $e');
+    }
+  }
+
+  Future<void> _navigateToLinkedProduct(int productId) async {
+    try {
+      final data = await Supabase.instance.client
+          .from('products')
+          .select()
+          .eq('id', productId)
+          .single();
+
+      if (!mounted) return;
+
+      final product = ProductModel(
+        id: data['id'],
+        name: data['name'],
+        price: double.parse(data['price'].toString()),
+        image: data['image'] ?? '',
+        category: data['category'] ?? '',
+        rating: double.parse(data['rating'].toString()),
+        description: data['description'] ?? '',
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ProductDetailsScreen(product: product),
+        ),
+      );
+    } catch (e) {
+      print('Navigate to product error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +126,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  /// WALLET
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -64,7 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                  /// LOCATION
                   Column(
                     children: [
                       Text(
@@ -87,10 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
 
-                  /// ACTIONS
                   Row(
                     children: [
-                      /// FAVORITES
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -104,17 +179,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           radius: 22,
                           backgroundColor: Colors.grey.shade200,
                           child: Icon(
-                            isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
                             color: isFavorite ? Colors.red : Colors.black,
                           ),
                         ),
                       ),
-
                       const SizedBox(width: 10),
-
-                      /// CART
                       Stack(
                         children: [
                           GestureDetector(
@@ -165,15 +235,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
-                  itemBuilder: (BuildContext context, int index) {
+                  itemBuilder: (context, index) {
                     final category = categories[index];
-
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: GestureDetector(
-                        onTap: () {
-                          _navigateToCategory(category.name);
-                        },
+                        onTap: () => _navigateToCategory(category.name),
                         child: Column(
                           children: [
                             CircleAvatar(
@@ -215,102 +282,136 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 12),
 
-            /// DISCOUNT BANNER
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF1565C0),
-                      Color(0xFF42A5F5),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Discount Products",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          const Text(
-                            "Get up to 50% off",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          GestureDetector(
+            /// DYNAMIC BANNER SLIDER
+            if (_banners.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  height: 160,
+                  child: Stack(
+                    children: [
+                      PageView.builder(
+                        controller: _bannerController,
+                        itemCount: _banners.length,
+                        onPageChanged: (i) =>
+                            setState(() => _currentBanner = i),
+                        itemBuilder: (context, index) {
+                          final banner = _banners[index];
+                          return GestureDetector(
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    "Discount products coming soon",
-                                  ),
-                                ),
-                              );
+                              if (banner['product_id'] != null) {
+                                _navigateToLinkedProduct(banner['product_id']);
+                              }
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 8,
-                              ),
+                              margin: const EdgeInsets.only(right: 4),
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Text(
-                                "Shop Now",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
+                                borderRadius: BorderRadius.circular(22),
+                                image: DecorationImage(
+                                  image: NetworkImage(banner['image']),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        "assets/images/shirt.jpg",
-                        width: 95,
-                        height: 95,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 95,
-                            height: 95,
-                            color: Colors.white24,
-                            child: const Icon(
-                              Icons.local_offer,
-                              color: Colors.white,
-                              size: 40,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(22),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.black.withOpacity(0.5),
+                                      Colors.transparent,
+                                    ],
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.topRight,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.all(18),
+                                alignment: Alignment.bottomLeft,
+                                child: Text(
+                                  banner['title'],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         },
                       ),
-                    ),
-                  ],
+
+                      // Dots indicator
+                      Positioned(
+                        bottom: 10,
+                        right: 16,
+                        child: Row(
+                          children: List.generate(
+                            _banners.length,
+                            (i) => AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.only(left: 4),
+                              width: _currentBanner == i ? 16 : 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: _currentBanner == i
+                                    ? Colors.white
+                                    : Colors.white54,
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+
+            // Fallback static banner when no banners in Supabase
+            if (_banners.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: const Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Discount Products",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              "Get up to 50% off",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.local_offer, color: Colors.white, size: 50),
+                    ],
+                  ),
+                ),
+              ),
 
             const SizedBox(height: 12),
 
@@ -322,7 +423,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
-
                   if (snapshot.hasError) {
                     return Center(child: Text(snapshot.error.toString()));
                   }
@@ -345,7 +445,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: products.length,
                     itemBuilder: (context, index) {
                       final product = products[index];
-
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -374,14 +473,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     product.image,
                                     fit: BoxFit.cover,
                                     width: double.infinity,
-                                    errorBuilder:
-                                        (context, error, stackTrace) {
+                                    errorBuilder: (context, error, stackTrace) {
                                       return Container(
                                         color: Colors.grey.shade300,
                                         child: const Center(
-                                          child: Icon(
-                                            Icons.image_not_supported,
-                                          ),
+                                          child: Icon(Icons.image_not_supported),
                                         ),
                                       );
                                     },
@@ -416,17 +512,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     const EdgeInsets.symmetric(horizontal: 8),
                                 child: Row(
                                   children: [
-                                    const Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: 18,
-                                    ),
+                                    const Icon(Icons.star,
+                                        color: Colors.amber, size: 18),
                                     const SizedBox(width: 4),
                                     Text(
                                       product.rating.toString(),
                                       style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ],
                                 ),
@@ -471,9 +563,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (routes.containsKey(categoryName)) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => routes[categoryName]!,
-        ),
+        MaterialPageRoute(builder: (_) => routes[categoryName]!),
       );
     }
   }
