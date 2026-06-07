@@ -15,19 +15,55 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
   double balance = 0.0;
   List<Map<String, dynamic>> transactions = [];
 
+  // ✅ Realtime subscription
+  RealtimeChannel? _walletChannel;
+
   @override
   void initState() {
     super.initState();
     loadWallet();
+    _subscribeToWallet();
+  }
+
+  @override
+  void dispose() {
+    // ✅ Clean up subscription
+    _walletChannel?.unsubscribe();
+    super.dispose();
+  }
+
+  // ✅ Listen for wallet balance changes in realtime
+  void _subscribeToWallet() {
+    final user = supabase.auth.currentUser;
+    if (user == null) return;
+
+    _walletChannel = supabase
+        .channel('wallet_changes')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'wallets',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'user_id',
+            value: user.id,
+          ),
+          callback: (payload) {
+            // When admin approves refund → wallet row updates → this fires
+            final newBalance =
+                (payload.newRecord['balance'] as num?)?.toDouble() ?? 0.0;
+            setState(() => balance = newBalance);
+            // Also reload transactions to show new refund entry
+            _loadTransactions();
+          },
+        )
+        .subscribe();
   }
 
   Future<void> loadWallet() async {
     final user = supabase.auth.currentUser;
-
     if (user == null) {
-      setState(() {
-        loading = false;
-      });
+      setState(() => loading = false);
       return;
     }
 
@@ -43,12 +79,29 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
           'user_id': user.id,
           'balance': 0,
         });
-
         balance = 0.0;
       } else {
         balance = (wallet['balance'] as num?)?.toDouble() ?? 0.0;
       }
 
+      await _loadTransactions();
+
+      if (!mounted) return;
+      setState(() => loading = false);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => loading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+  Future<void> _loadTransactions() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return;
+
+    try {
       final history = await supabase
           .from('wallet_transactions')
           .select()
@@ -56,39 +109,25 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
           .order('created_at', ascending: false);
 
       if (!mounted) return;
-
       setState(() {
         transactions = List<Map<String, dynamic>>.from(history);
-        loading = false;
       });
     } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        loading = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      print('Load transactions error: $e');
     }
   }
 
   Future<void> addMoney(double amount) async {
     final user = supabase.auth.currentUser;
-
     if (user == null) return;
 
     try {
       final newBalance = balance + amount;
 
-      await supabase
-          .from('wallets')
-          .update({
-            'balance': newBalance,
-            'updated_at': DateTime.now().toIso8601String(),
-          })
-          .eq('user_id', user.id);
+      await supabase.from('wallets').update({
+        'balance': newBalance,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('user_id', user.id);
 
       await supabase.from('wallet_transactions').insert({
         'user_id': user.id,
@@ -99,19 +138,12 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
       });
 
       if (!mounted) return;
-
-      setState(() {
-        balance = newBalance;
-      });
-
-      loadWallet();
-
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Money added to wallet')),
+        const SnackBar(content: Text('Money added to wallet ✅')),
       );
+      // No need to call loadWallet() — realtime will update balance automatically
     } catch (e) {
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
@@ -124,78 +156,84 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (_) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 20,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Add Money',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+      builder: (_) => Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 20,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Add Money',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Amount',
+                prefixText: '₹',
+                border: OutlineInputBorder(),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: amountController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Amount',
-                  prefixText: '₹',
-                  border: OutlineInputBorder(),
-                ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  final amount =
+                      double.tryParse(amountController.text.trim()) ?? 0;
+                  if (amount <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Enter valid amount')),
+                    );
+                    return;
+                  }
+                  Navigator.pop(context);
+                  addMoney(amount);
+                },
+                child: const Text('Add Money'),
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final amount =
-                        double.tryParse(amountController.text.trim()) ?? 0;
-
-                    if (amount <= 0) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Enter valid amount')),
-                      );
-                      return;
-                    }
-
-                    Navigator.pop(context);
-                    addMoney(amount);
-                  },
-                  child: const Text('Add Money'),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Color typeColor(String type) {
+  Color _typeColor(String type) {
     if (type == 'debit') return Colors.red;
     if (type == 'refund') return Colors.green;
     return Colors.blue;
   }
 
-  String amountText(Map<String, dynamic> item) {
+  IconData _typeIcon(String type) {
+    if (type == 'debit') return Icons.arrow_upward;
+    if (type == 'refund') return Icons.replay;
+    return Icons.arrow_downward;
+  }
+
+  String _amountText(Map<String, dynamic> item) {
     final amount = (item['amount'] as num?)?.toDouble() ?? 0.0;
     final type = item['type']?.toString() ?? 'credit';
+    return type == 'debit'
+        ? '- ₹${amount.toStringAsFixed(2)}'
+        : '+ ₹${amount.toStringAsFixed(2)}';
+  }
 
-    if (type == 'debit') {
-      return '- ₹${amount.toStringAsFixed(2)}';
+  String _formatDate(String? dateStr) {
+    if (dateStr == null) return '';
+    try {
+      final date = DateTime.parse(dateStr).toLocal();
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (_) {
+      return '';
     }
-
-    return '+ ₹${amount.toStringAsFixed(2)}';
   }
 
   @override
@@ -203,6 +241,12 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('MG Wallet'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: loadWallet,
+          ),
+        ],
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
@@ -211,10 +255,15 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
+                  // ── BALANCE CARD ──
                   Container(
                     padding: const EdgeInsets.all(22),
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       borderRadius: BorderRadius.circular(22),
                     ),
                     child: Column(
@@ -222,10 +271,7 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
                       children: [
                         const Text(
                           'Available Balance',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                          ),
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
                         const SizedBox(height: 10),
                         Text(
@@ -237,22 +283,40 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        ElevatedButton(
+                        ElevatedButton.icon(
                           onPressed: showAddMoneySheet,
-                          child: const Text('Add Money'),
+                          icon: const Icon(Icons.add),
+                          label: const Text('Add Money'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.blue,
+                          ),
                         ),
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 24),
-                  const Text(
-                    'Transactions',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+
+                  // ── TRANSACTIONS HEADER ──
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Transactions',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '${transactions.length} total',
+                        style: const TextStyle(
+                            fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
                   ),
+
                   const SizedBox(height: 12),
+
                   if (transactions.isEmpty)
                     const Center(
                       child: Padding(
@@ -260,29 +324,42 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
                         child: Text('No transactions yet'),
                       ),
                     ),
+
+                  // ── TRANSACTION LIST ──
                   ...transactions.map((item) {
                     final type = item['type']?.toString() ?? 'credit';
-
                     return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: typeColor(type).withOpacity(0.15),
+                          backgroundColor:
+                              _typeColor(type).withOpacity(0.15),
                           child: Icon(
-                            type == 'debit'
-                                ? Icons.arrow_upward
-                                : Icons.arrow_downward,
-                            color: typeColor(type),
+                            _typeIcon(type),
+                            color: _typeColor(type),
                           ),
                         ),
-                        title: Text(item['title']?.toString() ?? 'Wallet'),
-                        subtitle: Text(
-                          item['description']?.toString() ?? '',
+                        title: Text(
+                          item['title']?.toString() ?? 'Wallet',
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(item['description']?.toString() ?? ''),
+                            Text(
+                              _formatDate(item['created_at']?.toString()),
+                              style: const TextStyle(
+                                  fontSize: 11, color: Colors.grey),
+                            ),
+                          ],
                         ),
                         trailing: Text(
-                          amountText(item),
+                          _amountText(item),
                           style: TextStyle(
-                            color: typeColor(type),
+                            color: _typeColor(type),
                             fontWeight: FontWeight.bold,
+                            fontSize: 15,
                           ),
                         ),
                       ),

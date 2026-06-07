@@ -552,7 +552,7 @@ class _RegisterScreenState
                             MaterialPageRoute(
 
                               builder: (_) =>
-                                  const LoginScreen(),
+                                  LoginScreen(),
                             ),
                           );
                         },

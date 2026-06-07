@@ -1,5 +1,3 @@
-// lib/views/admin/screens/admin_banner_screen.dart
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -70,11 +68,8 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
 
   Future<String?> _uploadBannerImage(File imageFile) async {
     try {
-      final fileName =
-          'banner_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      await supabase.storage
-          .from('banners')
-          .upload(fileName, imageFile);
+      final fileName = 'banner_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await supabase.storage.from('banners').upload(fileName, imageFile);
       return supabase.storage.from('banners').getPublicUrl(fileName);
     } catch (e) {
       print('Banner upload error: $e');
@@ -85,7 +80,8 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
   Future<void> addBanner() async {
     if (titleController.text.isEmpty || selectedImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill title and select an image')),
+        const SnackBar(
+            content: Text('Please fill title and select an image')),
       );
       return;
     }
@@ -145,7 +141,8 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text('Delete',
+                style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -173,106 +170,162 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: const Text('Add Banner'),
-          content: SingleChildScrollView(
+        builder: (context, setDialogState) => Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 24,
+          ),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.85,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Banner Title',
-                    border: OutlineInputBorder(),
+                // ── TITLE ──
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 12),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Add Banner',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 12),
 
-                // Link to product dropdown
-                DropdownButtonFormField<int?>(
-                  value: selectedProductId,
-                  decoration: const InputDecoration(
-                    labelText: 'Link to Product (optional)',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('No product link'),
-                    ),
-                    ...products.map((p) => DropdownMenuItem(
-                          value: p['id'] as int,
-                          child: Text(
-                            p['name'],
-                            overflow: TextOverflow.ellipsis,
+                // ── SCROLLABLE CONTENT ──
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextField(
+                          controller: titleController,
+                          decoration: const InputDecoration(
+                            labelText: 'Banner Title',
+                            border: OutlineInputBorder(),
                           ),
-                        )),
-                  ],
-                  onChanged: (val) {
-                    setDialogState(() => selectedProductId = val);
-                  },
-                ),
-                const SizedBox(height: 12),
+                        ),
+                        const SizedBox(height: 12),
 
-                // Image picker
-                GestureDetector(
-                  onTap: () async {
-                    final XFile? image = await picker.pickImage(
-                      source: ImageSource.gallery,
-                      imageQuality: 80,
-                    );
-                    if (image != null) {
-                      setDialogState(
-                          () => selectedImage = File(image.path));
-                    }
-                  },
-                  child: Container(
-                    height: 150,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey.shade100,
-                    ),
-                    child: selectedImage != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.file(
-                              selectedImage!,
-                              fit: BoxFit.cover,
+                        DropdownButtonFormField<int?>(
+                          value: selectedProductId,
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Link to Product (optional)',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: [
+                            const DropdownMenuItem(
+                              value: null,
+                              child: Text('No product link'),
                             ),
-                          )
-                        : const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_photo_alternate_outlined,
-                                  size: 40, color: Colors.grey),
-                              SizedBox(height: 8),
-                              Text('Tap to select banner image',
-                                  style: TextStyle(color: Colors.grey)),
-                            ],
+                            ...products.map(
+                              (p) => DropdownMenuItem(
+                                value: p['id'] as int,
+                                child: Text(
+                                  p['name'],
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
+                          onChanged: (val) {
+                            setDialogState(() => selectedProductId = val);
+                          },
+                        ),
+                        const SizedBox(height: 12),
+
+                        // ── IMAGE PICKER ──
+                        GestureDetector(
+                          onTap: () async {
+                            final XFile? image = await picker.pickImage(
+                              source: ImageSource.gallery,
+                              imageQuality: 80,
+                            );
+                            if (image != null) {
+                              setDialogState(
+                                () => selectedImage = File(image.path),
+                              );
+                            }
+                          },
+                          child: Container(
+                            height: 140,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey.shade100,
+                            ),
+                            child: selectedImage != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.file(
+                                      selectedImage!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : const Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_photo_alternate_outlined,
+                                        size: 40,
+                                        color: Colors.grey,
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        'Tap to select banner image',
+                                        style:
+                                            TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
                           ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // ── ACTIONS ──
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: isUploading ? null : addBanner,
+                        child: isUploading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2),
+                              )
+                            : const Text('Save'),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: isUploading ? null : addBanner,
-              child: isUploading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Save'),
-            ),
-          ],
         ),
       ),
     );
@@ -304,102 +357,127 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
           ? const Center(child: CircularProgressIndicator())
           : banners.isEmpty
               ? const Center(
-                  child: Text('No banners yet. Tap + to add.'),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: banners.length,
-                  itemBuilder: (context, index) {
-                    final banner = banners[index];
-                    final isActive = banner['is_active'] as bool;
-
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.photo_library_outlined,
+                          size: 60, color: Colors.grey),
+                      SizedBox(height: 12),
+                      Text(
+                        'No banners yet',
+                        style:
+                            TextStyle(fontSize: 16, color: Colors.grey),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Banner image preview
-                          ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(14),
-                            ),
-                            child: Image.network(
-                              banner['image'],
-                              height: 150,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
+                      SizedBox(height: 6),
+                      Text(
+                        'Tap + to add your first banner',
+                        style:
+                            TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: fetchBanners,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(12),
+                    itemCount: banners.length,
+                    itemBuilder: (context, index) {
+                      final banner = banners[index];
+                      final isActive = banner['is_active'] as bool;
+
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // ── BANNER IMAGE ──
+                            ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(14),
+                              ),
+                              child: Image.network(
+                                banner['image'],
                                 height: 150,
-                                color: Colors.grey.shade200,
-                                child: const Center(
-                                  child: Icon(Icons.image_not_supported,
-                                      color: Colors.grey),
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  height: 150,
+                                  color: Colors.grey.shade200,
+                                  child: const Center(
+                                    child: Icon(
+                                        Icons.image_not_supported,
+                                        color: Colors.grey),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
 
-                          Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          banner['title'],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        if (banner['product_id'] != null)
+                                          Text(
+                                            'Linked to product #${banner['product_id']}',
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // ── TOGGLE + DELETE ──
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        banner['title'],
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
+                                        isActive ? 'Active' : 'Inactive',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: isActive
+                                              ? Colors.green
+                                              : Colors.grey,
                                         ),
                                       ),
-                                      if (banner['product_id'] != null)
-                                        Text(
-                                          'Linked to product #${banner['product_id']}',
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey),
-                                        ),
+                                      Switch(
+                                        value: isActive,
+                                        activeColor: Colors.green,
+                                        onChanged: (_) =>
+                                            toggleBanner(banner),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete,
+                                            color: Colors.red),
+                                        onPressed: () =>
+                                            deleteBanner(banner),
+                                      ),
                                     ],
                                   ),
-                                ),
-
-                                // Active toggle
-                                Row(
-                                  children: [
-                                    Text(
-                                      isActive ? 'Active' : 'Inactive',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: isActive
-                                            ? Colors.green
-                                            : Colors.grey,
-                                      ),
-                                    ),
-                                    Switch(
-                                      value: isActive,
-                                      activeColor: Colors.green,
-                                      onChanged: (_) => toggleBanner(banner),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete,
-                                          color: Colors.red),
-                                      onPressed: () => deleteBanner(banner),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
     );
   }
