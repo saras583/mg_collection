@@ -73,7 +73,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ── TOP BAR ──
+            
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -81,7 +81,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                 children: [
                   Row(
                     children: [
-                      // ✅ Back button
+                      
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Container(
@@ -137,7 +137,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
               ),
             ),
 
-            // ── GRID ──
+            
             Expanded(
               child: loading
                   ? const Center(child: CircularProgressIndicator())
@@ -158,7 +158,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
 
                             return GestureDetector(
                               onTap: () {
-                                // ✅ pass correct map to ShirtDetailsScreen
+                                
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -171,7 +171,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  // ✅ theme-aware color
+                                  
                                   color: Theme.of(context).cardColor,
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
@@ -196,7 +196,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
                                           shirt['image'] ?? '',
                                           fit: BoxFit.cover,
                                           width: double.infinity,
-                                          // ✅ error handler
+                                          
                                           errorBuilder: (_, __, ___) =>
                                               Container(
                                             color: isDark
@@ -265,7 +265,7 @@ class _ShirtsScreenState extends State<ShirtsScreen> {
 
                                     const SizedBox(height: 6),
 
-                                    // PRICE + CART BUTTON
+                                    
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,

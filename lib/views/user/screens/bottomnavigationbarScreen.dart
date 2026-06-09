@@ -20,7 +20,7 @@ class _BottomnavigationbarscreenState
   final supabase = Supabase.instance.client;
   RealtimeChannel? _blockChannel;
 
-  // ✅ const list — no rebuild overhead
+  
   final List<Widget> screens = const [
     HomeScreen(),
     ExploreScreen(),
@@ -31,8 +31,8 @@ class _BottomnavigationbarscreenState
   @override
   void initState() {
     super.initState();
-    _checkIfBlocked();   // ✅ check on every app open
-    _listenForBlock();   // ✅ realtime kick when admin blocks
+    _checkIfBlocked();   
+    _listenForBlock();   
   }
 
   @override

@@ -98,7 +98,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
     }
   }
 
-  // Format created_at to readable date
+  
   String _formatDate(String? dateStr) {
     if (dateStr == null) return 'Unknown';
     try {
@@ -141,7 +141,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
           ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
-                // ── STATS ROW ──
+                
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Row(
@@ -164,7 +164,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
                   ),
                 ),
 
-                // ── SEARCH ──
+                
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -185,7 +185,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
                   ),
                 ),
 
-                // ── LIST ──
+                
                 Expanded(
                   child: filteredUsers.isEmpty
                       ? const Center(child: Text('No users found'))
@@ -209,7 +209,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // ── USER INFO ROW ──
+                                      
                                       Row(
                                         children: [
                                           // Avatar with initials
@@ -255,7 +255,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
                                             ),
                                           ),
 
-                                          // Status badge
+                                          
                                           Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 10,
@@ -284,7 +284,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
 
                                       const SizedBox(height: 12),
 
-                                      // ── JOINED DATE ──
+                                      
                                       Row(
                                         children: [
                                           Icon(
@@ -294,7 +294,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
                                           ),
                                           const SizedBox(width: 6),
                                           Text(
-                                            // ✅ fixed: was user['joined'], now uses created_at
+                                            
                                             'Joined: ${_formatDate(user['created_at']?.toString())}',
                                             style: TextStyle(
                                               fontSize: 13,
@@ -306,7 +306,7 @@ class _AdminuserscreenState extends State<Adminuserscreen> {
 
                                       const SizedBox(height: 14),
 
-                                      // ── ACTION BUTTONS ──
+                                    
                                       Row(
                                         children: [
                                           Expanded(

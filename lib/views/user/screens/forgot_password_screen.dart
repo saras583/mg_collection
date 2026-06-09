@@ -20,7 +20,7 @@ class _ForgotPasswordScreenState
 
   bool obscurePassword = true;
 
-  /// RESET PASSWORD
+  
   void resetPassword() {
 
     String email =
@@ -86,7 +86,7 @@ class _ForgotPasswordScreenState
     }
   }
 
-  /// SNACKBAR
+  
   void showMsg(String msg) {
 
     ScaffoldMessenger.of(context)
@@ -123,7 +123,7 @@ class _ForgotPasswordScreenState
 
             const SizedBox(height: 40),
 
-            /// EMAIL
+            
             TextField(
 
               controller:
@@ -156,7 +156,7 @@ class _ForgotPasswordScreenState
 
             const SizedBox(height: 20),
 
-            /// NEW PASSWORD
+            
             TextField(
 
               controller:
@@ -213,7 +213,7 @@ class _ForgotPasswordScreenState
 
             const SizedBox(height: 30),
 
-            /// BUTTON
+            
             GestureDetector(
 
               onTap: resetPassword,

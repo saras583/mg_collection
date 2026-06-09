@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgcollection_app/views/admin/admin_user_screen.dart';
+import 'package:mgcollection_app/views/admin/screens/addcategoies.dart';
 import 'package:mgcollection_app/views/admin/screens/admin_bannerscreen.dart';
 import 'package:mgcollection_app/views/admin/screens/admindashbored.dart';
 import 'package:mgcollection_app/views/admin/screens/orderscreen.dart';
@@ -24,9 +25,11 @@ class _AdminHomeState extends State<AdminHome> {
     screens = const [
   DashboardScreen(),      
   AdminProductScreen(),   
-  AdminOrderScreen(),     
+  AdminOrderScreen(),
+   AdminCategoryScreen(),     
   AdminBannerScreen(),    
-  Adminuserscreen(),      
+  Adminuserscreen(),
+       
 ];
   }
 
@@ -57,11 +60,15 @@ class _AdminHomeState extends State<AdminHome> {
             label: 'Products',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.category),
+            label: 'Products',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Orders',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.photo_library_outlined), // ✅ add this
+            icon: Icon(Icons.photo_library_outlined), 
             label: 'Banners',
           ),
           BottomNavigationBarItem(

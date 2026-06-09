@@ -21,20 +21,20 @@ ThemeData lightTheme = ThemeData(
 
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  scaffoldBackgroundColor: const Color(0xFF100F0F), //  your dark surface
-  cardColor: const Color(0xFF1E1E1E),               // for all containers
+  scaffoldBackgroundColor: const Color(0xFF100F0F), 
+  cardColor: const Color(0xFF1E1E1E),               
   colorScheme: const ColorScheme.dark(
     surface: Color(0xFF100F0F),
     primary: Color(0xFF151414),
-    onSurface: Colors.white,                        //  text on surfaces
+    onSurface: Colors.white,                        
   ),
   inputDecorationTheme: const InputDecorationTheme(
     filled: true,
-    fillColor: Color(0xFF1E1E1E),                   //  text fields dark
+    fillColor: Color(0xFF1E1E1E),                   
     hintStyle: TextStyle(color: Colors.grey),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-    backgroundColor: Color(0xFF1E1E1E),             //  dark nav bar
+    backgroundColor: Color(0xFF1E1E1E),             
     selectedItemColor: Color(0xFF5DA9E9),
     unselectedItemColor: Colors.grey,
   ),

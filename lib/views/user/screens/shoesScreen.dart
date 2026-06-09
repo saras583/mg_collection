@@ -73,7 +73,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ── TOP BAR ──
+            
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -136,7 +136,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
               ),
             ),
 
-            // ── GRID ──
+            
             Expanded(
               child: loading
                   ? const Center(child: CircularProgressIndicator())
@@ -240,7 +240,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
 
                                       const SizedBox(height: 4),
 
-                                      // CATEGORY
+                                      
                                       Text(
                                         shoe['category']?.toString() ?? '',
                                         style: TextStyle(
@@ -251,7 +251,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
 
                                       const SizedBox(height: 4),
 
-                                      // RATING
+                                      
                                       Row(
                                         children: [
                                           const Icon(Icons.star,
@@ -268,7 +268,7 @@ class _ShoesscreenState extends State<Shoesscreen> {
 
                                       const SizedBox(height: 8),
 
-                                      // PRICE + CART
+                                      
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,

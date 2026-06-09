@@ -29,7 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int jewelleryCount = 0;
   int pantsCount = 0;
 
-  // Recent products
+  
   List<Map<String, dynamic>> recentProducts = [];
 
   @override
@@ -40,7 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _fetchDashboardData() async {
     try {
-      // Run all queries in parallel
+      
       final results = await Future.wait([
         supabase.from('products').select(),
         supabase.from('orders').select(),
@@ -53,13 +53,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final users = List<Map<String, dynamic>>.from(results[2]);
       final banners = List<Map<String, dynamic>>.from(results[3]);
 
-      // Calculate revenue from orders
+      
       double revenue = 0;
       for (final order in orders) {
-        revenue += double.tryParse(order['total']?.toString() ?? '0') ?? 0;
+        revenue += double.tryParse(order['total_price']?.toString() ?? '0') ?? 0;
       }
 
-      // Count by category
+      
       int shirts = 0, watches = 0, skincare = 0,
           shoes = 0, jewellery = 0, pants = 0;
 
@@ -73,7 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (cat == 'pants') pants++;
       }
 
-      // Recent 5 products
+      
       final recent = [...products];
       recent.sort((a, b) => (b['id'] ?? 0).compareTo(a['id'] ?? 0));
 
@@ -136,7 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ── OVERVIEW STATS ──
+                    
                     const Text(
                       'Overview',
                       style: TextStyle(
@@ -189,7 +189,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                     const SizedBox(height: 28),
 
-                    // ── CATEGORY BREAKDOWN ──
+                    
                     const Text(
                       'Category Breakdown',
                       style: TextStyle(
@@ -224,7 +224,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                     const SizedBox(height: 28),
 
-                    // ── RECENT PRODUCTS ──
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

@@ -385,7 +385,7 @@ class _ShirtDetailsScreenState extends State<ShirtDetailsScreen> {
                         controller: reviewController,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          hintText: 'Write your review...',
+                          hintText: 'Write your review',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

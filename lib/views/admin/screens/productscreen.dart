@@ -113,7 +113,7 @@ class _ProductScreenState extends State<AdminProductScreen> {
       if (!mounted) return;
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Product added successfully ✅')),
+        const SnackBar(content: Text('Product added successfully ')),
       );
     } catch (e) {
       print('Add error: $e');
@@ -155,7 +155,7 @@ class _ProductScreenState extends State<AdminProductScreen> {
       if (!mounted) return;
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Product updated successfully ✅')),
+        const SnackBar(content: Text('Product updated successfully ')),
       );
     } catch (e) {
       print('Update error: $e');

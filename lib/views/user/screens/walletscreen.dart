@@ -15,7 +15,7 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
   double balance = 0.0;
   List<Map<String, dynamic>> transactions = [];
 
-  // ✅ Realtime subscription
+
   RealtimeChannel? _walletChannel;
 
   @override
@@ -27,12 +27,12 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
 
   @override
   void dispose() {
-    // ✅ Clean up subscription
+    
     _walletChannel?.unsubscribe();
     super.dispose();
   }
 
-  // ✅ Listen for wallet balance changes in realtime
+  
   void _subscribeToWallet() {
     final user = supabase.auth.currentUser;
     if (user == null) return;
@@ -49,7 +49,7 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
             value: user.id,
           ),
           callback: (payload) {
-            // When admin approves refund → wallet row updates → this fires
+            
             final newBalance =
                 (payload.newRecord['balance'] as num?)?.toDouble() ?? 0.0;
             setState(() => balance = newBalance);
@@ -139,9 +139,9 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Money added to wallet ✅')),
+        const SnackBar(content: Text('Money added to wallet ')),
       );
-      // No need to call loadWallet() — realtime will update balance automatically
+    
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -255,7 +255,7 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  // ── BALANCE CARD ──
+                  
                   Container(
                     padding: const EdgeInsets.all(22),
                     decoration: BoxDecoration(
@@ -298,7 +298,7 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
 
                   const SizedBox(height: 24),
 
-                  // ── TRANSACTIONS HEADER ──
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -325,7 +325,7 @@ class _MGWalletScreenState extends State<MGWalletScreen> {
                       ),
                     ),
 
-                  // ── TRANSACTION LIST ──
+                  
                   ...transactions.map((item) {
                     final type = item['type']?.toString() ?? 'credit';
                     return Card(

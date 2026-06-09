@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Generates initials from name or email
+  
   String _getInitials() {
     final name = userData?['name'];
     final email = userData?['email'] ?? '';
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return parts[0][0].toUpperCase();
     }
 
-    // Fallback to first letter of email
+    
     return email.isNotEmpty ? email[0].toUpperCase() : '?';
   }
 
@@ -89,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
 
-                    // Profile card
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Container(
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Column(
                           children: [
-                            // Initials avatar
+                            
                             CircleAvatar(
                               radius: 36,
                               backgroundColor: const Color(0xFFB5D4F4),
@@ -136,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             const SizedBox(height: 10),
 
-                            // Role badge
+                            
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 14,
@@ -166,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     const SizedBox(height: 16),
 
-                    // Account section
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
@@ -217,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     const SizedBox(height: 8),
 
-                    // App settings section
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
@@ -260,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     const SizedBox(height: 16),
 
-                    // Logout button
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: SizedBox(

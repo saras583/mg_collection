@@ -185,7 +185,7 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ── TITLE ──
+                
                 const Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 12),
                   child: Align(
@@ -200,7 +200,7 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
                   ),
                 ),
 
-                // ── SCROLLABLE CONTENT ──
+                
                 Flexible(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -244,7 +244,7 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
                         ),
                         const SizedBox(height: 12),
 
-                        // ── IMAGE PICKER ──
+                        
                         GestureDetector(
                           onTap: () async {
                             final XFile? image = await picker.pickImage(
@@ -298,7 +298,7 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
                   ),
                 ),
 
-                // ── ACTIONS ──
+                
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
                   child: Row(
@@ -394,7 +394,7 @@ class _AdminBannerScreenState extends State<AdminBannerScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ── BANNER IMAGE ──
+                            
                             ClipRRect(
                               borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(14),

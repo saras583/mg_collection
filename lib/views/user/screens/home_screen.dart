@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isFavorite = false;
   final productService = ProductService();
 
-  // ✅ Store products in state — prevents FutureBuilder rebuild on every setState
   List<ProductModel> _products = [];
   bool _productsLoading = true;
 
@@ -48,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _fetchBanners();
-    _fetchProducts(); // ✅ fetch once on init
+    _fetchProducts();
   }
 
   @override
@@ -87,7 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _banners = List<Map<String, dynamic>>.from(data);
       });
 
-      // ✅ Cancel existing timer before starting new one
       _bannerTimer?.cancel();
 
       if (_banners.length > 1) {
@@ -118,20 +116,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (!mounted) return;
 
-      final product = ProductModel(
-        id: data['id'],
-        name: data['name'],
-        price: double.parse(data['price'].toString()),
-        image: data['image'] ?? '',
-        category: data['category'] ?? '',
-        rating: double.parse(data['rating'].toString()),
-        description: data['description'] ?? '',
-      );
-
+      
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ProductDetailsScreen(product: product),
+          builder: (_) => ProductDetailScreen(product: data),
         ),
       );
     } catch (e) {
@@ -139,7 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // ✅ Fixed banner widget — extracted to avoid overflow
   Widget _buildBannerSlider() {
     if (_banners.isEmpty) {
       return Padding(
@@ -205,7 +193,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                   child: Container(
-                    // ✅ removed right margin that caused overflow
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(22),
                       image: DecorationImage(
@@ -227,7 +214,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       padding: const EdgeInsets.all(16),
                       alignment: Alignment.bottomLeft,
-                      // ✅ constrain title to avoid text overflow
                       child: Text(
                         banner['title'] ?? '',
                         maxLines: 2,
@@ -243,8 +229,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-
-            // ✅ Dots indicator — only show if more than 1 banner
             if (_banners.length > 1)
               Positioned(
                 bottom: 10,
@@ -281,13 +265,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        // ✅ use CustomScrollView so everything scrolls together
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  // ── TOP BAR ──
+                  
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 10),
@@ -304,10 +287,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             radius: 22,
                             backgroundColor: Colors.grey.shade200,
                             child: Icon(Icons.wallet,
-                                color: isDark ? Colors.white : Colors.black),
+                                color:
+                                    isDark ? Colors.white : Colors.black),
                           ),
                         ),
-
                         Column(
                           children: [
                             Text(
@@ -327,21 +310,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                 SizedBox(width: 4),
                                 Text(
                                   "Mondolibug, Sylhet",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
                           ],
                         ),
-
                         Row(
                           children: [
                             GestureDetector(
                               onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const FavoritesScreen()),
+                                    builder: (_) =>
+                                        const FavoritesScreen()),
                               ),
                               child: CircleAvatar(
                                 radius: 22,
@@ -352,7 +335,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       : Icons.favorite_border,
                                   color: isFavorite
                                       ? Colors.red
-                                      : (isDark ? Colors.white : Colors.black),
+                                      : (isDark
+                                          ? Colors.white
+                                          : Colors.black),
                                 ),
                               ),
                             ),
@@ -370,8 +355,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     backgroundColor: Colors.grey.shade200,
                                     child: Icon(
                                       Icons.shopping_bag_outlined,
-                                      color:
-                                          Theme.of(context).iconTheme.color,
+                                      color: Theme.of(context)
+                                          .iconTheme
+                                          .color,
                                     ),
                                   ),
                                 ),
@@ -397,7 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 10),
 
-                  // ── CATEGORIES ──
+                  
                   SizedBox(
                     height: 100,
                     child: ListView.builder(
@@ -408,8 +394,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         final category = categories[index];
                         return Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8),
                           child: GestureDetector(
                             onTap: () =>
                                 _navigateToCategory(category.name),
@@ -435,7 +421,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 10),
 
-                  // ── SEARCH ──
+                  
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16),
@@ -457,18 +443,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 14),
 
-                  // ── BANNER ──
+                  
                   _buildBannerSlider(),
 
                   const SizedBox(height: 14),
 
-                  // ── PRODUCTS HEADER ──
+                  
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
                           "Featured Products",
@@ -491,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // ── PRODUCTS GRID ──
+            
             _productsLoading
                 ? const SliverToBoxAdapter(
                     child: Center(
@@ -521,8 +506,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => ProductDetailsScreen(
-                                        product: product),
+                                    
+                                    builder: (_) => ProductDetailScreen(
+                                      product: product.toJson(),
+                                    ),
                                   ),
                                 ),
                                 child: Container(
@@ -542,17 +529,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                           borderRadius:
                                               const BorderRadius.only(
                                             topLeft: Radius.circular(20),
-                                            topRight:
-                                                Radius.circular(20),
+                                            topRight: Radius.circular(20),
                                           ),
                                           child: Image.network(
                                             product.image,
                                             fit: BoxFit.cover,
                                             width: double.infinity,
-                                            errorBuilder: (_, __, ___) =>
-                                                Container(
-                                              color:
-                                                  Colors.grey.shade300,
+                                            errorBuilder:
+                                                (_, __, ___) => Container(
+                                              color: Colors.grey.shade300,
                                               child: const Center(
                                                 child: Icon(Icons
                                                     .image_not_supported),
@@ -601,8 +586,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            8, 4, 8, 10),
+                                        padding:
+                                            const EdgeInsets.fromLTRB(
+                                                8, 4, 8, 10),
                                         child: Text(
                                           "₹${product.price}",
                                           style: const TextStyle(
@@ -628,7 +614,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
 
-            // Bottom padding
             const SliverToBoxAdapter(child: SizedBox(height: 20)),
           ],
         ),

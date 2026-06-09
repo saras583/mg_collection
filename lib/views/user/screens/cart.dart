@@ -13,50 +13,80 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   final supabase = Supabase.instance.client;
 
-  Future<List<Map<String, dynamic>>> getCartItems() async {
-    final user = supabase.auth.currentUser;
+  List<Map<String, dynamic>> cartItems = [];
+  bool loading = true;
 
-    if (user == null) return [];
+  @override
+  void initState() {
+    super.initState();
+    fetchCartItems();
+  }
 
-    final data = await supabase
-        .from('cart')
-        .select()
-        .eq('user_id', user.id)
-        .order('created_at', ascending: false);
+  Future<void> fetchCartItems() async {
+    try {
+      final user = supabase.auth.currentUser;
+      if (user == null) {
+        setState(() => loading = false);
+        return;
+      }
 
-    return List<Map<String, dynamic>>.from(data);
+      final data = await supabase
+          .from('cart')
+          .select()
+          .eq('user_id', user.id)
+          .order('created_at', ascending: false);
+
+      setState(() {
+        cartItems = List<Map<String, dynamic>>.from(data);
+        loading = false;
+      });
+    } catch (e) {
+      print('Fetch cart error: $e');
+      setState(() => loading = false);
+    }
   }
 
   Future<void> deleteItem(int id) async {
     try {
       await supabase.from('cart').delete().eq('id', id);
-
+      setState(() {
+        cartItems.removeWhere((item) => item['id'] == id);
+      });
       if (!mounted) return;
-
-      setState(() {});
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Item removed from cart')),
       );
     } catch (e) {
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
     }
   }
 
+  Future<void> updateQuantity(int id, int newQty) async {
+    if (newQty < 1) {
+      await deleteItem(id);
+      return;
+    }
+    try {
+      await supabase
+          .from('cart')
+          .update({'quantity': newQty})
+          .eq('id', id);
+      setState(() {
+        final index = cartItems.indexWhere((item) => item['id'] == id);
+        if (index != -1) cartItems[index]['quantity'] = newQty;
+      });
+    } catch (e) {
+      print('Update quantity error: $e');
+    }
+  }
+
   Future<void> openProductDetails(Map<String, dynamic> cartItem) async {
     try {
       final productId = cartItem['product_id'];
-
-      if (productId == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Product id not found')),
-        );
-        return;
-      }
+      if (productId == null) return;
 
       final data = await supabase
           .from('products')
@@ -75,159 +105,253 @@ class _CartState extends State<Cart> {
       );
 
       if (!mounted) return;
-
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ProductDetailsScreen(product: product),
+          builder: (_) =>  ProductDetailScreen(
+                                      product: product.toJson(),
+                                    ),
         ),
       );
     } catch (e) {
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
     }
   }
 
-  Widget cartImage(String image) {
-    return Image.network(
-      image,
-      width: 70,
-      height: 70,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
-          width: 70,
-          height: 70,
-          color: Colors.grey.shade300,
-          child: const Icon(Icons.image_not_supported),
-        );
-      },
-    );
-  }
-
-  double calculateTotal(List<Map<String, dynamic>> items) {
+  double get totalPrice {
     double total = 0;
-
-    for (final item in items) {
+    for (final item in cartItems) {
       final price = (item['price'] as num?)?.toDouble() ?? 0.0;
-      final quantity = (item['quantity'] as num?)?.toInt() ?? 1;
-
-      total += price * quantity;
+      final qty = (item['quantity'] as num?)?.toInt() ?? 1;
+      total += price * qty;
     }
-
     return total;
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('My Cart'),
+        actions: [
+          if (cartItems.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Center(
+                child: Text(
+                  '${cartItems.length} items',
+                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+              ),
+            ),
+        ],
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: getCartItems(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : cartItems.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.shopping_cart_outlined,
+                          size: 80, color: Colors.grey.shade400),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Your cart is empty',
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Add items to get started',
+                        style:
+                            TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: fetchCartItems,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(12),
+                          itemCount: cartItems.length,
+                          itemBuilder: (context, index) {
+                            final item = cartItems[index];
+                            final qty =
+                                (item['quantity'] as num?)?.toInt() ?? 1;
+                            final price =
+                                (item['price'] as num?)?.toDouble() ?? 0.0;
 
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(snapshot.error.toString()),
-            );
-          }
+                            return Card(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  children: [
+                                    
+                                    GestureDetector(
+                                      onTap: () =>
+                                          openProductDetails(item),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                        child: Image.network(
+                                          item['image']?.toString() ?? '',
+                                          width: 75,
+                                          height: 75,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) =>
+                                              Container(
+                                            width: 75,
+                                            height: 75,
+                                            color: Colors.grey.shade200,
+                                            child: const Icon(
+                                                Icons.image_not_supported),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
 
-          final items = snapshot.data ?? [];
+                                    const SizedBox(width: 12),
 
-          if (items.isEmpty) {
-            return const Center(
-              child: Text('Cart is Empty'),
-            );
-          }
+                                    
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item['product_name']
+                                                    ?.toString() ??
+                                                'No Name',
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '₹${price.toStringAsFixed(0)}',
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF5DA9E9),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
 
-          final total = calculateTotal(items);
+                                          
+                                          Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () => updateQuantity(
+                                                    item['id'], qty - 1),
+                                                child: Container(
+                                                  width: 28,
+                                                  height: 28,
+                                                  decoration: BoxDecoration(
+                                                    color: isDark
+                                                        ? Colors.grey.shade700
+                                                        : Colors.grey.shade200,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  child: const Icon(
+                                                      Icons.remove,
+                                                      size: 16),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12),
+                                                child: Text(
+                                                  '$qty',
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () => updateQuantity(
+                                                    item['id'], qty + 1),
+                                                child: Container(
+                                                  width: 28,
+                                                  height: 28,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(
+                                                        0xFF5DA9E9),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  child: const Icon(
+                                                      Icons.add,
+                                                      size: 16,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
 
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      child: ListTile(
-                        onTap: () {
-                          openProductDetails(item);
-                        },
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: cartImage(item['image']?.toString() ?? ''),
-                        ),
-                        title: Text(
-                          item['product_name']?.toString() ?? 'No Name',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          '₹${item['price'] ?? 0}  |  Qty: ${item['quantity'] ?? 1}',
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                          onPressed: () async {
-                            await deleteItem(item['id']);
+                                  
+                                    IconButton(
+                                      icon: const Icon(Icons.delete_outline,
+                                          color: Colors.red),
+                                      onPressed: () =>
+                                          deleteItem(item['id']),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 8,
-                      color: Colors.black12,
                     ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Total: ₹${total.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+
+                    // ── TOTAL + CHECKOUT ──
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 8,
+                            color: Colors.black.withOpacity(0.08),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Row(),
+                          const SizedBox(height: 12),
+                          SizedBox(),
+                        ],
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Add checkout navigation here if needed
-                      },
-                      child: const Text('Checkout'),
-                    ),
                   ],
                 ),
-              ),
-            ],
-          );
-        },
-      ),
     );
   }
 }

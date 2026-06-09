@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
-    // ✅ Check blocked + role instead of going straight to home
+    
     try {
       final userData = await supabase
           .from('users')
