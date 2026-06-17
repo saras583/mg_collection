@@ -83,6 +83,62 @@ class _ProductScreenState extends State<AdminProductScreen> {
     }
   }
 
+  // ✅ NEW: Toggle block/unblock
+  Future<void> toggleBlockProduct(Map product) async {
+    final isCurrentlyBlocked = product['is_blocked'] == true;
+    final action = isCurrentlyBlocked ? 'Unblock' : 'Block';
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('$action Product'),
+        content: Text(
+          '$action "${product['name']}"? '
+          '${isCurrentlyBlocked ? 'It will become visible to users.' : 'It will be hidden from users.'}',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              action,
+              style: TextStyle(
+                color: isCurrentlyBlocked ? Colors.green : Colors.orange,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      await supabase
+          .from('products')
+          .update({'is_blocked': !isCurrentlyBlocked})
+          .eq('id', product['id']);
+
+      await fetchProducts();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Product ${isCurrentlyBlocked ? 'unblocked' : 'blocked'} successfully'),
+          backgroundColor: isCurrentlyBlocked ? Colors.green : Colors.orange,
+        ),
+      );
+    } catch (e) {
+      print('Block/Unblock error: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
   Future<void> addProduct() async {
     if (nameController.text.isEmpty ||
         priceController.text.isEmpty ||
@@ -107,6 +163,7 @@ class _ProductScreenState extends State<AdminProductScreen> {
         "description": descriptionController.text.trim(),
         "stock": int.tryParse(stockController.text.trim()) ?? 0,
         "image": imageUrl,
+        "is_blocked": false, // ✅ default unblocked
       });
 
       await fetchProducts();
@@ -342,7 +399,6 @@ class _ProductScreenState extends State<AdminProductScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Show existing image
               if (selectedImage == null && product['image'] != null)
                 Container(
                   height: 80,
@@ -413,11 +469,17 @@ class _ProductScreenState extends State<AdminProductScreen> {
                     itemCount: products.length,
                     itemBuilder: (context, index) {
                       final product = products[index];
+                      final isBlocked = product['is_blocked'] == true; // ✅
+
                       return Card(
                         margin: const EdgeInsets.only(bottom: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        // ✅ Dim blocked products visually
+                        color: isBlocked
+                            ? Colors.grey.shade200
+                            : Theme.of(context).cardColor,
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(10),
                           onTap: () {
@@ -429,27 +491,81 @@ class _ProductScreenState extends State<AdminProductScreen> {
                               ),
                             );
                           },
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: product['image'] != null &&
-                                    product['image'].toString().isNotEmpty
-                                ? Image.network(
-                                    product['image'],
-                                    width: 55,
-                                    height: 55,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) =>
-                                        const CircleAvatar(
-                                      child: Icon(Icons.image),
+                          leading: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: product['image'] != null &&
+                                        product['image'].toString().isNotEmpty
+                                    ? Image.network(
+                                        product['image'],
+                                        width: 55,
+                                        height: 55,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) =>
+                                            const CircleAvatar(
+                                          child: Icon(Icons.image),
+                                        ),
+                                      )
+                                    : const CircleAvatar(
+                                        child: Icon(Icons.image)),
+                              ),
+                              // ✅ Blocked badge on image
+                              if (isBlocked)
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
                                     ),
-                                  )
-                                : const CircleAvatar(
-                                    child: Icon(Icons.image)),
+                                    child: const Icon(
+                                      Icons.block,
+                                      size: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
-                          title: Text(
-                            product['name'] ?? '',
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold),
+                          title: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  product['name'] ?? '',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    // ✅ Strike-through for blocked
+                                    decoration: isBlocked
+                                        ? TextDecoration.lineThrough
+                                        : null,
+                                    color: isBlocked
+                                        ? Colors.grey
+                                        : null,
+                                  ),
+                                ),
+                              ),
+                              // ✅ Blocked chip label
+                              if (isBlocked)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade100,
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: Text(
+                                    'Blocked',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.red.shade700,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -489,6 +605,19 @@ class _ProductScreenState extends State<AdminProductScreen> {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              // ✅ Block/Unblock icon button
+                              IconButton(
+                                icon: Icon(
+                                  isBlocked
+                                      ? Icons.lock_open
+                                      : Icons.block,
+                                  color: isBlocked
+                                      ? Colors.green
+                                      : Colors.orange,
+                                ),
+                                tooltip: isBlocked ? 'Unblock' : 'Block',
+                                onPressed: () => toggleBlockProduct(product),
+                              ),
                               IconButton(
                                 icon: const Icon(Icons.edit,
                                     color: Colors.blue),
